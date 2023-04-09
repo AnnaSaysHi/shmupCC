@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 public class BulletManager {
@@ -23,10 +24,10 @@ public class BulletManager {
 		}
 	}
 	
-	public void drawBullets(Graphics g, Game m) {
+	public void drawBullets(Graphics g, BufferedImage b, Game m) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i] != null) {
-				bullets[i].draw(g, bulletSprites, m);
+				bullets[i].draw(g, b, m);
 			}
 		}
 		

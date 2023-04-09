@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class Bullet {
 	double xpos;
@@ -15,6 +16,7 @@ public class Bullet {
 	double size;
 	double hitboxSize;
 	int framesTillDespawnOffscreen = 0;
+	boolean disabled = false;
 
 	
 	
@@ -30,8 +32,15 @@ public class Bullet {
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 	}
 	
-	public void draw(Graphics g, Spritesheet ss, Game m) {
-		g.drawImage(ss.getSprite(0, 0, 16, 16), (int)(xpos), (int)(ypos), m);
+	public void draw(Graphics g, BufferedImage b, Game m) {
+		g.drawImage(b, (int)(xpos), (int)(ypos), m);
+	}
+	
+	public boolean isDisabled() {
+		return disabled;
+	}
+	public void setDisabled(boolean a) {
+		disabled = a;
 	}
 	
 	public boolean update() {

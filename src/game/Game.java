@@ -46,8 +46,8 @@ public class Game extends Canvas implements Runnable{
 
 		Spritesheet ss = new Spritesheet(sprites);
 		redBullet = ss.getSprite(0, 0, 16, 16);
-		BulletMGR = new BulletManager(100, ss);
-		testSpawner = new BulletSpawner(BulletMGR, 0, 480, 360, 1, 1, 10, 0.5, anglenum);
+		BulletMGR = new BulletManager(1000, ss);
+		testSpawner = new BulletSpawner(BulletMGR, 0, 480, 360, 1, 1, 3, 0.5, anglenum);
 	}
 	
 	private synchronized void start() {
@@ -105,10 +105,13 @@ public class Game extends Canvas implements Runnable{
 			ticksInLastPeriod = 0;
 			lastTickPeriodMeasurement = System.nanoTime();
 		}
-		angleIncrement += (Math.PI/256);
+		angleIncrement += (Math.PI)/1024;
 		anglenum += angleIncrement;
 		testSpawner.setAngle1(anglenum);
 		BulletMGR.updateBullets();
+		testSpawner.activate();
+		anglenum += Math.PI;
+		testSpawner.setAngle1(anglenum);
 		testSpawner.activate();
 		System.gc();
 	}
@@ -124,7 +127,7 @@ public class Game extends Canvas implements Runnable{
 		g.setColor(Color.WHITE);
 		g.drawString(Double.toString(measuredFpS), 10, 10);
 		
-		BulletMGR.drawBullets(g, this);
+		BulletMGR.drawBullets(g, redBullet, this);
 		
 		
 		g.dispose();
