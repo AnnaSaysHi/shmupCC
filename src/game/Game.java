@@ -13,6 +13,9 @@ public class Game extends Canvas implements Runnable{
 	public static int SCALE = 3;
 	public static int numImageBuffers = 2;
 	public String TITLE = "test";
+	private int ticksInLastPeriod = 0;
+	private double measuredFpS;
+	private long lastTickPeriodMeasurement;
 	private enum STATE{
 		MENU,
 		PLAY
@@ -42,7 +45,7 @@ public class Game extends Canvas implements Runnable{
 
 		Spritesheet ss = new Spritesheet(sprites);
 		redBullet = ss.getSprite(0, 0, 16, 16);
-		BulletMGR = new BulletManager(10, ss);
+		BulletMGR = new BulletManager(100, ss);
 		testSpawner = new BulletSpawner(BulletMGR, 0, 100, 100, 1, 1, 3, 0.5, anglenum);
 	}
 	
@@ -77,6 +80,7 @@ public class Game extends Canvas implements Runnable{
 	public void run() {
 		init();
 		long MRT = System.nanoTime();
+		lastTickPeriodMeasurement = System.nanoTime();
 		int preferredFPS = 60;
 		long skipTicks = (1000000000 / preferredFPS);
 		
@@ -94,10 +98,17 @@ public class Game extends Canvas implements Runnable{
 	
 	private void tick() {
 
+		ticksInLastPeriod++;
+		if(System.nanoTime() > (lastTickPeriodMeasurement + 1000000000)) {
+			measuredFpS = ((double)(ticksInLastPeriod)) / (((double)(System.nanoTime() - lastTickPeriodMeasurement)) / 1000000000);
+			ticksInLastPeriod = 0;
+			lastTickPeriodMeasurement = System.nanoTime();
+		}
 		anglenum += (Math.PI)/8;
 		testSpawner.setAngle1(anglenum);
 		BulletMGR.updateBullets();
 		testSpawner.activate();
+		System.gc();
 	}
 	
 	
@@ -108,6 +119,8 @@ public class Game extends Canvas implements Runnable{
 		}
 		Graphics g = bufferStrat.getDrawGraphics();
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
+		g.setColor(Color.WHITE);
+		g.drawString(Double.toString(measuredFpS), 10, 10);
 		
 		BulletMGR.drawBullets(g, this);
 		g.drawImage(redBullet, 100, 100, this);
@@ -119,9 +132,10 @@ public class Game extends Canvas implements Runnable{
 
 	public static void main(String[] args) {
 		Game game = new Game();
-		game.setPreferredSize(new Dimension(WIDTH * SCALE / 2, HEIGHT * SCALE / 2));
-		game.setMaximumSize(new Dimension(WIDTH * SCALE / 2, HEIGHT * SCALE / 2));
-		game.setMinimumSize(new Dimension(WIDTH * SCALE / 2, HEIGHT * SCALE / 2));
+		Dimension windowSize = new Dimension(WIDTH * SCALE / 2, HEIGHT * SCALE / 2);
+		game.setPreferredSize(windowSize);
+		game.setMaximumSize(windowSize);
+		game.setMinimumSize(windowSize);
 		
 		JFrame frame = new JFrame(game.TITLE);
 		frame.add(game);
