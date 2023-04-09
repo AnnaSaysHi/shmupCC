@@ -20,6 +20,7 @@ public class Game extends Canvas implements Runnable{
 	
 	private BulletManager BulletMGR;
 	private BulletSpawner testSpawner;
+	private double anglenum = 0;
 	private boolean running = false;
 	private STATE state = STATE.PLAY;
 	private Thread thread;
@@ -41,8 +42,8 @@ public class Game extends Canvas implements Runnable{
 
 		Spritesheet ss = new Spritesheet(sprites);
 		redBullet = ss.getSprite(0, 0, 16, 16);
-		BulletMGR = new BulletManager(200, ss);
-		testSpawner = new BulletSpawner(BulletMGR, 0, 100, 100, 1, 1, 2, 0.5, (Math.PI)/4);
+		BulletMGR = new BulletManager(10, ss);
+		testSpawner = new BulletSpawner(BulletMGR, 0, 100, 100, 1, 1, 3, 0.5, anglenum);
 	}
 	
 	private synchronized void start() {
@@ -92,6 +93,9 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	private void tick() {
+
+		anglenum += (Math.PI)/8;
+		testSpawner.setAngle1(anglenum);
 		BulletMGR.updateBullets();
 		testSpawner.activate();
 	}

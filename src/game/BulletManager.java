@@ -16,7 +16,9 @@ public class BulletManager {
 	public void updateBullets() {
 		for (int i = 0; i < bullets.length; i++){
 			if (bullets[i] != null) {
-				if(bullets[i].update()) bullets[i] = null;
+				if(bullets[i].update()) {
+					bullets[i] = null;
+				}
 			}			
 		}
 	}
