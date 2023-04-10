@@ -83,9 +83,15 @@ public class BulletSpawner {
 	
 	
 	public void activate() {
+		double angleAim = angle1;
 		switch(modeNum) {
 		case Fan:
-			shootFan(angle1);
+			shootFan(angleAim);
+			break;
+		case Ring_Mode5:
+			angleAim += Math.PI / ways;
+		case Ring_Nonaimed:
+			shootRing(angleAim);
 			break;
 		
 		default:
@@ -94,7 +100,7 @@ public class BulletSpawner {
 	}
 	
 	private void shootFan(double angleAim) {
-		angleAim = angleAim - ((double)(ways - 1)*angle2)/2;
+		angleAim = angleAim - ((double)(ways - 1)*angle2)/2.0;
 		for(int i = 0; i < ways; i++) {
 			shootOneWay(angleAim);
 			angleAim += angle2;
@@ -103,16 +109,34 @@ public class BulletSpawner {
 	}
 	
 	private void shootOneWay(double angleAim) {
+		double shotSpeed = speed1;
+		double speedIncrement;
+		if (layers == 1) speedIncrement = 0;
+		else speedIncrement = (speed2 - speed1) / layers;
 		for(int i = 0; i < layers; i++) {
-			double shotSpeed;
-			if(layers == 0) shotSpeed = speed1;
-			else shotSpeed = speed1 + (((double)(i) / (layers - 1)) * (speed2 - speed1));
 			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, 0, protectFrames);
+			shotSpeed += speedIncrement;
 		}
 	}
 	
 	private void shootRing(double angleAim) {
+		double ringSpeed = speed1;
+		double speedIncrement;
+		if (layers == 1) speedIncrement = 0;
+		else speedIncrement = (speed2 - speed1) / layers;
+		for(int i = 0; i < layers; i++) {
+			shootRingLayer(angleAim, ringSpeed);
+			ringSpeed += speedIncrement;
+			angleAim += angle2;
+		}
 		
+	}
+	private void shootRingLayer(double angleAim, double ringSpeed) {
+		double angleIncrement = (2 * Math.PI) / ways;
+		for(int i = 0; i < ways; i++) {
+			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, 0, protectFrames);
+			angleAim += angleIncrement;
+		}
 	}
 
 }
