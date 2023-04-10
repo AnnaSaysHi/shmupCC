@@ -16,20 +16,33 @@ public class Bullet {
 	double size;
 	double hitboxSize;
 	int framesTillDespawnOffscreen = 0;
-	boolean disabled = false;
+	boolean disabled;
 
 	
 	
-	public Bullet(double spawnXpos, double spawnYpos, double spawnSpeed, double spawnAngle, int spawnType, int offscreenProtectionFramesNum) {
-		xpos = spawnXpos;
-		ypos = spawnYpos;
-		speed = spawnSpeed;
-		angle = spawnAngle;
-		type = spawnType;	
+	public Bullet() {
+		xpos = -1;
+		ypos = -1;
+		speed = -1;
+		angle = -1;
+		type = -1;
+		size = 1;
+		hitboxSize = 1;
+		grazed = 0;
+		disabled = true;
+	}
+	
+	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int offscreenProtectionFramesNum) {
+		xpos = newXpos;
+		ypos = newYpos;
+		speed = newSpeed;
+		angle = newAngle;
+		type = newType;	
 		size = 16;
 		hitboxSize = 5;
 		grazed = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
+		disabled = false;
 	}
 	
 	public void draw(Graphics g, BufferedImage b, Game m) {
@@ -39,8 +52,8 @@ public class Bullet {
 	public boolean isDisabled() {
 		return disabled;
 	}
-	public void setDisabled(boolean a) {
-		disabled = a;
+	public void disable() {
+		disabled = true;
 	}
 	
 	public boolean update() {
