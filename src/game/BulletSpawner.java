@@ -11,6 +11,17 @@ public class BulletSpawner {
 	double speed2;
 	double angle1;
 	double angle2;
+	public enum Mode{
+		Mode_Fan_Aimed,
+		Mode_Fan,
+		Mode_Ring_Aimed_Direct,
+		Mode_Ring_Aimed_Around,
+		Mode_Ring_Nonaimed,
+		Mode_Ring_Mode5,
+		Mode_Random_Angle,
+		Mode_Random_Speed,
+		Mode_Meek
+	}
 	
 	public BulletSpawner(BulletManager parent, int mode, double initXpos, double initYpos, int numLayers, int numWays, double initSpeedMin, double initSpeedDiff, double angleBase) {
 		parentManager = parent;
