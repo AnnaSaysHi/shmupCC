@@ -118,7 +118,6 @@ public class Game extends Canvas implements Runnable{
 		testSpawner.activate();
 		
 		if(KBH.getHeldKeys()[0]) {
-			System.out.println("B held");
 		}
 		
 		
