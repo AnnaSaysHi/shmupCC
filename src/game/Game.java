@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import javax.swing.*;
 
+import game.BulletSpawner.Mode;
+
 public class Game extends Canvas implements Runnable{
 	
 	public static final int WIDTH = 640;
@@ -50,7 +52,7 @@ public class Game extends Canvas implements Runnable{
 		BulletMGR = new BulletManager(500, ss);
 		KBH = new KBinputHandler(this);
 		this.addKeyListener(KBH);
-		testSpawner = new BulletSpawner(BulletMGR, 0, 480, 360, 1, 1, 3, 0.5, anglenum);
+		testSpawner = new BulletSpawner(BulletMGR, Mode.Fan, 480, 360, 2, 1, 3, 4, anglenum, 0);
 	}
 	
 	private synchronized void start() {
@@ -112,9 +114,6 @@ public class Game extends Canvas implements Runnable{
 		anglenum += angleIncrement;
 		testSpawner.setAngle1(anglenum);
 		BulletMGR.updateBullets();
-		testSpawner.activate();
-		anglenum += Math.PI;
-		testSpawner.setAngle1(anglenum);
 		testSpawner.activate();
 		
 		if(KBH.getHeldKeys()[0]) {

@@ -2,7 +2,7 @@ package game;
 
 public class BulletSpawner {
 	BulletManager parentManager;
-	int modeNum;
+	Mode modeNum;
 	int layers;
 	int ways;
 	double spawnerX;
@@ -11,28 +11,30 @@ public class BulletSpawner {
 	double speed2;
 	double angle1;
 	double angle2;
+	int protectFrames = 10;
 	public enum Mode{
-		Mode_Fan_Aimed,
-		Mode_Fan,
-		Mode_Ring_Aimed_Direct,
-		Mode_Ring_Aimed_Around,
-		Mode_Ring_Nonaimed,
-		Mode_Ring_Mode5,
-		Mode_Random_Angle,
-		Mode_Random_Speed,
-		Mode_Meek
+		Fan_Aimed,
+		Fan,
+		Ring_Aimed_Direct,
+		Ring_Aimed_Around,
+		Ring_Nonaimed,
+		Ring_Mode5,
+		Random_Angle,
+		Random_Speed,
+		Meek
 	}
 	
-	public BulletSpawner(BulletManager parent, int mode, double initXpos, double initYpos, int numLayers, int numWays, double initSpeedMin, double initSpeedDiff, double angleBase) {
+	public BulletSpawner(BulletManager parent, Mode mode, double initXpos, double initYpos, int numLayers, int numWays, double initSpeedBase, double initSpeedMod, double angleBase, double angleMod) {
 		parentManager = parent;
 		modeNum = mode;
 		spawnerX = initXpos;
 		spawnerY = initYpos;
 		layers = numLayers;
 		ways = numWays;
-		speed1 = initSpeedMin;
-		speed2 = initSpeedDiff;
+		speed1 = initSpeedBase;
+		speed2 = initSpeedMod;
 		angle1 = angleBase;
+		angle2 = angleMod;
 	}
 	
 	//Accessor methods
@@ -75,13 +77,42 @@ public class BulletSpawner {
 	public void setNumWays(int numWays) {
 		ways = numWays;
 	}
-	public void setMode(int mode) {
+	public void setMode(Mode mode) {
 		modeNum = mode;
 	}
 	
 	
 	public void activate() {
-		parentManager.addBullet(spawnerX, spawnerY, speed1, angle1, 0, 10);
+		switch(modeNum) {
+		case Fan:
+			shootFan(angle1);
+			break;
+		
+		default:
+			break;
+		}
+	}
+	
+	private void shootFan(double angleAim) {
+		angleAim = angleAim - ((double)(ways - 1)*angle2)/2;
+		for(int i = 0; i < ways; i++) {
+			shootOneWay(angleAim);
+			angleAim += angle2;
+		}
+		
+	}
+	
+	private void shootOneWay(double angleAim) {
+		for(int i = 0; i < layers; i++) {
+			double shotSpeed;
+			if(layers == 0) shotSpeed = speed1;
+			else shotSpeed = speed1 + (((double)(i) / (layers - 1)) * (speed2 - speed1));
+			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, 0, protectFrames);
+		}
+	}
+	
+	private void shootRing(double angleAim) {
+		
 	}
 
 }
