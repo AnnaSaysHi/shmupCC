@@ -34,7 +34,7 @@ public class Game extends Canvas implements Runnable{
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage sprites = null;
-	
+	int bulletTimer;
 	private BufferedImage redBullet;
 	
 	public void init() {
@@ -49,10 +49,11 @@ public class Game extends Canvas implements Runnable{
 
 		Spritesheet ss = new Spritesheet(sprites);
 		redBullet = ss.getSprite(0, 0, 16, 16);
-		BulletMGR = new BulletManager(500, ss);
+		BulletMGR = new BulletManager(1000, ss);
 		KBH = new KBinputHandler(this);
 		this.addKeyListener(KBH);
-		testSpawner = new BulletSpawner(BulletMGR, Mode.Fan, 480, 360, 2, 1, 3, 4, anglenum, 0);
+		bulletTimer = 0;
+		testSpawner = new BulletSpawner(BulletMGR, Mode.Ring_Mode5, 480, 360, 16, 8, 1, 3, anglenum, Math.PI/128);
 	}
 	
 	private synchronized void start() {
@@ -112,9 +113,14 @@ public class Game extends Canvas implements Runnable{
 		}
 		angleIncrement += (Math.PI)/1024;
 		anglenum += angleIncrement;
-		testSpawner.setAngle1(anglenum);
+		//testSpawner.setAngle1(anglenum);
 		BulletMGR.updateBullets();
-		testSpawner.activate();
+		
+		bulletTimer++;
+		if(bulletTimer >= 60) {
+			testSpawner.activate();
+			bulletTimer = 0;
+		}
 		
 		if(KBH.getHeldKeys()[0]) {
 		}
