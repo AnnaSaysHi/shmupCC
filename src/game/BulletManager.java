@@ -1,6 +1,6 @@
 package game;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
@@ -24,7 +24,7 @@ public class BulletManager {
 		}
 	}
 	
-	public void drawBullets(Graphics g, BufferedImage b, Game m) {
+	public void drawBullets(Graphics2D g, BufferedImage b, Game m) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled() == false) {
 				bullets[i].draw(g, b, m);

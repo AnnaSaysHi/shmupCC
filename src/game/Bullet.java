@@ -1,6 +1,7 @@
 package game;
 
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Bullet {
@@ -16,6 +17,7 @@ public class Bullet {
 	double size;
 	double hitboxSize;
 	int framesTillDespawnOffscreen = 0;
+	AffineTransform renderTransform;
 	boolean disabled;
 
 	
@@ -30,6 +32,7 @@ public class Bullet {
 		hitboxSize = 1;
 		grazed = 0;
 		disabled = true;
+		renderTransform = new AffineTransform();
 	}
 	
 	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int offscreenProtectionFramesNum) {
@@ -43,10 +46,14 @@ public class Bullet {
 		grazed = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
+		renderTransform.setToIdentity();
 	}
 	
-	public void draw(Graphics g, BufferedImage b, Game m) {
-		g.drawImage(b, (int)(xpos), (int)(ypos), m);
+	public void draw(Graphics2D g, BufferedImage b, Game m) {
+		renderTransform.setToIdentity();
+		renderTransform.translate(xpos, ypos);
+		renderTransform.rotate(angle + Math.PI/2, size/2, size/2);
+		g.drawImage(b, renderTransform, m);
 	}
 	
 	public boolean isDisabled() {
