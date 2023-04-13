@@ -11,6 +11,8 @@ public class BulletSpawner {
 	double speed2;
 	double angle1;
 	double angle2;
+	int type;
+	int color;
 	int protectFrames = 10;
 	public enum Mode{
 		Fan_Aimed,
@@ -23,8 +25,8 @@ public class BulletSpawner {
 		Random_Speed,
 		Meek
 	}
-	
-	public BulletSpawner(BulletManager parent, Mode mode, double initXpos, double initYpos, int numLayers, int numWays, double initSpeedBase, double initSpeedMod, double angleBase, double angleMod) {
+	//constructors
+	public BulletSpawner(BulletManager parent, Mode mode, double initXpos, double initYpos, int numLayers, int numWays, double initSpeedBase, double initSpeedMod, double angleBase, double angleMod, int bulletType, int bulletColor) {
 		parentManager = parent;
 		modeNum = mode;
 		spawnerX = initXpos;
@@ -35,10 +37,25 @@ public class BulletSpawner {
 		speed2 = initSpeedMod;
 		angle1 = angleBase;
 		angle2 = angleMod;
+		type = bulletType;
+		color = bulletColor;
+	}
+	
+	public BulletSpawner(BulletManager parent) {
+		parentManager = parent;
+		modeNum = Mode.Fan;
+		spawnerX = 0;
+		spawnerY = 0;
+		layers = 1;
+		ways = 1;
+		speed1 = 1;
+		speed2 = 1;
+		angle1 = 0;
+		angle2 = 0;
 	}
 	
 	//Accessor methods
-	public double getAngle1() {
+	/*public double getAngle1() {
 		return angle1;
 	}
 	public double getAngle2() {
@@ -49,36 +66,38 @@ public class BulletSpawner {
 	}
 	public double getSpeed2() {
 		return speed2;
-	}
+	}*/
 	public double[] getSpawnerPos(){
 		return new double[] {spawnerX, spawnerY};
 	}
 	
 	//Mutator methods
-	public void setAngle1(double angle) {
-		angle1 = angle;
+	public void setAngles(double newAngle1, double newAngle2) {
+		angle1 = newAngle1;
+		angle2 = newAngle2;
 	}
-	public void setAngle2(double angle) {
-		angle2 = angle;
-	}
-	public void setSpeed1(double speed) {
-		speed1 = speed;
-	}
-	public void setSpeed2(double speed) {
-		speed2 = speed;
+	public void setSpeeds(double newSpeed1, double newSpeed2) {
+		speed1 = newSpeed1;
+		speed2 = newSpeed2;
 	}
 	public void setSpawnerPos(double xPos, double yPos) {
 		spawnerX = xPos;
 		spawnerY = yPos;
 	}
-	public void setNumLayers(int numLayers) {
+	public void setBulletCounts(int numLayers, int numWays) {
 		layers = numLayers;
-	}
-	public void setNumWays(int numWays) {
 		ways = numWays;
 	}
 	public void setMode(Mode mode) {
 		modeNum = mode;
+	}
+	public void setTypeAndColor(int bulletType, int bulletColor) {
+		type = bulletType;
+		color = bulletColor;
+	}
+	
+	public void setSpawnProtectionFrames(int protectionFramesCount) {
+		protectFrames = protectionFramesCount;
 	}
 	
 	
@@ -114,7 +133,7 @@ public class BulletSpawner {
 		if (layers == 1) speedIncrement = 0;
 		else speedIncrement = (speed2 - speed1) / layers;
 		for(int i = 0; i < layers; i++) {
-			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, 0, protectFrames);
+			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, type, color, protectFrames);
 			shotSpeed += speedIncrement;
 		}
 	}
@@ -134,7 +153,7 @@ public class BulletSpawner {
 	private void shootRingLayer(double angleAim, double ringSpeed) {
 		double angleIncrement = (2 * Math.PI) / ways;
 		for(int i = 0; i < ways; i++) {
-			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, 0, protectFrames);
+			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, type, color, protectFrames);
 			angleAim += angleIncrement;
 		}
 	}

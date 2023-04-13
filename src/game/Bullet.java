@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 public class Bullet {
@@ -9,14 +10,16 @@ public class Bullet {
 	double ypos;
 	double speed;
 	int type;
+	int color;
 	int grazed;
 	double angle;
-	int transform1type;
-	double transform1arg1;
-	double transform1arg2;
-	double size;
-	double hitboxSize;
-	int framesTillDespawnOffscreen = 0;
+	int transform1type; // These three variables are used for having bullets act in ways other than
+	double transform1arg1; // moving in a straight line at a constant speed. Currently, they have not
+	double transform1arg2; // been implemented yet.
+	double size; // Diameter, not radius
+	double hitboxSize; // Radius, not diameter
+	int framesTillDespawnOffscreen = 0; // Amount of protection this bullet gets from immediately despawning due to being offscreen after it spawns
+	byte renderRotationMode; // 0 = rendered in the direction it's traveling, 1 = no rotation, 2 = CW rotation, 3 = CCW rotation
 	AffineTransform renderTransform;
 	boolean disabled;
 
@@ -35,12 +38,13 @@ public class Bullet {
 		renderTransform = new AffineTransform();
 	}
 	
-	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int offscreenProtectionFramesNum) {
+	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int newColor, int offscreenProtectionFramesNum) {
 		xpos = newXpos;
 		ypos = newYpos;
 		speed = newSpeed;
 		angle = newAngle;
 		type = newType;	
+		color = newColor;
 		size = 16;
 		hitboxSize = 5;
 		grazed = 0;
@@ -61,6 +65,12 @@ public class Bullet {
 	}
 	public void disable() {
 		disabled = true;
+	}
+	public int getType() {
+		return type;
+	}
+	public int getColor() {
+		return color;
 	}
 	
 	public boolean update() {

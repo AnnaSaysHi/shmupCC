@@ -7,11 +7,18 @@ import java.util.Arrays;
 public class BulletManager {
 	Bullet [] bullets;
 	Spritesheet bulletSprites;
+	BufferedImage[][] bulletSpriteReference;
 
 	public BulletManager(int size, Spritesheet ss) {
 		bullets = new Bullet[size];
 		for(int i = 0; i < size; i++) bullets[i] = new Bullet();
 		bulletSprites = ss;
+		bulletSpriteReference = new BufferedImage[BulletColor.NUM_BULLET_COLORS][BulletType.NUM_BULLET_TYPES];
+		for(int i = 0; i < BulletColor.NUM_BULLET_COLORS; i++) {
+			for(int j = 0; j < BulletType.NUM_BULLET_TYPES; j++) {
+				bulletSpriteReference[i][j] = ss.getSprite(i, j, 16, 16);
+			}
+		}
 	}
 	
 	public void updateBullets() {
@@ -27,16 +34,16 @@ public class BulletManager {
 	public void drawBullets(Graphics2D g, BufferedImage b, Game m) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled() == false) {
-				bullets[i].draw(g, b, m);
+				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [bullets[i].getType()], m);
 			}
 		}
 		
 	}
 	
-	public void addBullet(double xPos, double yPos, double speed, double angle, int type, int offscreenProtectionFramesNum) {
+	public void addBullet(double xPos, double yPos, double speed, double angle, int type, int color, int offscreenProtectionFramesNum) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled()) {
-				bullets[i].respawnBullet(xPos, yPos, speed, angle, type, offscreenProtectionFramesNum);
+				bullets[i].respawnBullet(xPos, yPos, speed, angle, type, color, offscreenProtectionFramesNum);
 				break;
 			}
 		}
