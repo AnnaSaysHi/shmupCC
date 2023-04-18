@@ -12,6 +12,8 @@ public class KBinputHandler extends KeyAdapter {
 	boolean leftHeld;
 	boolean rightHeld;
 	boolean slowMovementHeld;
+	byte LRdir; // 0 = neutral; 1 = left; 2 = right
+	byte UDdir; // 0 = neutral; 1 = up; 2 = down
 	
 	
 	public KBinputHandler(Game g) {
@@ -22,6 +24,9 @@ public class KBinputHandler extends KeyAdapter {
 		leftHeld = false;
 		rightHeld = false;
 		slowMovementHeld = false;
+		LRdir = 0;
+		UDdir = 1;
+		
 	}
 
 	@Override
@@ -32,19 +37,19 @@ public class KBinputHandler extends KeyAdapter {
 			break;
 		case KeyEvent.VK_UP:
 			upHeld = true;
-			downHeld = false;
+			UDdir = 1;
 			break;
 		case KeyEvent.VK_DOWN:
 			downHeld = true;
-			upHeld = false;
+			UDdir = 2;
 			break;
 		case KeyEvent.VK_LEFT:
 			leftHeld = true;
-			rightHeld = false;
+			LRdir = 1;
 			break;
 		case KeyEvent.VK_RIGHT:
 			rightHeld = true;
-			leftHeld = false;
+			LRdir = 2;
 			break;	
 		case KeyEvent.VK_SHIFT:
 			slowMovementHeld = true;
@@ -62,15 +67,19 @@ public class KBinputHandler extends KeyAdapter {
 			break;
 		case KeyEvent.VK_UP:
 			upHeld = false;
+			UDdir = (byte) ((downHeld) ? 2 : 0);
 			break;
 		case KeyEvent.VK_DOWN:
 			downHeld = false;
+			UDdir = (byte) ((upHeld) ? 1 : 0);
 			break;
 		case KeyEvent.VK_LEFT:
 			leftHeld = false;
+			LRdir = (byte) ((rightHeld) ? 2 : 0);
 			break;
 		case KeyEvent.VK_RIGHT:
 			rightHeld = false;
+			LRdir = (byte) ((leftHeld) ? 1 : 0);
 			break;		
 		case KeyEvent.VK_SHIFT:
 			slowMovementHeld = false;	
@@ -90,5 +99,8 @@ public class KBinputHandler extends KeyAdapter {
 		};
 		return keyArray;
 	}
-
+	public byte[] getDirections() {
+		byte[] dirs = new byte[] {UDdir, LRdir};
+		return dirs;
+	}
 }

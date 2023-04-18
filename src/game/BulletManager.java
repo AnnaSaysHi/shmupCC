@@ -31,7 +31,7 @@ public class BulletManager {
 		}
 	}
 	
-	public void drawBullets(Graphics2D g, BufferedImage b, Game m) {
+	public void drawBullets(Graphics2D g, Game m) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled() == false) {
 				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [bullets[i].getType()], m);

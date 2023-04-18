@@ -34,13 +34,19 @@ public class Game extends Canvas implements Runnable{
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage sprites = null;
+	private BufferedImage player1 = null;
+	private BufferedImage player0 = null;
+	private BufferedImage hitbox = null;
+	private Player playerChar;
 	int bulletTimer;
-	private BufferedImage redBullet;
 	
 	public void init() {
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try {
 			sprites = loader.loadImage("/bulletsheet.png");
+			player0 = loader.loadImage("/ShipStationary.png");
+			player1 = loader.loadImage("/ShipLeanLeft.png");
+			hitbox = loader.loadImage("/HitboxIndicator.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
@@ -48,10 +54,16 @@ public class Game extends Canvas implements Runnable{
 		
 
 		Spritesheet ss = new Spritesheet(sprites);
-		redBullet = ss.getSprite(8, 1, 16, 16);
 		BulletMGR = new BulletManager(1000, ss);
 		KBH = new KBinputHandler(this);
 		this.addKeyListener(KBH);
+		playerChar = new Player();
+		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
+		playerChar.playerInitShotAndSpeed(4.5, 3);
+		
+		
+		
+		//debug bullet shooting test things
 		bulletTimer = 0;
 		testSpawner = new BulletSpawner(BulletMGR);
 		testSpawner.setSpawnerPos(480, 360);
@@ -145,7 +157,10 @@ public class Game extends Canvas implements Runnable{
 		g.setColor(Color.WHITE);
 		g.drawString(Double.toString(measuredFpS), 10, 10);
 		
-		BulletMGR.drawBullets(g, redBullet, this);
+		
+		playerChar.drawPlayer(g, this);
+		BulletMGR.drawBullets(g, this);
+		playerChar.drawHitbox(g, this);
 		
 		
 		g.dispose();
