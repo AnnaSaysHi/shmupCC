@@ -4,9 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 public class Player {
+	KBinputHandler kbh;
 	double x;
 	double y;
-	double moveSpeed;
+	int[] moveLimits;
+	double moveSpeedUF;
+	double moveSpeedF;
+	boolean isFocusing;
 	int hitboxAnimSize;
 	double hitboxSize;
 	int playerAnimWidth;
@@ -14,10 +18,14 @@ public class Player {
 	private BufferedImage animIdle;
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
+	byte[]dirs;
 	
-	public Player() {
+	public Player(KBinputHandler k, int lowXbound, int highXbound, int lowYbound, int highYbound) {
 		x = 480;
 		y = 640;
+		isFocusing = false;
+		kbh = k;
+		moveLimits = new int[] { lowXbound, highXbound, lowYbound, highYbound};
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height, BufferedImage hitbox, int hbSize) {
 		animIdle = neutral;
@@ -27,12 +35,39 @@ public class Player {
 		playerAnimHeight = height;
 		hitboxAnimSize = hbSize;
 	}
-	public void playerInitShotAndSpeed(double speed, double size) {
-		moveSpeed = speed;
+	public void playerInitShotAndSpeed(double speedUF, double speedF, double size) {
+		moveSpeedUF = speedUF;
+		moveSpeedF = speedF;
 		hitboxSize = size;
 	}
 
-	public void movePlayer() {
+	public void tickPlayer() {
+		isFocusing = kbh.getHeldKeys()[4];
+		double speed = isFocusing ? moveSpeedF : moveSpeedUF;
+		dirs = kbh.getDirections();
+		if(dirs[0] != 0 && dirs[1] != 0) speed = speed / Math.sqrt(2);
+		switch(dirs[0]) {
+		case 1:
+			y -= speed;
+			break;
+		case 2:
+			y += speed;
+			break;
+		default:
+			break;
+		}
+		switch(dirs[1]) {
+		case 1:
+			x -= speed;
+			break;
+		case 2:
+			x += speed;
+			break;
+		default:
+			break;
+		}
+		
+		
 		
 	}
 	public void drawPlayer(Graphics2D g, Game m) {

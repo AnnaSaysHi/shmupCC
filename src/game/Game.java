@@ -57,9 +57,9 @@ public class Game extends Canvas implements Runnable{
 		BulletMGR = new BulletManager(1000, ss);
 		KBH = new KBinputHandler(this);
 		this.addKeyListener(KBH);
-		playerChar = new Player();
+		playerChar = new Player(KBH, 32, 928, 32, 700);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
-		playerChar.playerInitShotAndSpeed(4.5, 3);
+		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
 		
 		
@@ -141,6 +141,8 @@ public class Game extends Canvas implements Runnable{
 			testSpawner.activate();
 			bulletTimer = 0;
 		}
+		
+		playerChar.tickPlayer();
 		
 		
 		//System.gc();

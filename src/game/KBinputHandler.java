@@ -25,7 +25,7 @@ public class KBinputHandler extends KeyAdapter {
 		rightHeld = false;
 		slowMovementHeld = false;
 		LRdir = 0;
-		UDdir = 1;
+		UDdir = 0;
 		
 	}
 
@@ -99,6 +99,11 @@ public class KBinputHandler extends KeyAdapter {
 		};
 		return keyArray;
 	}
+	
+	/**
+	 * 
+	 * @returns index 0: U/D, index 1: L/R
+	 */
 	public byte[] getDirections() {
 		byte[] dirs = new byte[] {UDdir, LRdir};
 		return dirs;
