@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.*;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -31,6 +32,8 @@ public class Game extends Canvas implements Runnable{
 	private boolean running = false;
 	private STATE state = STATE.PLAY;
 	private Thread thread;
+	private Random RNG;
+	private long rngInitSeed;
 	
 	
 	private double[] playercoords;
@@ -55,7 +58,8 @@ public class Game extends Canvas implements Runnable{
 		}
 		
 		
-
+		RNG = new Random();
+		rngInitSeed = RNG.nextInt();
 		Spritesheet ss = new Spritesheet(sprites);
 		BulletMGR = new BulletManager(1000, ss);
 		KBH = new KBinputHandler(this);
@@ -68,15 +72,15 @@ public class Game extends Canvas implements Runnable{
 		
 		//debug bullet shooting test things
 		bulletTimer = 0;
-		testSpawner = new BulletSpawner(BulletMGR, playerChar);
+		testSpawner = new BulletSpawner(BulletMGR, playerChar, this);
 		testSpawner.setSpawnerPos(480, 360);
-		testSpawner.setMode(Mode.Ring_Aimed_Around);
-		testSpawner.setBulletCounts(20, 2);
-		testSpawner.setSpeeds(5, 2.5);
+		testSpawner.setMode(Mode.Meek);
+		testSpawner.setBulletCounts(2, 2);
+		testSpawner.setSpeeds(7, 1);
 		testSpawner.setAngles(anglenum, Math.PI/64);
-		testSpawner.setAngles(0, 0);
+		testSpawner.setAngles(0, 2 * Math.PI);
 		testSpawner.setTypeAndColor(BulletType.ARROWHEAD, BulletColor.LIGHT_BLUE);
-		testSpawner.setActivationFrequency(10);
+		testSpawner.setActivationFrequency(1);
 	}
 	
 	private synchronized void start() {
@@ -169,9 +173,12 @@ public class Game extends Canvas implements Runnable{
 		bufferStrat.show();
 	}
 	
-	//Utility function
+	//Utility functions
 	public double getAngleToPlayer(double x, double y) {
 		return Math.atan2(playercoords[1] - y, playercoords[0] - x);
+	}
+	public Random FetchRNG() {
+		return RNG;
 	}
 	
 

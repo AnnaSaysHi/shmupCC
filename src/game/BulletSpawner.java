@@ -2,6 +2,7 @@ package game;
 
 public class BulletSpawner {
 	BulletManager parentManager;
+	Game game;
 	Mode modeNum;
 	int layers;
 	int ways;
@@ -25,14 +26,15 @@ public class BulletSpawner {
 		Ring_Aimed_Around,
 		Ring_Nonaimed,
 		Ring_Mode5,
-		Random_Angle,
-		Random_Speed,
+		Fan_Random_Angle,
+		Ring_Random_Speed,
 		Meek
 	}
 	//constructors
-	public BulletSpawner(BulletManager parent, Player player) {
+	public BulletSpawner(BulletManager parent, Player player, Game game) {
 		parentManager = parent;
 		targetPlayer = player;
+		this.game = game;
 		modeNum = Mode.Fan;
 		spawnerX = 0;
 		spawnerY = 0;
@@ -132,7 +134,15 @@ public class BulletSpawner {
 		case Ring_Nonaimed:
 			shootRing(angleAim);
 			break;
-		
+		case Fan_Random_Angle:
+			shootRandomFan();
+			break;
+		case Ring_Random_Speed:
+			shootRandomRing(angleAim);
+			break;
+		case Meek:
+			shootPR_Bullet(angle1, angle2, speed1, speed2, layers * ways);
+			break;
 		default:
 			break;
 		}
@@ -151,7 +161,7 @@ public class BulletSpawner {
 		double shotSpeed = speed1;
 		double speedIncrement;
 		if (layers == 1) speedIncrement = 0;
-		else speedIncrement = (speed2 - speed1) / layers;
+		else speedIncrement = (speed2 - speed1) / (layers-1);
 		for(int i = 0; i < layers; i++) {
 			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, type, color, protectFrames);
 			shotSpeed += speedIncrement;
@@ -162,7 +172,7 @@ public class BulletSpawner {
 		double ringSpeed = speed1;
 		double speedIncrement;
 		if (layers == 1) speedIncrement = 0;
-		else speedIncrement = (speed2 - speed1) / layers;
+		else speedIncrement = (speed2 - speed1) / (layers-1);
 		for(int i = 0; i < layers; i++) {
 			shootRingLayer(angleAim, ringSpeed);
 			ringSpeed += speedIncrement;
@@ -175,6 +185,34 @@ public class BulletSpawner {
 		for(int i = 0; i < ways; i++) {
 			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, type, color, protectFrames);
 			angleAim += angleIncrement;
+		}
+	}
+	private void shootRandomFan() {
+		double shotSpeed = speed1;
+		double speedIncrement;
+		if (layers == 1) speedIncrement = 0;
+		else speedIncrement = (speed2 - speed1) / (layers-1);
+		for(int i = 0; i < layers; i++) {
+			shootPR_Bullet(angle1, angle2, shotSpeed, shotSpeed, ways);
+			shotSpeed += speedIncrement;
+		}
+	}
+	private void shootRandomRing(double angleAim) {
+		double angleIncrement = (2 * Math.PI) / ways;
+		for(int i = 0; i < ways; i++) {
+			shootPR_Bullet(angleAim, angleAim, speed1, speed2, layers);
+			angleAim += angleIncrement;
+		}
+	}
+	
+	
+	private void shootPR_Bullet(double angleMin, double angleMax, double speedMin, double speedMax, int count) {
+		double chosenSpeed;
+		double chosenAngle;
+		for(int i = 0; i < count; i++) {
+			chosenSpeed = (game.FetchRNG().nextDouble() * (speedMax - speedMin)) + speedMin;
+			chosenAngle = (game.FetchRNG().nextDouble() * (angleMax - angleMin)) + angleMin;
+			parentManager.addBullet(spawnerX, spawnerY, chosenSpeed, chosenAngle, type, color, protectFrames);
 		}
 	}
 
