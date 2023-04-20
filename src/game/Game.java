@@ -70,13 +70,13 @@ public class Game extends Canvas implements Runnable{
 		bulletTimer = 0;
 		testSpawner = new BulletSpawner(BulletMGR, playerChar);
 		testSpawner.setSpawnerPos(480, 360);
-		testSpawner.setMode(Mode.Ring_Nonaimed);
-		testSpawner.setBulletCounts(16, 8);
-		testSpawner.setSpeeds(0.5, 1.5);
+		testSpawner.setMode(Mode.Ring_Aimed_Around);
+		testSpawner.setBulletCounts(20, 2);
+		testSpawner.setSpeeds(5, 2.5);
 		testSpawner.setAngles(anglenum, Math.PI/64);
-		testSpawner.setTypeAndColor(BulletType.BULLET, BulletColor.PURPLE);
-		//testSpawner = new BulletSpawner(BulletMGR, Mode.Ring_Nonaimed, 480, 360, 16, 8, 1, 3, anglenum, Math.PI/64, 0, 0);
-		//testSpawner = new BulletSpawner(BulletMGR, Mode.Fan, 480, 360, 4, 8, 0.5, 1.5, anglenum, Math.PI/16, 0, 0);
+		testSpawner.setAngles(0, 0);
+		testSpawner.setTypeAndColor(BulletType.ARROWHEAD, BulletColor.LIGHT_BLUE);
+		testSpawner.setActivationFrequency(10);
 	}
 	
 	private synchronized void start() {
@@ -138,12 +138,7 @@ public class Game extends Canvas implements Runnable{
 		anglenum += angleIncrement;
 		//testSpawner.setAngles(anglenum, anglenum);
 		BulletMGR.updateBullets();
-		
-		bulletTimer++;
-		if(bulletTimer >= 60) {
-			testSpawner.activate();
-			bulletTimer = 0;
-		}
+		testSpawner.tickSpawner();
 		
 		playerChar.tickPlayer();
 		playercoords = playerChar.getPosAndHitbox();

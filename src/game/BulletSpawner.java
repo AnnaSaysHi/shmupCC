@@ -76,7 +76,7 @@ public class BulletSpawner {
 		spawnerX = xPos;
 		spawnerY = yPos;
 	}
-	public void setBulletCounts(int numLayers, int numWays) {
+	public void setBulletCounts(int numWays, int numLayers) {
 		layers = numLayers;
 		ways = numWays;
 	}
@@ -116,9 +116,17 @@ public class BulletSpawner {
 	public void activate() {
 		double angleAim = angle1;
 		switch(modeNum) {
+		case Fan_Aimed:
+			angleAim += this.getAngleToPlayer();
 		case Fan:
 			shootFan(angleAim);
 			break;
+		case Ring_Aimed_Direct:
+			angleAim += this.getAngleToPlayer();
+			shootRing(angleAim);
+			break;
+		case Ring_Aimed_Around:
+			angleAim += this.getAngleToPlayer();
 		case Ring_Mode5:
 			angleAim += Math.PI / ways;
 		case Ring_Nonaimed:
