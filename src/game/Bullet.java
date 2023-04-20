@@ -44,8 +44,8 @@ public class Bullet {
 		angle = newAngle;
 		type = newType;	
 		color = newColor;
-		size = 16;
-		hitboxSize = 5;
+		size = BulletType.BULLET_RENDER_SIZE[type];
+		hitboxSize = BulletType.BULLET_HITBOX_SIZE[type];
 		grazed = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;

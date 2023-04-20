@@ -21,4 +21,32 @@ public abstract class BulletType {
 	public static final int BULLET = 8;
 	public static final int BACTERIA = 9;
 	public static final int STAR_CW = 10;
+	
+	public static final double[] BULLET_RENDER_SIZE = new double[] {
+			16,
+			16,
+			16,
+			16,
+			16,
+			16,
+			16,
+			16,
+			16,
+			16,
+			16
+	};
+	public static final double[] BULLET_HITBOX_SIZE = new double[] {
+			8,
+			2,
+			5,
+			5,
+			4,
+			3,
+			2,
+			3,
+			5,
+			4,
+			3
+	};
+	
 }
