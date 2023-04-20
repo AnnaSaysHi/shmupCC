@@ -13,7 +13,11 @@ public class BulletSpawner {
 	double angle2;
 	int type;
 	int color;
+	int countdown;
+	int activationFreq;
 	int protectFrames = 10;
+	Player targetPlayer;
+	double[] playercoords;
 	public enum Mode{
 		Fan_Aimed,
 		Fan,
@@ -41,8 +45,9 @@ public class BulletSpawner {
 		color = bulletColor;
 	}
 	
-	public BulletSpawner(BulletManager parent) {
+	public BulletSpawner(BulletManager parent, Player player) {
 		parentManager = parent;
+		targetPlayer = player;
 		modeNum = Mode.Fan;
 		spawnerX = 0;
 		spawnerY = 0;
@@ -52,6 +57,8 @@ public class BulletSpawner {
 		speed2 = 1;
 		angle1 = 0;
 		angle2 = 0;
+		countdown = -1;
+		activationFreq = -1;
 	}
 	
 	//Accessor methods
@@ -95,10 +102,30 @@ public class BulletSpawner {
 		type = bulletType;
 		color = bulletColor;
 	}
+	public void setActivationFrequency(int frequency) {
+		activationFreq = frequency;
+		countdown = frequency;
+	}
 	
 	public void setSpawnProtectionFrames(int protectionFramesCount) {
 		protectFrames = protectionFramesCount;
 	}
+	
+	
+	public void tickSpawner() {
+		playercoords = targetPlayer.getPosAndHitbox();
+		countdown--;
+		if(countdown == 0) {
+			this.activate();
+			countdown = activationFreq;
+		}
+	}
+	
+	private double getAngleToPlayer() {
+		return Math.atan2(playercoords[1] - spawnerY, playercoords[0] - spawnerX);
+	}
+	
+	
 	
 	
 	public void activate() {

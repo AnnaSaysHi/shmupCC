@@ -68,7 +68,7 @@ public class Game extends Canvas implements Runnable{
 		
 		//debug bullet shooting test things
 		bulletTimer = 0;
-		testSpawner = new BulletSpawner(BulletMGR);
+		testSpawner = new BulletSpawner(BulletMGR, playerChar);
 		testSpawner.setSpawnerPos(480, 360);
 		testSpawner.setMode(Mode.Ring_Nonaimed);
 		testSpawner.setBulletCounts(16, 8);
@@ -173,6 +173,12 @@ public class Game extends Canvas implements Runnable{
 		g.dispose();
 		bufferStrat.show();
 	}
+	
+	//Utility function
+	public double getAngleToPlayer(double x, double y) {
+		return Math.atan2(playercoords[1] - y, playercoords[0] - x);
+	}
+	
 
 	public static void main(String[] args) {
 		Game game = new Game();
