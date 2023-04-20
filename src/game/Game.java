@@ -32,6 +32,9 @@ public class Game extends Canvas implements Runnable{
 	private STATE state = STATE.PLAY;
 	private Thread thread;
 	
+	
+	private double[] playercoords;
+	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage sprites = null;
 	private BufferedImage player1 = null;
@@ -143,6 +146,8 @@ public class Game extends Canvas implements Runnable{
 		}
 		
 		playerChar.tickPlayer();
+		playercoords = playerChar.getPosAndHitbox();
+		BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 		
 		
 		//System.gc();

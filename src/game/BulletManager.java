@@ -40,6 +40,14 @@ public class BulletManager {
 		
 	}
 	
+	public void checkCollision(double x, double y, double rad) {
+		for(int i = 0; i < bullets.length; i++) {
+			if (bullets[i].isDisabled() == false) {
+				bullets[i].checkCollision(x, y, rad);
+			}
+		}
+	}
+	
 	public void addBullet(double xPos, double yPos, double speed, double angle, int type, int color, int offscreenProtectionFramesNum) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled()) {

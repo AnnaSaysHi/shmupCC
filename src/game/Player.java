@@ -66,10 +66,18 @@ public class Player {
 		default:
 			break;
 		}
+		x = Math.max(x, moveLimits[0]);
+		x = Math.min(x, moveLimits[1]);
+		y = Math.max(y, moveLimits[2]);
+		y = Math.min(y, moveLimits[3]);
 		
 		
 		
 	}
+	public double[] getPosAndHitbox() {
+		return new double[] {x, y, hitboxSize};
+	}
+	
 	public void drawPlayer(Graphics2D g, Game m) {
 		int visXpos = (int)(x) - (playerAnimWidth / 2);
 		int visYpos = (int)(y) - (playerAnimHeight / 2);

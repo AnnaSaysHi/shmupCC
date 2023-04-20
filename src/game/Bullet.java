@@ -55,7 +55,7 @@ public class Bullet {
 	
 	public void draw(Graphics2D g, BufferedImage b, Game m) {
 		renderTransform.setToIdentity();
-		renderTransform.translate(xpos, ypos);
+		renderTransform.translate(xpos - size/2, ypos - size/2);
 		renderTransform.rotate(angle + Math.PI/2, size/2, size/2);
 		g.drawImage(b, renderTransform, m);
 	}
@@ -78,6 +78,14 @@ public class Bullet {
 		ypos += Math.sin(angle) * speed;
 		framesTillDespawnOffscreen--;
 		return ((framesTillDespawnOffscreen <= 0) && isOffscreen());
+	}
+	
+	public boolean checkCollision(double xCompare, double yCompare, double radCompare) {
+		
+		if(((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)))) {
+			this.color = BulletColor.LIGHT_GREY;
+		}
+		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)));
 	}
 	
 	private boolean isOffscreen() {
