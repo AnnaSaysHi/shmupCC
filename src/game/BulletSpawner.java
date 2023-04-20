@@ -30,21 +30,6 @@ public class BulletSpawner {
 		Meek
 	}
 	//constructors
-	public BulletSpawner(BulletManager parent, Mode mode, double initXpos, double initYpos, int numLayers, int numWays, double initSpeedBase, double initSpeedMod, double angleBase, double angleMod, int bulletType, int bulletColor) {
-		parentManager = parent;
-		modeNum = mode;
-		spawnerX = initXpos;
-		spawnerY = initYpos;
-		layers = numLayers;
-		ways = numWays;
-		speed1 = initSpeedBase;
-		speed2 = initSpeedMod;
-		angle1 = angleBase;
-		angle2 = angleMod;
-		type = bulletType;
-		color = bulletColor;
-	}
-	
 	public BulletSpawner(BulletManager parent, Player player) {
 		parentManager = parent;
 		targetPlayer = player;
