@@ -10,6 +10,7 @@ public class Player {
 	int[] moveLimits;
 	double moveSpeedUF;
 	double moveSpeedF;
+	double speed; //don't actually set this
 	boolean isFocusing;
 	int hitboxAnimSize;
 	double hitboxSize;
@@ -43,7 +44,7 @@ public class Player {
 
 	public void tickPlayer() {
 		isFocusing = kbh.getHeldKeys()[4];
-		double speed = isFocusing ? moveSpeedF : moveSpeedUF;
+		speed = isFocusing ? moveSpeedF : moveSpeedUF;
 		dirs = kbh.getDirections();
 		if(dirs[0] != 0 && dirs[1] != 0) speed = speed / Math.sqrt(2);
 		switch(dirs[0]) {
