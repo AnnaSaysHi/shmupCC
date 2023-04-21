@@ -83,7 +83,7 @@ public class Game extends Canvas implements Runnable{
 		testSpawner.setSpeeds(7, 1);
 		testSpawner.setAngles(anglenum, Math.PI/64);
 		testSpawner.setAngles(0, 2 * Math.PI);
-		testSpawner.setTypeAndColor(BulletType.ARROWHEAD, BulletColor.LIGHT_BLUE);
+		testSpawner.setTypeAndColor(BulletType.BALL, BulletColor.BLUE);
 		testSpawner.setActivationFrequency(1);
 	}
 	
