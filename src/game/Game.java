@@ -11,6 +11,10 @@ import game.BulletSpawner.Mode;
 
 public class Game extends Canvas implements Runnable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8763681502519222609L;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
 	public static int SCALE = 3;
