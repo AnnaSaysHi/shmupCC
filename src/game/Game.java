@@ -1,6 +1,5 @@
 package game;
 import java.awt.*;
-import java.awt.event.*;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.Random;
@@ -23,7 +22,7 @@ public class Game extends Canvas implements Runnable{
 	private int ticksInLastPeriod = 0;
 	private double measuredFpS;
 	private long lastTickPeriodMeasurement;
-	private enum STATE{
+	public static enum STATE{
 		MENU,
 		PLAY
 	}
@@ -34,9 +33,10 @@ public class Game extends Canvas implements Runnable{
 	private double anglenum = Math.PI/2;
 	private double angleIncrement = 0;
 	private boolean running = false;
-	private STATE state = STATE.PLAY;
+	public STATE state = STATE.MENU;
 	private Thread thread;
 	private Random RNG;
+	private MenuTitle menu;
 	private long rngInitSeed;
 	
 	
@@ -68,6 +68,7 @@ public class Game extends Canvas implements Runnable{
 		BulletMGR = new BulletManager(1000, ss);
 		KBH = new KBinputHandler(this);
 		this.addKeyListener(KBH);
+		menu = new MenuTitle(this, KBH);
 		playerChar = new Player(KBH, 32, 928, 32, 700);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
@@ -78,13 +79,13 @@ public class Game extends Canvas implements Runnable{
 		bulletTimer = 0;
 		testSpawner = new BulletSpawner(BulletMGR, playerChar, this);
 		testSpawner.setSpawnerPos(480, 360);
-		testSpawner.setMode(Mode.Meek);
-		testSpawner.setBulletCounts(2, 2);
-		testSpawner.setSpeeds(7, 1);
+		testSpawner.setMode(Mode.Ring_Nonaimed);
+		testSpawner.setBulletCounts(8, 16);
+		testSpawner.setSpeeds(5, 1);
 		testSpawner.setAngles(anglenum, Math.PI/64);
-		testSpawner.setAngles(0, 2 * Math.PI);
-		testSpawner.setTypeAndColor(BulletType.BALL, BulletColor.BLUE);
-		testSpawner.setActivationFrequency(1);
+		//testSpawner.setAngles(0, 2 * Math.PI);
+		testSpawner.setTypeAndColor(BulletType.ARROWHEAD, BulletColor.DULL_RED);
+		testSpawner.setActivationFrequency(60);
 	}
 	
 	private synchronized void start() {
@@ -142,16 +143,20 @@ public class Game extends Canvas implements Runnable{
 			ticksInLastPeriod = 0;
 			lastTickPeriodMeasurement = System.nanoTime();
 		}
-		angleIncrement += (Math.PI)/1024;
-		anglenum += angleIncrement;
-		//testSpawner.setAngles(anglenum, anglenum);
-		BulletMGR.updateBullets();
-		testSpawner.tickSpawner();
-		
-		playerChar.tickPlayer();
-		playercoords = playerChar.getPosAndHitbox();
-		BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
-		
+		if(state == STATE.PLAY) {
+			angleIncrement += (Math.PI)/1024;
+			anglenum += angleIncrement;
+			//testSpawner.setAngles(anglenum, anglenum);
+			BulletMGR.updateBullets();
+			testSpawner.tickSpawner();
+
+			playerChar.tickPlayer();
+			playercoords = playerChar.getPosAndHitbox();
+			BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
+		}
+		if (state == STATE.MENU) {
+			menu.tick();
+		}
 		
 		//System.gc();
 	}
@@ -166,12 +171,15 @@ public class Game extends Canvas implements Runnable{
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		g.setColor(Color.WHITE);
 		g.drawString(Double.toString(measuredFpS), 10, 10);
-		
-		
-		playerChar.drawPlayer(g, this);
-		BulletMGR.drawBullets(g, this);
-		playerChar.drawHitbox(g, this);
-		
+
+		if(state == STATE.PLAY) {
+			playerChar.drawPlayer(g, this);
+			BulletMGR.drawBullets(g, this);
+			playerChar.drawHitbox(g, this);
+		}
+		if(state == STATE.MENU) {
+			menu.render(g);
+		}
 		
 		g.dispose();
 		bufferStrat.show();

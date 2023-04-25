@@ -43,7 +43,7 @@ public class Player {
 	}
 
 	public void tickPlayer() {
-		isFocusing = kbh.getHeldKeys()[4];
+		isFocusing = kbh.getHeldKeys()[6];
 		speed = isFocusing ? moveSpeedF : moveSpeedUF;
 		dirs = kbh.getDirections();
 		if(dirs[0] != 0 && dirs[1] != 0) speed = speed / Math.sqrt(2);
