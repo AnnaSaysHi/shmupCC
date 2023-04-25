@@ -5,6 +5,7 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's extrem
 
 # Features (as of current version minus1.00)
 -move your placeholder asset ship in focused and unfocused speeds!
+
 -explore exciting menu options, such as "exit game" and "this does absolutely nothing"
 
 # Can I use this engine to make my own STGs?
