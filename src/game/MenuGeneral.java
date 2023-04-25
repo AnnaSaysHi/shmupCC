@@ -3,7 +3,7 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class MenuTitle {
+public class MenuGeneral {
 
 	KBinputHandler kbh;
 	int selectedOption = 0;
@@ -13,13 +13,31 @@ public class MenuTitle {
 	private byte menuDirection; // 0 = vertical, 1 = horizontal
 	private int menuEntries;
 	private Game parent;
+	private MenuGeneral parentMenu;
 	
-	public MenuTitle(Game g, KBinputHandler kbh) {
+	public MenuGeneral(Game g, KBinputHandler kbh) {
 		this.kbh = kbh;
 		parent = g;
 		menuEntries = 3;
 		menuDirection = 0;
 	}
+	
+	public void setParentMenu(MenuGeneral m) {
+		parentMenu = m;
+	}
+	
+	public void setMenuLengthAndDirection(int len, byte direction) {
+		menuEntries = len;
+		menuDirection = direction;
+	}
+	public boolean getActive() {
+		return isActive;
+	}
+	public void activate() {
+		isActive = true;
+		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
+	}
+	
 	
 	public void tick() {
 		activeKeys = kbh.getHeldKeys();
@@ -49,6 +67,13 @@ public class MenuTitle {
 		}
 		if(UDLRCCframesHeld[4] == 1) {
 			doSelectedOption();
+		}
+		if(UDLRCCframesHeld[5] == 1) {
+			if(parentMenu == null) selectedOption = menuEntries - 1;
+			else {
+				isActive = false;
+				parentMenu.activate();
+			}
 		}
 	}
 	

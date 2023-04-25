@@ -36,7 +36,9 @@ public class Game extends Canvas implements Runnable{
 	public STATE state = STATE.MENU;
 	private Thread thread;
 	private Random RNG;
-	private MenuTitle menu;
+	private MenuGeneral menu;
+	private MenuGeneral[] menuList = new MenuGeneral[1];
+	private int activeMenu;
 	private long rngInitSeed;
 	
 	
@@ -68,7 +70,12 @@ public class Game extends Canvas implements Runnable{
 		BulletMGR = new BulletManager(1000, ss);
 		KBH = new KBinputHandler(this);
 		this.addKeyListener(KBH);
-		menu = new MenuTitle(this, KBH);
+		menu = new MenuGeneral(this, KBH);
+		menuList[0] = menu;
+		menuList[0].activate();
+		
+		
+		
 		playerChar = new Player(KBH, 32, 928, 32, 700);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
@@ -155,7 +162,11 @@ public class Game extends Canvas implements Runnable{
 			BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 		}
 		if (state == STATE.MENU) {
-			menu.tick();
+			for(int i = 0; i < menuList.length; i++) {
+				if(menuList[i].getActive()) {
+					menuList[i].tick();
+				}
+			}
 		}
 		
 		//System.gc();
@@ -178,7 +189,11 @@ public class Game extends Canvas implements Runnable{
 			playerChar.drawHitbox(g, this);
 		}
 		if(state == STATE.MENU) {
-			menu.render(g);
+			for(int i = 0; i < menuList.length; i++) {
+				if(menuList[i].getActive()) {
+					menuList[i].render(g);
+				}
+			}
 		}
 		
 		g.dispose();
