@@ -15,6 +15,7 @@ public class KBinputHandler extends KeyAdapter {
 	boolean shotHeld;
 	boolean confirmHeld;
 	boolean cancelHeld;
+	boolean pauseHeld;
 	byte LRdir; // 0 = neutral; 1 = left; 2 = right
 	byte UDdir; // 0 = neutral; 1 = up; 2 = down
 	
@@ -30,6 +31,7 @@ public class KBinputHandler extends KeyAdapter {
 		shotHeld = false;
 		confirmHeld = false;
 		cancelHeld = false;
+		pauseHeld = false;
 		LRdir = 0;
 		UDdir = 0;
 		
@@ -66,6 +68,9 @@ public class KBinputHandler extends KeyAdapter {
 			break;
 		case KeyEvent.VK_X:
 			cancelHeld = true;
+			break;
+		case KeyEvent.VK_ESCAPE:
+			pauseHeld = true;
 			break;
 		default:
 			break;			
@@ -105,6 +110,8 @@ public class KBinputHandler extends KeyAdapter {
 		case KeyEvent.VK_X:
 			cancelHeld = false;
 			break;
+		case KeyEvent.VK_ESCAPE:
+			pauseHeld = false;
 		default:
 			break;			
 		}
@@ -120,6 +127,7 @@ public class KBinputHandler extends KeyAdapter {
 				cancelHeld,
 				slowMovementHeld,
 				shotHeld,
+				pauseHeld,
 				bKeyHeld
 		};
 		return keyArray;

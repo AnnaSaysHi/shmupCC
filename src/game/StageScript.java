@@ -2,11 +2,21 @@ package game;
 
 public class StageScript {
 
-	BulletManager mgr;
-	Game parentGame;
+	protected BulletManager mgr;
+	protected Game parentGame;
+	protected Player playerChar;
 	
-	public StageScript(BulletManager mgr, Game g) {
+	public StageScript(BulletManager mgr, Game g, Player playerChar) {
 		this.mgr = mgr;
 		parentGame = g;
+		this.playerChar = playerChar;
+	}
+	
+	public void init() {
+		
+	}
+	
+	public void tick() {
+		
 	}
 }

@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.Random;
-
+import game.stages.*;
 import javax.swing.*;
 
 import game.BulletSpawner.Mode;
@@ -42,6 +42,7 @@ public class Game extends Canvas implements Runnable{
 	private int activeMenu;
 	private long rngInitSeed;
 	
+	private StageScript[] stageList = new StageScript[2];	
 	private int stage = -1;
 	
 	private double[] playercoords;
@@ -80,27 +81,15 @@ public class Game extends Canvas implements Runnable{
 		sceneMenu.setMenuLengthAndDirection(2, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
-		menuList[0].activate();
-		
-		
+		menuList[0].activate();		
 		
 		playerChar = new Player(kbh, 32, 928, 32, 700);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
-		
-		
-		//debug bullet shooting test things
-		bulletTimer = 0;
-		testSpawner = new BulletSpawner(BulletMGR, playerChar, this);
-		testSpawner.setSpawnerPos(480, 360);
-		testSpawner.setMode(Mode.Ring_Nonaimed);
-		testSpawner.setBulletCounts(8, 16);
-		testSpawner.setSpeeds(5, 1);
-		testSpawner.setAngles(anglenum, Math.PI/64);
-		//testSpawner.setAngles(0, 2 * Math.PI);
-		testSpawner.setTypeAndColor(BulletType.ARROWHEAD, BulletColor.DULL_RED);
-		testSpawner.setActivationFrequency(60);
+		stageList[0] = new Script1_1(BulletMGR, this, playerChar);
+		stageList[1] = new Script1_2(BulletMGR, this, playerChar);
+
 	}
 	
 	private synchronized void start() {
@@ -158,19 +147,21 @@ public class Game extends Canvas implements Runnable{
 			ticksInLastPeriod = 0;
 			lastTickPeriodMeasurement = System.nanoTime();
 		}
-		if(kbh.getHeldKeys()[8]) {
+		if(kbh.getHeldKeys()[9]) {
 			System.out.println("b");
 		}
 		if(state == STATE.PLAY) {
-			angleIncrement += (Math.PI)/1024;
-			anglenum += angleIncrement;
-			//testSpawner.setAngles(anglenum, anglenum);
-			BulletMGR.updateBullets();
-			testSpawner.tickSpawner();
-
-			playerChar.tickPlayer();
-			playercoords = playerChar.getPosAndHitbox();
-			BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
+			if(kbh.getHeldKeys()[8]) {
+				returnToMenu();
+				BulletMGR.deactivateAll();
+				//menuList[1].activate();
+			} else {
+				stageList[stage].tick();
+				BulletMGR.updateBullets();
+				playerChar.tickPlayer();
+				playercoords = playerChar.getPosAndHitbox();
+				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
+			}
 		}
 		if (state == STATE.MENU) {
 			for(int i = 0; i < menuList.length; i++) {
@@ -223,6 +214,15 @@ public class Game extends Canvas implements Runnable{
 	}
 	public void setStage (int i) {
 		stage = i;
+		stageList[stage].init();
+	}
+	public void returnToMenu() {
+		state = STATE.MENU;
+		stage = -1;
+	}
+	public void nextStage() {
+		stage++;
+		stageList[stage].init();
 	}
 	
 	public static void main(String[] args) {

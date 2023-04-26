@@ -47,6 +47,12 @@ public class BulletManager {
 		}
 	}
 	
+	public void deactivateAll() {
+		for(int i = 0; i < bullets.length; i++) {
+			bullets[i].disable();
+		}
+	}
+	
 	public void addBullet(double xPos, double yPos, double speed, double angle, int type, int color, int offscreenProtectionFramesNum) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled()) {
