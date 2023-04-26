@@ -154,7 +154,6 @@ public class Game extends Canvas implements Runnable{
 			if(kbh.getHeldKeys()[8]) {
 				returnToMenu();
 				BulletMGR.deactivateAll();
-				//menuList[1].activate();
 			} else {
 				stageList[stage].tick();
 				BulletMGR.updateBullets();
