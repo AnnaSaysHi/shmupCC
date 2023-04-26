@@ -29,7 +29,7 @@ public class Game extends Canvas implements Runnable{
 	
 	private BulletManager BulletMGR;
 	private BulletSpawner testSpawner;
-	private KBinputHandler KBH;
+	private KBinputHandler kbh;
 	private double anglenum = Math.PI/2;
 	private double angleIncrement = 0;
 	private boolean running = false;
@@ -37,10 +37,12 @@ public class Game extends Canvas implements Runnable{
 	private Thread thread;
 	private Random RNG;
 	private MenuGeneral menu;
-	private MenuGeneral[] menuList = new MenuGeneral[1];
+	private MenuGeneral[] menuList = new MenuGeneral[2];
+	private MenuSceneSelect sceneMenu;
 	private int activeMenu;
 	private long rngInitSeed;
 	
+	private int stage = -1;
 	
 	private double[] playercoords;
 	
@@ -68,15 +70,21 @@ public class Game extends Canvas implements Runnable{
 		rngInitSeed = RNG.nextInt();
 		Spritesheet ss = new Spritesheet(sprites);
 		BulletMGR = new BulletManager(1000, ss);
-		KBH = new KBinputHandler(this);
-		this.addKeyListener(KBH);
-		menu = new MenuGeneral(this, KBH);
+		kbh = new KBinputHandler(this);
+		this.addKeyListener(kbh);
+		
+		
+		menu = new MenuGeneral(this, kbh);
+		sceneMenu = new MenuSceneSelect(this, kbh);
+		sceneMenu.setParentMenu(menu);
+		sceneMenu.setMenuLengthAndDirection(2, (byte) 0);
 		menuList[0] = menu;
+		menuList[1] = sceneMenu;
 		menuList[0].activate();
 		
 		
 		
-		playerChar = new Player(KBH, 32, 928, 32, 700);
+		playerChar = new Player(kbh, 32, 928, 32, 700);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
@@ -150,6 +158,9 @@ public class Game extends Canvas implements Runnable{
 			ticksInLastPeriod = 0;
 			lastTickPeriodMeasurement = System.nanoTime();
 		}
+		if(kbh.getHeldKeys()[8]) {
+			System.out.println("b");
+		}
 		if(state == STATE.PLAY) {
 			angleIncrement += (Math.PI)/1024;
 			anglenum += angleIncrement;
@@ -207,8 +218,13 @@ public class Game extends Canvas implements Runnable{
 	public Random FetchRNG() {
 		return RNG;
 	}
+	public void changeMenus(int changeTo) {
+		menuList[changeTo].activate();
+	}
+	public void setStage (int i) {
+		stage = i;
+	}
 	
-
 	public static void main(String[] args) {
 		Game game = new Game();
 		Dimension windowSize = new Dimension(WIDTH * SCALE / 2, HEIGHT * SCALE / 2);

@@ -97,6 +97,14 @@ public class KBinputHandler extends KeyAdapter {
 			break;		
 		case KeyEvent.VK_SHIFT:
 			slowMovementHeld = false;	
+			break;
+		case KeyEvent.VK_Z:
+			confirmHeld = false;
+			shotHeld = false;
+			break;
+		case KeyEvent.VK_X:
+			cancelHeld = false;
+			break;
 		default:
 			break;			
 		}

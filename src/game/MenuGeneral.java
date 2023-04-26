@@ -7,12 +7,12 @@ public class MenuGeneral {
 
 	KBinputHandler kbh;
 	int selectedOption = 0;
-	private boolean isActive = false;
+	protected boolean isActive = false;
 	private int[] UDLRCCframesHeld = new int[] {0, 0, 0, 0, 2, 2}; // up, down, left, right, confirm, cancel
 	private boolean[] activeKeys;
-	private byte menuDirection; // 0 = vertical, 1 = horizontal
-	private int menuEntries;
-	private Game parent;
+	protected byte menuDirection; // 0 = vertical, 1 = horizontal
+	protected int menuEntries;
+	protected Game parent;
 	private MenuGeneral parentMenu;
 	
 	public MenuGeneral(Game g, KBinputHandler kbh) {
@@ -81,7 +81,8 @@ public class MenuGeneral {
 	public void doSelectedOption () {
 		switch(selectedOption) {
 		case 0:
-			parent.state = Game.STATE.PLAY;
+			isActive = false;
+			parent.changeMenus(1);
 			break;
 		case 2:
 			System.exit(1);
