@@ -19,6 +19,7 @@ public class Bullet {
 	double hitboxSize; // Radius, not diameter
 	int framesTillDespawnOffscreen = 0; // Amount of protection this bullet gets from immediately despawning due to being offscreen after it spawns
 	byte renderRotationMode; // 0 = rendered in the direction it's traveling, 1 = no rotation, 2 = CW rotation, 3 = CCW rotation
+	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
 
@@ -46,6 +47,8 @@ public class Bullet {
 		color = newColor;
 		size = BulletType.BULLET_RENDER_SIZE[type];
 		hitboxSize = BulletType.BULLET_HITBOX_SIZE[type];
+		renderRotationMode = BulletType.BULLET_ROTATION_MODE[type];
+		renderRotationAngle = Math.PI/2;
 		grazed = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
@@ -53,9 +56,26 @@ public class Bullet {
 	}
 	
 	public void draw(Graphics2D g, BufferedImage b, Game m) {
+		
+		switch(renderRotationMode) {
+		case 0:
+			renderRotationAngle = angle + Math.PI/2;
+			break;
+		case 2:
+			renderRotationAngle += Math.PI/30;
+			break;
+		case 3:
+			renderRotationAngle -= Math.PI/30;
+			break;
+		default:
+			break;
+		}
+		
 		renderTransform.setToIdentity();
 		renderTransform.translate(xpos - size/2, ypos - size/2);
-		renderTransform.rotate(angle + Math.PI/2, size/2, size/2);
+		if(renderRotationMode != (byte)(1)) {
+			renderTransform.rotate(renderRotationAngle, size/2, size/2);
+		}
 		g.drawImage(b, renderTransform, m);
 	}
 	

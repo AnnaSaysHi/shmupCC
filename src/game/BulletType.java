@@ -48,5 +48,18 @@ public abstract class BulletType {
 			4,
 			3
 	};
+	public static final byte[] BULLET_ROTATION_MODE = new byte[] {
+			0,
+			0,
+			1,
+			1,
+			0,
+			0,
+			0,
+			0,
+			0,
+			0,
+			2
+	};
 	
 }
