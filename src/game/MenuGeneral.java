@@ -69,12 +69,17 @@ public class MenuGeneral {
 			doSelectedOption();
 		}
 		if(UDLRCCframesHeld[5] == 1) {
-			if(parentMenu == null) selectedOption = menuEntries - 1;
-			else {
-				isActive = false;
-				parentMenu.activate();
-			}
+			onCancel();
 		}
+	}
+	
+	protected void onCancel() {
+		if(parentMenu == null) selectedOption = menuEntries - 1;
+		else {
+			isActive = false;
+			parentMenu.activate();
+		}
+		
 	}
 	
 	

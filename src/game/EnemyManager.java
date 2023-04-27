@@ -15,9 +15,9 @@ public class EnemyManager {
 	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g) {
 		enemies = new Enemy[size];
 		enemySprites = ss;
-		enemySpriteReference = new BufferedImage[1][3];
+		enemySpriteReference = new BufferedImage[3][1];
 		for(int i = 0; i < 3; i++) {
-			enemySpriteReference[0][i] = ss.getSprite(0, i, 48, 48);
+			enemySpriteReference[i][0] = ss.getSprite(i, 0, 48, 48);
 		}
 		bmgr = mgr;
 		relevantPlayer = p;
@@ -38,7 +38,7 @@ public class EnemyManager {
 	public void drawEnemies(Graphics2D g) {
 		for(int i = 0; i < enemies.length; i++) {
 			if(!enemies[i].disabled) {
-				enemies[i].renderEnemy(g, enemySpriteReference[0][enemies[i].returnEnemySprite()]);
+				enemies[i].renderEnemy(g, enemySpriteReference[enemies[i].returnEnemySprite()][0]);
 			}
 		}
 		

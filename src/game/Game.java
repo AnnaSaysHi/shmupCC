@@ -9,10 +9,7 @@ import javax.swing.*;
 import game.BulletSpawner.Mode;
 
 public class Game extends Canvas implements Runnable{
-	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 8763681502519222609L;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
@@ -24,7 +21,8 @@ public class Game extends Canvas implements Runnable{
 	private long lastTickPeriodMeasurement;
 	public static enum STATE{
 		MENU,
-		PLAY
+		PLAY,
+		PAUSE
 	}
 	
 	private BulletManager BulletMGR;
@@ -36,6 +34,7 @@ public class Game extends Canvas implements Runnable{
 	private Random RNG;
 	private MenuGeneral menu;
 	private MenuGeneral[] menuList = new MenuGeneral[2];
+	private MenuPause pauseMenu;
 	private MenuSceneSelect sceneMenu;
 	private int activeMenu;
 	private long rngInitSeed;
@@ -77,8 +76,10 @@ public class Game extends Canvas implements Runnable{
 		
 		menu = new MenuGeneral(this, kbh);
 		sceneMenu = new MenuSceneSelect(this, kbh);
+		pauseMenu = new MenuPause(this, kbh);
 		sceneMenu.setParentMenu(menu);
 		sceneMenu.setMenuLengthAndDirection(2, (byte) 0);
+		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
 		menuList[0].activate();		
@@ -156,8 +157,8 @@ public class Game extends Canvas implements Runnable{
 		}
 		if(state == STATE.PLAY) {
 			if(kbh.getHeldKeys()[8]) {
-				returnToMenu();
-				BulletMGR.deactivateAll();
+				state = state.PAUSE;	
+				pauseMenu.activate();
 			} else {
 				stageList[stage].tick();
 				BulletMGR.updateBullets();
@@ -166,12 +167,15 @@ public class Game extends Canvas implements Runnable{
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 			}
 		}
-		if (state == STATE.MENU) {
+		else if (state == STATE.MENU) {
 			for(int i = 0; i < menuList.length; i++) {
 				if(menuList[i].getActive()) {
 					menuList[i].tick();
 				}
 			}
+		}
+		else if (state == STATE.PAUSE) {
+			pauseMenu.tick();
 		}
 		
 		//System.gc();
@@ -188,7 +192,7 @@ public class Game extends Canvas implements Runnable{
 		g.setColor(Color.WHITE);
 		g.drawString(Double.toString(measuredFpS), 10, 10);
 
-		if(state == STATE.PLAY) {
+		if(state == STATE.PLAY || state == STATE.PAUSE) {
 			playerChar.drawPlayer(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
@@ -200,6 +204,7 @@ public class Game extends Canvas implements Runnable{
 				}
 			}
 		}
+		if(state == STATE.PAUSE) pauseMenu.render(g);
 		
 		g.dispose();
 		bufferStrat.show();
@@ -219,13 +224,21 @@ public class Game extends Canvas implements Runnable{
 		stage = i;
 		stageList[stage].init();
 	}
+	public void restartStage() {
+		stageList[stage].init();
+		state = STATE.PLAY;
+	}
 	public void returnToMenu() {
 		state = STATE.MENU;
 		stage = -1;
+		BulletMGR.deactivateAll();
 	}
 	public void nextStage() {
 		stage++;
 		stageList[stage].init();
+	}
+	public void unpause() {
+		state = STATE.PLAY;
 	}
 	
 	public static void main(String[] args) {

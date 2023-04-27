@@ -13,6 +13,11 @@ public class StageScript {
 	}
 	
 	public void init() {
+		mgr.deactivateAll();
+		initActions();
+	}
+	
+	public void initActions() {
 		
 	}
 	

@@ -12,7 +12,7 @@ public class Script1_1 extends StageScript {
 	}
 
 	@Override
-	public void init() {
+	public void initActions() {
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
 		testSpawner.setSpawnerPos(480, 360);
 		testSpawner.setMode(Mode.Meek);

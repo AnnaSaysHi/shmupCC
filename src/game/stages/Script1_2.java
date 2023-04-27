@@ -14,8 +14,9 @@ public class Script1_2 extends StageScript {
 	}
 
 	@Override
-	public void init() {
+	public void initActions() {
 		anglenum = 0;
+		angleIncrement = 0;
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
 		testSpawner.setSpawnerPos(480, 360);
 		testSpawner.setMode(Mode.Ring_Nonaimed);
