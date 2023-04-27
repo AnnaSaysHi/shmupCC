@@ -28,10 +28,8 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	private BulletManager BulletMGR;
-	private BulletSpawner testSpawner;
+	private EnemyManager EnemyMGR;
 	private KBinputHandler kbh;
-	private double anglenum = Math.PI/2;
-	private double angleIncrement = 0;
 	private boolean running = false;
 	public STATE state = STATE.MENU;
 	private Thread thread;
@@ -48,7 +46,8 @@ public class Game extends Canvas implements Runnable{
 	private double[] playercoords;
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-	private BufferedImage sprites = null;
+	private BufferedImage bulletSprites = null;
+	private BufferedImage enemySprites = null;
 	private BufferedImage player1 = null;
 	private BufferedImage player0 = null;
 	private BufferedImage hitbox = null;
@@ -58,7 +57,8 @@ public class Game extends Canvas implements Runnable{
 	public void init() {
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try {
-			sprites = loader.loadImage("/bulletsheet.png");
+			bulletSprites = loader.loadImage("/bulletsheet.png");
+			enemySprites = loader.loadImage("/EnemySheet.png");
 			player0 = loader.loadImage("/ShipStationary.png");
 			player1 = loader.loadImage("/ShipLeanLeft.png");
 			hitbox = loader.loadImage("/HitboxIndicator.png");
@@ -69,8 +69,8 @@ public class Game extends Canvas implements Runnable{
 		
 		RNG = new Random();
 		rngInitSeed = RNG.nextInt();
-		Spritesheet ss = new Spritesheet(sprites);
-		BulletMGR = new BulletManager(1000, ss);
+		Spritesheet bullets = new Spritesheet(bulletSprites);
+		Spritesheet enemies = new Spritesheet(enemySprites);
 		kbh = new KBinputHandler(this);
 		this.addKeyListener(kbh);
 		
@@ -86,6 +86,10 @@ public class Game extends Canvas implements Runnable{
 		playerChar = new Player(kbh, 32, 928, 32, 700);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
+		
+
+		BulletMGR = new BulletManager(1000, bullets);
+		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this);
 		
 		stageList[0] = new Script1_1(BulletMGR, this, playerChar);
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar);
