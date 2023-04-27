@@ -3,6 +3,8 @@ package game;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import game.Game.STATE;
+
 public class MenuPause extends MenuGeneral {
 
 	public MenuPause(Game g, KBinputHandler kbh) {
@@ -13,7 +15,7 @@ public class MenuPause extends MenuGeneral {
 	public void doSelectedOption() {
 		switch(selectedOption) {
 		case 0:
-			parent.unpause();
+			if(parent.state != STATE.GAME_OVER)parent.unpause();
 			break;
 		case 1:
 			parent.restartStage();

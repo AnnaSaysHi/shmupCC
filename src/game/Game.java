@@ -22,7 +22,8 @@ public class Game extends Canvas implements Runnable{
 	public static enum STATE{
 		MENU,
 		PLAY,
-		PAUSE
+		PAUSE,
+		GAME_OVER		
 	}
 	
 	private BulletManager BulletMGR;
@@ -174,7 +175,7 @@ public class Game extends Canvas implements Runnable{
 				}
 			}
 		}
-		else if (state == STATE.PAUSE) {
+		else if (state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			pauseMenu.tick();
 		}
 		
@@ -192,7 +193,7 @@ public class Game extends Canvas implements Runnable{
 		g.setColor(Color.WHITE);
 		g.drawString(Double.toString(measuredFpS), 10, 10);
 
-		if(state == STATE.PLAY || state == STATE.PAUSE) {
+		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			playerChar.drawPlayer(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
@@ -204,7 +205,7 @@ public class Game extends Canvas implements Runnable{
 				}
 			}
 		}
-		if(state == STATE.PAUSE) pauseMenu.render(g);
+		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
 		
 		g.dispose();
 		bufferStrat.show();
