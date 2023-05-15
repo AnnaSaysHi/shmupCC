@@ -108,10 +108,10 @@ public class Bullet {
 	}
 	
 	private boolean isOffscreen() {
-		if (xpos > size + 960) return true;
-		if (xpos < -size) return true;
-		if (ypos < -size) return true;
-		if (ypos > size + 720) return true;
+		if (xpos > size + Game.PLAYFIELDWIDTH + Game.PLAYFIELDXOFFSET) return true;
+		if (xpos < Game.PLAYFIELDXOFFSET - size) return true;
+		if (ypos < Game.PLAYFIELDYOFFSET - size) return true;
+		if (ypos > size + Game.PLAYFIELDHEIGHT + Game.PLAYFIELDYOFFSET) return true;
 		return false;
 	}
 	

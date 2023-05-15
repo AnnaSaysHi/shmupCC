@@ -4,6 +4,7 @@ import java.awt.image.*;
 import java.io.IOException;
 import java.util.Random;
 import game.stages.*;
+import java.awt.geom.AffineTransform;
 import javax.swing.*;
 
 import game.BulletSpawner.Mode;
@@ -13,6 +14,10 @@ public class Game extends Canvas implements Runnable{
 	private static final long serialVersionUID = 8763681502519222609L;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
+	public static final int PLAYFIELDWIDTH = 384;
+	public static final int PLAYFIELDHEIGHT = 448;
+	public static final int PLAYFIELDXOFFSET = 16;
+	public static final int PLAYFIELDYOFFSET = 16;
 	public static int SCALE = 3;
 	public static int numImageBuffers = 2;
 	public String TITLE = "test";
@@ -189,6 +194,9 @@ public class Game extends Canvas implements Runnable{
 			return;
 		}
 		Graphics2D g = (Graphics2D)(bufferStrat.getDrawGraphics());
+		AffineTransform at = new AffineTransform();
+		at.scale(SCALE/1.0, SCALE/1.0);
+		g.setTransform(at);
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		g.setColor(Color.WHITE);
 		g.drawString(Double.toString(measuredFpS), 10, 10);
@@ -206,7 +214,6 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
-		
 		g.dispose();
 		bufferStrat.show();
 	}

@@ -22,8 +22,8 @@ public class Player {
 	byte[]dirs;
 	
 	public Player(KBinputHandler k, int lowXbound, int highXbound, int lowYbound, int highYbound) {
-		x = 480;
-		y = 640;
+		x = (Game.PLAYFIELDWIDTH / 2) + Game.PLAYFIELDXOFFSET;
+		y = (Game.PLAYFIELDHEIGHT * 7 / 8) + Game.PLAYFIELDYOFFSET;
 		isFocusing = false;
 		kbh = k;
 		moveLimits = new int[] { lowXbound, highXbound, lowYbound, highYbound};
