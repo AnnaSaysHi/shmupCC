@@ -56,6 +56,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage player1 = null;
 	private BufferedImage player0 = null;
 	private BufferedImage hitbox = null;
+	private BufferedImage HUD = null;
 	private Player playerChar;
 	int bulletTimer;
 	
@@ -67,6 +68,7 @@ public class Game extends Canvas implements Runnable{
 			player0 = loader.loadImage("/ShipStationary.png");
 			player1 = loader.loadImage("/ShipLeanLeft.png");
 			hitbox = loader.loadImage("/HitboxIndicator.png");
+			HUD = loader.loadImage("/HUD.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
@@ -89,8 +91,8 @@ public class Game extends Canvas implements Runnable{
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
 		menuList[0].activate();		
-		
-		playerChar = new Player(kbh, 32, 928, 32, 700);
+		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
+		playerChar = new Player(kbh, pdistfromwalls + PLAYFIELDXOFFSET, PLAYFIELDXOFFSET + PLAYFIELDWIDTH - pdistfromwalls, pdistfromwalls + PLAYFIELDYOFFSET, PLAYFIELDYOFFSET + PLAYFIELDHEIGHT - pdistfromwalls);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
@@ -205,6 +207,7 @@ public class Game extends Canvas implements Runnable{
 			playerChar.drawPlayer(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
+			g.drawImage(HUD, 0, 0, this);
 		}
 		if(state == STATE.MENU) {
 			for(int i = 0; i < menuList.length; i++) {
