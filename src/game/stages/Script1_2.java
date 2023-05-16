@@ -24,12 +24,12 @@ public class Script1_2 extends StageScript {
 		testSpawner.setSpeeds(3, 3);
 		testSpawner.setAngles(anglenum, anglenum);
 		testSpawner.setTypeAndColor(BulletType.RICE, BulletColor.PURPLE);
-		testSpawner.setActivationFrequency(1);
+		testSpawner.setActivationFrequency(2);
 	}
 	@Override
 	public void tick() {
 
-		angleIncrement += (Math.PI)/1024;
+		angleIncrement += (Math.PI)/2048;
 		anglenum += angleIncrement;
 		testSpawner.setAngles(anglenum, anglenum);
 		testSpawner.tickSpawner();
