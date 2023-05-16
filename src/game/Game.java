@@ -223,11 +223,20 @@ public class Game extends Canvas implements Runnable{
 	
 	//Utility functions
 	public double getAngleToPlayer(double x, double y) {
-		return Math.atan2(playercoords[1] - y, playercoords[0] - x);
+		if(playercoords[1] == y && playercoords[0] == x) return 0;
+		else return Math.atan2(playercoords[1] - y, playercoords[0] - x);
 	}
 	public Random FetchRNG() {
 		return RNG;
 	}
+	public boolean isOutsidePlayfield(double xpos, double ypos, double size) {
+		if (xpos > size + Game.PLAYFIELDWIDTH + Game.PLAYFIELDXOFFSET) return true;
+		if (xpos < Game.PLAYFIELDXOFFSET - size) return true;
+		if (ypos < Game.PLAYFIELDYOFFSET - size) return true;
+		if (ypos > size + Game.PLAYFIELDHEIGHT + Game.PLAYFIELDYOFFSET) return true;
+		return false;
+	}
+	
 	public void changeMenus(int changeTo) {
 		menuList[changeTo].activate();
 	}

@@ -5,14 +5,21 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Bullet {
+	int velMode; //0 = angle / speed, 1 = xspeed/yspeed
+	
 	double xpos;
 	double ypos;
 	double speed;
+	double angle;
+	double xvel;
+	double yvel;
+	
+	
 	int type;
 	int color;
-	int grazed;
-	double angle;
+	int grazed; //Amount of frames until this bullet becomes grazeable.
 	int transform1type; // These three variables are used for having bullets act in ways other than
+	int transformsEnabled;
 	double transform1arg1; // moving in a straight line at a constant speed. Currently, they have not
 	double transform1arg2; // been implemented yet.
 	double size; // Diameter, not radius
@@ -22,6 +29,7 @@ public class Bullet {
 	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
+	double[] transformArg1 = new double[1];
 
 	
 	
@@ -30,12 +38,17 @@ public class Bullet {
 		ypos = -1;
 		speed = -1;
 		angle = -1;
+		xvel = -1;
+		yvel = -1;
 		type = -1;
 		size = 1;
 		hitboxSize = 1;
 		grazed = 0;
 		disabled = true;
 		renderTransform = new AffineTransform();
+		velMode = 0;
+		transformsEnabled = 0x00000000;
+		transformArg1[0] = .03;
 	}
 	
 	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int newColor, int offscreenProtectionFramesNum) {
@@ -53,6 +66,10 @@ public class Bullet {
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
 		renderTransform.setToIdentity();
+		if(velMode == 1) {
+			xvel = Math.cos(angle) * speed;
+			yvel = Math.sin(angle) * speed;
+		}
 	}
 	
 	public void draw(Graphics2D g, BufferedImage b, Game m) {
@@ -93,8 +110,20 @@ public class Bullet {
 	}
 	
 	public boolean update() {
-		xpos += Math.cos(angle) * speed;
-		ypos += Math.sin(angle) * speed;
+		doBulletTransformations();
+		switch(velMode) {
+		case 0:
+			xpos += Math.cos(angle) * speed;
+			ypos += Math.sin(angle) * speed;
+			break;
+		case 1:
+			xpos += xvel;
+			ypos += yvel;
+			if(renderRotationMode == 0) angle = getAngleFromVelocity();
+			break;
+		default:
+			break;
+		}
 		framesTillDespawnOffscreen--;
 		return ((framesTillDespawnOffscreen <= 0) && isOffscreen());
 	}
@@ -107,12 +136,23 @@ public class Bullet {
 		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)));
 	}
 	
+	double getAngleFromVelocity() {
+		if (xvel == 0 && yvel == 0) return angle;
+		else return Math.atan2(yvel, xvel);
+	}
+	
 	private boolean isOffscreen() {
 		if (xpos > size + Game.PLAYFIELDWIDTH + Game.PLAYFIELDXOFFSET) return true;
 		if (xpos < Game.PLAYFIELDXOFFSET - size) return true;
 		if (ypos < Game.PLAYFIELDYOFFSET - size) return true;
 		if (ypos > size + Game.PLAYFIELDHEIGHT + Game.PLAYFIELDYOFFSET) return true;
 		return false;
+	}
+	
+	private void doBulletTransformations() {
+		if((transformsEnabled & 0x00000001) == 1) {
+			yvel += transformArg1[0];
+		}
 	}
 	
 

@@ -71,17 +71,9 @@ public class Enemy {
 			onDeath();
 		}
 		disabled = true;
-		if(framesTillDespawnOffscreen <= 0 && isOffscreen()) {
+		if(framesTillDespawnOffscreen <= 0 && game.isOutsidePlayfield(xpos, ypos, size)) {
 			disabled = true;
 		}
-	}
-	
-	private boolean isOffscreen() {
-		if (xpos > size + 960) return true;
-		if (xpos < -size) return true;
-		if (ypos < -size) return true;
-		if (ypos > size + 720) return true;
-		return false;
 	}
 	
 	private void doEnemyActions() {
