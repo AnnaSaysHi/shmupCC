@@ -11,6 +11,17 @@ public class Enemy {
 	int sprite;
 	double xpos;
 	double ypos;
+	
+	double angle;
+	double speed;
+	double accel;
+	
+	double xvel;
+	double yvel;
+	double xaccel;
+	double yaccel;
+	int movementType; //0 = angle and speed, 1 = xSpeed and ySpeed
+	
 	int HP;
 	int maxHP;
 	int framesTillDespawnOffscreen = 0;

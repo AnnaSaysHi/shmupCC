@@ -10,12 +10,14 @@ public class Player {
 	int[] moveLimits;
 	double moveSpeedUF;
 	double moveSpeedF;
-	double speed; //don't actually set this
+	private double speed; //don't actually set this
 	boolean isFocusing;
 	int hitboxAnimSize;
 	double hitboxSize;
 	int playerAnimWidth;
 	int playerAnimHeight;
+	int visXpos;
+	int visYpos;
 	private BufferedImage animIdle;
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
@@ -75,18 +77,30 @@ public class Player {
 		
 		
 	}
+	public void collideWithBullet() {
+		
+	}
+	
+	public void useBomb() {
+		
+	}
+	
+	public void respawn() {
+		
+	}
+	
 	public double[] getPosAndHitbox() {
 		return new double[] {x, y, hitboxSize};
 	}
 	
 	public void drawPlayer(Graphics2D g, Game m) {
-		int visXpos = (int)(x) - (playerAnimWidth / 2);
-		int visYpos = (int)(y) - (playerAnimHeight / 2);
+		visXpos = (int)(x) - (playerAnimWidth / 2);
+		visYpos = (int)(y) - (playerAnimHeight / 2);
 		g.drawImage(animIdle, visXpos, visYpos, m);
 	}
 	public void drawHitbox(Graphics2D g, Game m) {
-		int visXpos = (int)(x) - (hitboxAnimSize / 2);
-		int visYpos = (int)(y) - (hitboxAnimSize / 2);
+		visXpos = (int)(x) - (hitboxAnimSize / 2);
+		visYpos = (int)(y) - (hitboxAnimSize / 2);
 		g.drawImage(animHitbox, visXpos, visYpos, m);
 		
 	}
