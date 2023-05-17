@@ -18,10 +18,6 @@ public class Bullet {
 	int type;
 	int color;
 	int grazed; //Amount of frames until this bullet becomes grazeable.
-	int transform1type; // These three variables are used for having bullets act in ways other than
-	int transformsEnabled;
-	double transform1arg1; // moving in a straight line at a constant speed. Currently, they have not
-	double transform1arg2; // been implemented yet.
 	double size; // Diameter, not radius
 	double hitboxSize; // Radius, not diameter
 	int framesTillDespawnOffscreen = 0; // Amount of protection this bullet gets from immediately despawning due to being offscreen after it spawns
@@ -29,7 +25,13 @@ public class Bullet {
 	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
-	double[] transformArg1 = new double[1];
+	
+	
+	final int numTransforms = 1;
+	
+	int transformsEnabled;
+	double[] transformArg1 = new double[numTransforms];
+	double[] transformArg2 = new double[numTransforms];
 
 	
 	
