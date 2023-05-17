@@ -197,11 +197,10 @@ public class Game extends Canvas implements Runnable{
 		}
 		Graphics2D g = (Graphics2D)(bufferStrat.getDrawGraphics());
 		AffineTransform at = new AffineTransform();
-		at.scale(SCALE/1.0, SCALE/1.0);
+		at.scale(SCALE/ScreenResolutionConstant.res, SCALE/ScreenResolutionConstant.res);
 		g.setTransform(at);
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		g.setColor(Color.WHITE);
-		g.drawString(Double.toString(measuredFpS), 10, 10);
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			playerChar.drawPlayer(g, this);
@@ -217,6 +216,8 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
+
+		g.drawString(Double.toString(measuredFpS), 10, 10);
 		g.dispose();
 		bufferStrat.show();
 	}
