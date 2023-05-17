@@ -14,7 +14,7 @@ public class Script1_1 extends StageScript {
 	@Override
 	public void initActions() {
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
-		testSpawner.setSpawnerPos(192, 240);
+		testSpawner.setSpawnerPos(192, 192);
 		testSpawner.setMode(Mode.Meek);
 		testSpawner.setBulletCounts(3, 1);
 		testSpawner.setSpeeds(5, 1);
