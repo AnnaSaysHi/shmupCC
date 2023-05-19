@@ -17,7 +17,7 @@ public class PlayerShot {
 	
 	
 	int graphic;
-	byte renderRotationMode; // 0 = rendered in the direction it's traveling, 1 = no rotation, 2 = CW rotation, 3 = CCW rotation
+	byte renderRotationMode = 1; // 0 = rendered in the direction it's traveling, 1 = no rotation, 2 = CW rotation, 3 = CCW rotation
 	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
@@ -49,7 +49,50 @@ public class PlayerShot {
 	}
 	
 	public void update() {
-		
+		xpos += Math.cos(angle) * speed;
+		ypos += Math.sin(angle) * speed;
+		if(isOffscreen()) disabled = true;
 	}
+	
+	public void draw(Graphics2D g, BufferedImage b, Game m) {
+		
+		switch(renderRotationMode) {
+		case 0:
+			renderRotationAngle = angle + Math.PI/2;
+			break;
+		case 2:
+			renderRotationAngle += Math.PI/30;
+			break;
+		case 3:
+			renderRotationAngle -= Math.PI/30;
+			break;
+		default:
+			break;
+		}
+		
+		renderTransform.setToIdentity();
+		renderTransform.translate(xpos - size/2, ypos - size/2);
+		if(renderRotationMode != (byte)(1)) {
+			renderTransform.rotate(renderRotationAngle, size/2, size/2);
+		}
+		g.drawImage(b, renderTransform, m);
+	}
+	
+	
+	//utility methods
+	private boolean isOffscreen() {
+		if (xpos > size + Game.PLAYFIELDWIDTH + Game.PLAYFIELDXOFFSET) return true;
+		if (xpos < Game.PLAYFIELDXOFFSET - size) return true;
+		if (ypos < Game.PLAYFIELDYOFFSET - size) return true;
+		if (ypos > size + Game.PLAYFIELDHEIGHT + Game.PLAYFIELDYOFFSET) return true;
+		return false;
+	}
+	public boolean isDisabled() {
+		return disabled;
+	}
+	public void disable() {
+		disabled = true;
+	}
+	
 
 }

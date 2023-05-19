@@ -69,8 +69,8 @@ public class Enemy {
 		framesTillDespawnOffscreen--;
 		if(HP <= 0) {
 			onDeath();
+			disabled = true;
 		}
-		disabled = true;
 		if(framesTillDespawnOffscreen <= 0 && game.isOutsidePlayfield(xpos, ypos, size)) {
 			disabled = true;
 		}
