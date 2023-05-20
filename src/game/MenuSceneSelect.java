@@ -7,27 +7,13 @@ public class MenuSceneSelect extends MenuGeneral {
 
 	public MenuSceneSelect(Game g, KBinputHandler kbh) {
 		super(g, kbh);
-		menuEntries = 3;
+		menuEntries = 4;
 	}
 	
 	@Override
 	public void doSelectedOption() {
-		switch(selectedOption) {
-		case 0:
-			parent.setStage(0);
-			this.parent.state = Game.STATE.PLAY;
-			break;
-		case 1:
-			parent.setStage(1);
-			this.parent.state = Game.STATE.PLAY;
-			break;
-		case 2:
-			parent.setStage(2);
-			this.parent.state = Game.STATE.PLAY;
-			break;
-		default:
-			break;
-		}
+		parent.setStage(selectedOption);
+		this.parent.state = Game.STATE.PLAY;
 	}
 	@Override
 	public void render(Graphics g) {
@@ -35,6 +21,7 @@ public class MenuSceneSelect extends MenuGeneral {
 		g.drawString("Meek", 100, 100);
 		g.drawString("BoWaP", 100, 150);
 		g.drawString("VIV_test", 100, 200);
+		g.drawString("Enemy Test", 100, 250);
 		g.drawString(">", 90, 100 + 50 * selectedOption);
 	}
 

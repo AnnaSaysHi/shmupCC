@@ -46,7 +46,7 @@ public class Game extends Canvas implements Runnable{
 	private int activeMenu;
 	private long rngInitSeed;
 	
-	private StageScript[] stageList = new StageScript[3];	
+	private StageScript[] stageList = new StageScript[4];	
 	private int stage = -1;
 	
 	private double[] playercoords;
@@ -90,7 +90,7 @@ public class Game extends Canvas implements Runnable{
 		sceneMenu = new MenuSceneSelect(this, kbh);
 		pauseMenu = new MenuPause(this, kbh);
 		sceneMenu.setParentMenu(menu);
-		sceneMenu.setMenuLengthAndDirection(3, (byte) 0);
+		sceneMenu.setMenuLengthAndDirection(4, (byte) 0);
 		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
@@ -110,6 +110,7 @@ public class Game extends Canvas implements Runnable{
 		stageList[0] = new Script1_1(BulletMGR, this, playerChar);
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar);
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar);
+		stageList[3] = new Script1_4(BulletMGR, this, playerChar);
 
 	}
 	
