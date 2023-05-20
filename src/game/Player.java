@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 
 public class Player {
 	KBinputHandler kbh;
+	PlayerShotManager ShotMGR;
 	double x;
 	double y;
 	int[] moveLimits;
@@ -18,16 +19,19 @@ public class Player {
 	int playerAnimHeight;
 	int visXpos;
 	int visYpos;
+	ShotType shotType;
 	private BufferedImage animIdle;
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
 	byte[]dirs;
 	
-	public Player(KBinputHandler k, int lowXbound, int highXbound, int lowYbound, int highYbound) {
+	public Player(KBinputHandler k, PlayerShotManager mgr, int lowXbound, int highXbound, int lowYbound, int highYbound) {
 		x = (Game.PLAYFIELDWIDTH / 2) + Game.PLAYFIELDXOFFSET;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8) + Game.PLAYFIELDYOFFSET;
 		isFocusing = false;
 		kbh = k;
+		ShotMGR = mgr;
+		shotType = new ShotType((byte) 1, this);
 		moveLimits = new int[] { lowXbound, highXbound, lowYbound, highYbound};
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height, BufferedImage hitbox, int hbSize) {
@@ -45,6 +49,7 @@ public class Player {
 	}
 
 	public void tickPlayer() {
+		shotType.tickShooters();
 		isFocusing = kbh.getHeldKeys()[6];
 		speed = isFocusing ? moveSpeedF : moveSpeedUF;
 		dirs = kbh.getDirections();
@@ -103,5 +108,11 @@ public class Player {
 		visYpos = (int)(y) - (hitboxAnimSize / 2);
 		g.drawImage(animHitbox, visXpos, visYpos, m);
 		
+	}
+	public boolean getShotHeld() {
+		return kbh.getHeldKeys()[7];
+	}
+	public PlayerShotManager getShotMGR() {
+		return ShotMGR;
 	}
 }

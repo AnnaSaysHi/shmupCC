@@ -33,9 +33,12 @@ public class PlayerShot {
 		hitboxSize = 1;
 		damage = -1;
 		disabled = true;
+		renderTransform = new AffineTransform();
 	}
 	
-	public void respawnShot(double x, double y, double speed, double angle, int graphic, double renderSize, double hitboxSize, int damage) {
+	public void respawnShot(double x, double y,
+			double speed, double angle, int damage,
+			int graphic, double renderSize, double hitboxSize) {
 		this.xpos = x;
 		this.ypos = y;
 		this.speed = speed;
@@ -92,6 +95,9 @@ public class PlayerShot {
 	}
 	public void disable() {
 		disabled = true;
+	}
+	public int getGraphic() {
+		return graphic;
 	}
 	
 

@@ -32,6 +32,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	private BulletManager BulletMGR;
+	private PlayerShotManager ShotMGR;
 	private EnemyManager EnemyMGR;
 	private KBinputHandler kbh;
 	private boolean running = false;
@@ -80,6 +81,7 @@ public class Game extends Canvas implements Runnable{
 		rngInitSeed = RNG.nextInt();
 		Spritesheet bullets = new Spritesheet(bulletSprites);
 		Spritesheet enemies = new Spritesheet(enemySprites);
+		Spritesheet shots = new Spritesheet(shot);
 		kbh = new KBinputHandler(this);
 		this.addKeyListener(kbh);
 		
@@ -92,17 +94,18 @@ public class Game extends Canvas implements Runnable{
 		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
-		menuList[0].activate();		
+		menuList[0].activate();
+
+		BulletMGR = new BulletManager(1000, bullets);
+		ShotMGR = new PlayerShotManager(100, shots);
+		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this);
+		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
-		playerChar = new Player(kbh, pdistfromwalls + PLAYFIELDXOFFSET, PLAYFIELDXOFFSET + PLAYFIELDWIDTH - pdistfromwalls, pdistfromwalls + PLAYFIELDYOFFSET, PLAYFIELDYOFFSET + PLAYFIELDHEIGHT - pdistfromwalls);
+		playerChar = new Player(kbh, ShotMGR, pdistfromwalls + PLAYFIELDXOFFSET, PLAYFIELDXOFFSET + PLAYFIELDWIDTH - pdistfromwalls, pdistfromwalls + PLAYFIELDYOFFSET, PLAYFIELDYOFFSET + PLAYFIELDHEIGHT - pdistfromwalls);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
 		playercoords = playerChar.getPosAndHitbox();
-		
-
-		BulletMGR = new BulletManager(1000, bullets);
-		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this);
 		
 		stageList[0] = new Script1_1(BulletMGR, this, playerChar);
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar);
@@ -176,6 +179,7 @@ public class Game extends Canvas implements Runnable{
 				stageList[stage].tick();
 				BulletMGR.updateBullets();
 				playerChar.tickPlayer();
+				ShotMGR.updateShots();
 				playercoords = playerChar.getPosAndHitbox();
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 			}
@@ -208,6 +212,7 @@ public class Game extends Canvas implements Runnable{
 		g.setColor(Color.WHITE);
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
+			ShotMGR.drawShots(g, this);
 			playerChar.drawPlayer(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
