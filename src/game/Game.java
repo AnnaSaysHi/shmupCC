@@ -57,6 +57,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage player0 = null;
 	private BufferedImage hitbox = null;
 	private BufferedImage HUD = null;
+	private BufferedImage shot = null;
 	private Player playerChar;
 	int bulletTimer;
 	
@@ -68,6 +69,7 @@ public class Game extends Canvas implements Runnable{
 			player0 = loader.loadImage("/ShipStationary.png");
 			player1 = loader.loadImage("/ShipLeanLeft.png");
 			hitbox = loader.loadImage("/HitboxIndicator.png");
+			shot = loader.loadImage("/playerShot.png");
 			HUD = loader.loadImage("/HUD.png");
 		}catch (IOException e){
 			e.printStackTrace();
