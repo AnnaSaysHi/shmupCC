@@ -27,6 +27,7 @@ public class Enemy {
 	protected int enemyTimer;
 	protected int HP;
 	protected int maxHP;
+	int damageToTake;
 	protected int framesTillDespawnOffscreen = 0;
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
@@ -35,7 +36,7 @@ public class Enemy {
 	protected int renderSize; //radius
 	protected int size;
 	protected double hitboxSize; //radius
-	protected double hurtboxSize; //radius
+	public int hurtboxSize; //radius
 	boolean disabled;
 	BulletSpawner[] spawners = new BulletSpawner[numSpawners];
 	
@@ -69,11 +70,12 @@ public class Enemy {
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i] = new BulletSpawner(bulletMGR, targetPlayer, game);
 		}		
+		hitboxSize = renderSize;
+		hurtboxSize = size / 2;
 		initActions();
 	}
 	
 	public void initActions() {
-		
 	}
 	
 	public void initEnemy(double x, double y, int health) {
@@ -108,16 +110,13 @@ public class Enemy {
 	
 	public void tickEnemy() {
 		enemyTimer++;
+		takeDamage();
 		this.doEnemyActions();
 		this.processEnemyMovement();
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].tickSpawner();
 		}
 		framesTillDespawnOffscreen--;
-		if(HP <= 0) {
-			onDeath();
-			disabled = true;
-		}
 		if(framesTillDespawnOffscreen <= 0 && game.isOutsidePlayfield(xpos, ypos, size)) {
 			disabled = true;
 		}
@@ -149,9 +148,21 @@ public class Enemy {
 	public int returnEnemySprite() {
 		return sprite;
 	}
+	private void takeDamage() {
+		HP -= damageToTake;
+		damageToTake = 0;
+		if(HP <= 0) {
+			onDeath();
+			disabled = true;
+		}
+		
+	}
+	public void addDamage(int damage) {
+		damageToTake += damage;
+	}
 	
 	public void renderEnemy(Graphics g, BufferedImage b) {
-		g.drawImage(b, (int)(xpos), (int)(ypos), game);
+		g.drawImage(b, (int)(xpos - renderSize), (int)(ypos - renderSize), game);
 	}
 	
 	private void onDeath() {

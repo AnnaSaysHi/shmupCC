@@ -97,8 +97,8 @@ public class Game extends Canvas implements Runnable{
 		menuList[0].activate();
 
 		BulletMGR = new BulletManager(1000, bullets);
-		ShotMGR = new PlayerShotManager(100, shots);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this);
+		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR);
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
 		playerChar = new Player(kbh, ShotMGR,
@@ -183,9 +183,10 @@ public class Game extends Canvas implements Runnable{
 			} else {
 				stageList[stage].tick();
 				BulletMGR.updateBullets();
+				ShotMGR.updateShots();
+				ShotMGR.enemyHitDetect();
 				EnemyMGR.updateEnemies();
 				playerChar.tickPlayer();
-				ShotMGR.updateShots();
 				playercoords = playerChar.getPosAndHitbox();
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 			}

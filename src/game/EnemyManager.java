@@ -54,6 +54,21 @@ public class EnemyManager {
 			}
 		}		
 	}
+	public boolean hitEnemies(int x, int y, int hitbox, int damage) {
+		double radSum;
+		for(int i = 0; i < enemies.size(); i++) {
+			if(enemies.get(i) != null) {
+				if(!enemies.get(i).isDisabled()) {
+					radSum = hitbox + enemies.get(i).hurtboxSize;
+					if(Math.pow(enemies.get(i).xpos - x, 2) + Math.pow(enemies.get(i).ypos - y, 2) <= Math.pow(radSum, 2)) {
+						enemies.get(i).addDamage(damage);
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
 	
 	public void addEnemy(Enemy e) {
 		if(enemies.size() < maxSize) {

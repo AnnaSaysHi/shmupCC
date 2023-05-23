@@ -23,7 +23,7 @@ public class Enm1 extends Enemy {
 	@Override
 	protected void doEnemyActions() {
 		if(enemyTimer == 50) {
-			this.setPosAbsTime(0, 0, 60, 4);
+			//this.setPosRelTime(10, 10, 60, 3);
 		}
 	}
 	

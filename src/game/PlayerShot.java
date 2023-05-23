@@ -11,7 +11,7 @@ public class PlayerShot {
 	double speed;
 	double angle;
 	double size; // Diameter, not radius
-	double hitboxSize; // Radius, not diameter
+	int hitboxSize; // Radius, not diameter
 	
 	int damage;
 	
@@ -38,7 +38,7 @@ public class PlayerShot {
 	
 	public void respawnShot(double x, double y,
 			double speed, double angle, int damage,
-			int graphic, double renderSize, double hitboxSize) {
+			int graphic, double renderSize, int hitboxSize) {
 		this.xpos = x;
 		this.ypos = y;
 		this.speed = speed;
@@ -81,6 +81,12 @@ public class PlayerShot {
 		g.drawImage(b, renderTransform, m);
 	}
 	
+	//on-hit and on-tick methods
+	public void onHit() {
+		disable();
+	}
+	
+	
 	
 	//utility methods
 	private boolean isOffscreen() {
@@ -98,6 +104,14 @@ public class PlayerShot {
 	}
 	public int getGraphic() {
 		return graphic;
+	}
+	public int[] getShotInfo() {
+		return new int[] {
+				(int)xpos,
+				(int)ypos,
+				(int)hitboxSize,
+				damage
+		};
 	}
 	
 

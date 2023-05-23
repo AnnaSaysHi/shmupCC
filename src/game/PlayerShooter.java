@@ -12,14 +12,14 @@ public class PlayerShooter {
 	int shotDamage;
 	int shotGraphic;
 	double shotSize;
-	double hitboxSize;
+	int hitboxSize;
 	int activationDelay;
 	int activationFreq;
 	int timer;
 
 	public PlayerShooter(int activationFreq, int activationDelay, int shotDamage, 
 			double offsetX, double offsetY, double shotAngle, double shotSpeed, byte optionNum, 
-			int shotGraphic, double shotSize, double hitboxSize,
+			int shotGraphic, double shotSize, int hitboxSize,
 			PlayerShotManager parentManager, Player parentPlayer) {
 		timer = 0;
 		this.activationFreq = activationFreq;
