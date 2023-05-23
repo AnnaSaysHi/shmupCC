@@ -23,19 +23,19 @@ public class Enemy {
 	public double yvel;
 	public double xaccel;
 	public double yaccel;
-	int movementType; //0 = angle and speed, 1 = xSpeed and ySpeed
-	
-	int HP;
-	int maxHP;
-	int framesTillDespawnOffscreen = 0;
+	protected int movementType; //0 = angle and speed, 1 = xSpeed and ySpeed
+	protected int enemyTimer;
+	protected int HP;
+	protected int maxHP;
+	protected int framesTillDespawnOffscreen = 0;
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
 	
 	
-	int renderSize; //radius
-	int size;
-	double hitboxSize; //radius
-	double hurtboxSize; //radius
+	protected int renderSize; //radius
+	protected int size;
+	protected double hitboxSize; //radius
+	protected double hurtboxSize; //radius
 	boolean disabled;
 	BulletSpawner[] spawners = new BulletSpawner[numSpawners];
 	
@@ -88,6 +88,7 @@ public class Enemy {
 		}
 		framesTillDespawnOffscreen = 50;
 		
+		enemyTimer = 0;
 		movementTimer1 = -1;
 		movementTimer2 = -1;
 		
@@ -106,6 +107,7 @@ public class Enemy {
 	}
 	
 	public void tickEnemy() {
+		enemyTimer++;
 		this.doEnemyActions();
 		this.processEnemyMovement();
 		for(int i = 0; i < numSpawners; i++) {
@@ -121,13 +123,14 @@ public class Enemy {
 		}
 	}
 	
-	private void doEnemyActions() {
+	protected void doEnemyActions() {
 		
 	}
 	private void processEnemyMovement() {
 		speed += accel;
 		xvel += xaccel;
 		yvel += yaccel;
+		interpolator.handleMovement();
 		
 		switch(movementType) {
 		case 0:
@@ -165,6 +168,12 @@ public class Enemy {
 	public void setPosRel(double x, double y) {
 		xpos += x;
 		ypos += y;
+	}
+	public void setPosAbsTime(double x, double y, int t, int mode) {
+		interpolator.moveOverTime(x, y, t, mode);
+	}
+	public void setPosRelTime(double x, double y, int t, int mode) {
+		interpolator.moveOverTime(x + xpos, y + ypos, t, mode);
 	}
 	
 }
