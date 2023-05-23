@@ -6,8 +6,8 @@ import game.BulletSpawner.Mode;
 public class Script1_1 extends StageScript {
 	private BulletSpawner testSpawner;
 	
-	public Script1_1(BulletManager mgr, Game g, Player playerChar) {
-		super(mgr, g, playerChar);
+	public Script1_1(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr) {
+		super(mgr, g, playerChar, enmMgr);
 		// TODO Auto-generated constructor stub
 	}
 

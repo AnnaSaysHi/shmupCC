@@ -101,16 +101,20 @@ public class Game extends Canvas implements Runnable{
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this);
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
-		playerChar = new Player(kbh, ShotMGR, pdistfromwalls + PLAYFIELDXOFFSET, PLAYFIELDXOFFSET + PLAYFIELDWIDTH - pdistfromwalls, pdistfromwalls + PLAYFIELDYOFFSET, PLAYFIELDYOFFSET + PLAYFIELDHEIGHT - pdistfromwalls);
+		playerChar = new Player(kbh, ShotMGR,
+				pdistfromwalls + PLAYFIELDXOFFSET,
+				PLAYFIELDXOFFSET + PLAYFIELDWIDTH - pdistfromwalls,
+				pdistfromwalls + PLAYFIELDYOFFSET,
+				PLAYFIELDYOFFSET + PLAYFIELDHEIGHT - pdistfromwalls);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
 		playercoords = playerChar.getPosAndHitbox();
 		
-		stageList[0] = new Script1_1(BulletMGR, this, playerChar);
-		stageList[1] = new Script1_2(BulletMGR, this, playerChar);
-		stageList[2] = new Script1_3(BulletMGR, this, playerChar);
-		stageList[3] = new Script1_4(BulletMGR, this, playerChar);
+		stageList[0] = new Script1_1(BulletMGR, this, playerChar, EnemyMGR);
+		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR);
+		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR);
+		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR);
 
 	}
 	
@@ -179,6 +183,7 @@ public class Game extends Canvas implements Runnable{
 			} else {
 				stageList[stage].tick();
 				BulletMGR.updateBullets();
+				EnemyMGR.updateEnemies();
 				playerChar.tickPlayer();
 				ShotMGR.updateShots();
 				playercoords = playerChar.getPosAndHitbox();
@@ -215,6 +220,7 @@ public class Game extends Canvas implements Runnable{
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			ShotMGR.drawShots(g, this);
 			playerChar.drawPlayer(g, this);
+			EnemyMGR.drawEnemies(g);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
 			g.drawImage(HUD, 0, 0, this);
@@ -228,7 +234,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
 
-		g.drawString(Double.toString(measuredFpS), 10, 10);
+		g.drawString(String.format("%.2f", measuredFpS), 10, 10);
 		g.dispose();
 		bufferStrat.show();
 	}

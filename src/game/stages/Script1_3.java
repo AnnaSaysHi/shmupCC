@@ -13,8 +13,8 @@ public class Script1_3 extends StageScript{
 	double ang = 0.0f;
 	
 	private int m_Time = 0;
-	public Script1_3(BulletManager mgr, Game g, Player playerChar) {
-		super(mgr, g, playerChar);
+	public Script1_3(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr) {
+		super(mgr, g, playerChar, enmMgr);
 	}
 	
 	@Override

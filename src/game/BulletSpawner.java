@@ -215,5 +215,20 @@ public class BulletSpawner {
 			parentManager.addBullet(spawnerX, spawnerY, chosenSpeed, chosenAngle, type, color, protectFrames);
 		}
 	}
+	public void reInit() {
+		layers = 1;
+		ways = 1;
+		spawnerX = 0;
+		spawnerY = 0;
+		speed1 = 0;
+		speed2 = 0;
+		angle1 = 0;
+		angle2 = 0;
+		type = 0;
+		color = 0;
+		countdown = -1;
+		activationFreq = -1;
+		
+	}
 
 }
