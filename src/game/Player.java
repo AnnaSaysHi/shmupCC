@@ -26,13 +26,13 @@ public class Player {
 	byte[]dirs;
 	
 	public Player(KBinputHandler k, PlayerShotManager mgr, int lowXbound, int highXbound, int lowYbound, int highYbound) {
-		x = (Game.PLAYFIELDWIDTH / 2) + Game.PLAYFIELDXOFFSET;
-		y = (Game.PLAYFIELDHEIGHT * 7 / 8) + Game.PLAYFIELDYOFFSET;
+		x = 0;
+		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
 		isFocusing = false;
 		kbh = k;
 		ShotMGR = mgr;
 		shotType = new ShotType((byte) 1, this);
-		moveLimits = new int[] { lowXbound, highXbound, lowYbound, highYbound};
+		moveLimits = new int[] {lowXbound, highXbound, lowYbound, highYbound};
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height, BufferedImage hitbox, int hbSize) {
 		animIdle = neutral;
@@ -100,12 +100,16 @@ public class Player {
 	
 	public void drawPlayer(Graphics2D g, Game m) {
 		visXpos = (int)(x) - (playerAnimWidth / 2);
+		visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 		visYpos = (int)(y) - (playerAnimHeight / 2);
+		visYpos += Game.PLAYFIELDYOFFSET;
 		g.drawImage(animIdle, visXpos, visYpos, m);
 	}
 	public void drawHitbox(Graphics2D g, Game m) {
 		visXpos = (int)(x) - (hitboxAnimSize / 2);
+		visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 		visYpos = (int)(y) - (hitboxAnimSize / 2);
+		visYpos += Game.PLAYFIELDYOFFSET;
 		g.drawImage(animHitbox, visXpos, visYpos, m);
 		
 	}

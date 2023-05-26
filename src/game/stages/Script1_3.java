@@ -8,7 +8,7 @@ public class Script1_3 extends StageScript{
 	private double m_x = 0.0, m_y = 0.0;
 
 	final int RING_BULLET_CNT = 12;
-	final double SCR_OX = 192.0;
+	final double SCR_OX = 0.0;
 	final double SCR_OY = 224.0;
 	double ang = 0.0f;
 	

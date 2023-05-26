@@ -18,7 +18,7 @@ public class Script1_2 extends StageScript {
 		anglenum = 0;
 		angleIncrement = 0;
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
-		testSpawner.setSpawnerPos(192, 224);
+		testSpawner.setSpawnerPos(0, 224);
 		testSpawner.setMode(Mode.Ring_Nonaimed);
 		testSpawner.setBulletCounts(5, 1);
 		testSpawner.setSpeeds(3, 3);

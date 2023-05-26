@@ -162,7 +162,8 @@ public class Enemy {
 	}
 	
 	public void renderEnemy(Graphics g, BufferedImage b) {
-		g.drawImage(b, (int)(xpos - renderSize), (int)(ypos - renderSize), game);
+		g.drawImage(b, (int)(xpos - renderSize + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2)),
+				(int)(ypos - renderSize + Game.PLAYFIELDYOFFSET), game);
 	}
 	
 	private void onDeath() {

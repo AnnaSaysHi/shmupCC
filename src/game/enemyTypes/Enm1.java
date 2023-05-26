@@ -15,7 +15,7 @@ public class Enm1 extends Enemy {
 	
 	@Override
 	public void initActions(){
-		initEnemy(100, 100, 50);
+		initEnemy(0, 100, 50);
 		setEnemySprite(1);
 		
 	}
@@ -23,7 +23,7 @@ public class Enm1 extends Enemy {
 	@Override
 	protected void doEnemyActions() {
 		if(enemyTimer == 50) {
-			//this.setPosRelTime(10, 10, 60, 3);
+			this.setPosRelTime(0, 10, 60, 3);
 		}
 	}
 	

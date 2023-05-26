@@ -102,10 +102,10 @@ public class Game extends Canvas implements Runnable{
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
 		playerChar = new Player(kbh, ShotMGR,
-				pdistfromwalls + PLAYFIELDXOFFSET,
-				PLAYFIELDXOFFSET + PLAYFIELDWIDTH - pdistfromwalls,
-				pdistfromwalls + PLAYFIELDYOFFSET,
-				PLAYFIELDYOFFSET + PLAYFIELDHEIGHT - pdistfromwalls);
+				pdistfromwalls - (PLAYFIELDWIDTH / 2),
+				(PLAYFIELDWIDTH / 2) - pdistfromwalls,
+				pdistfromwalls,
+				PLAYFIELDHEIGHT - pdistfromwalls);
 		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		

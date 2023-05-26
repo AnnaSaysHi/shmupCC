@@ -91,6 +91,7 @@ public class Bullet {
 		}
 		
 		renderTransform.setToIdentity();
+		renderTransform.translate(Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2), Game.PLAYFIELDYOFFSET);
 		renderTransform.translate(xpos - size/2, ypos - size/2);
 		if(renderRotationMode != (byte)(1)) {
 			renderTransform.rotate(renderRotationAngle, size/2, size/2);
@@ -144,10 +145,10 @@ public class Bullet {
 	}
 	
 	private boolean isOffscreen() {
-		if (xpos > size + Game.PLAYFIELDWIDTH + Game.PLAYFIELDXOFFSET) return true;
-		if (xpos < Game.PLAYFIELDXOFFSET - size) return true;
-		if (ypos < Game.PLAYFIELDYOFFSET - size) return true;
-		if (ypos > size + Game.PLAYFIELDHEIGHT + Game.PLAYFIELDYOFFSET) return true;
+		if (xpos > size + (Game.PLAYFIELDWIDTH / 2)) return true;
+		if (xpos < -(Game.PLAYFIELDWIDTH / 2) - size) return true;
+		if (ypos < - size) return true;
+		if (ypos > size + Game.PLAYFIELDHEIGHT) return true;
 		return false;
 	}
 	
