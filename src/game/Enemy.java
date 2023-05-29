@@ -9,6 +9,7 @@ public class Enemy {
 	Game game;
 	EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
+	EnemyScript script;
 	
 	final int numSpawners = 16;
 	int sprite;
