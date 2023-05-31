@@ -34,6 +34,7 @@ public class Game extends Canvas implements Runnable{
 	private BulletManager BulletMGR;
 	private PlayerShotManager ShotMGR;
 	private EnemyManager EnemyMGR;
+	private SoundManager SoundMGR;
 	private KBinputHandler kbh;
 	private boolean running = false;
 	public STATE state = STATE.MENU;
@@ -84,20 +85,22 @@ public class Game extends Canvas implements Runnable{
 		Spritesheet shots = new Spritesheet(shot);
 		kbh = new KBinputHandler(this);
 		this.addKeyListener(kbh);
+
+
+		SoundMGR = new SoundManager();
+		SoundMGR.init();
 		
-		
-		menu = new MenuGeneral(this, kbh);
-		sceneMenu = new MenuSceneSelect(this, kbh);
-		pauseMenu = new MenuPause(this, kbh);
+		menu = new MenuGeneral(this, kbh, SoundMGR);
+		sceneMenu = new MenuSceneSelect(this, kbh, SoundMGR);
+		pauseMenu = new MenuPause(this, kbh, SoundMGR);
 		sceneMenu.setParentMenu(menu);
 		sceneMenu.setMenuLengthAndDirection(4, (byte) 0);
 		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
 		menuList[0].activate();
-
 		BulletMGR = new BulletManager(1000, bullets);
-		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this);
+		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
 		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR);
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen

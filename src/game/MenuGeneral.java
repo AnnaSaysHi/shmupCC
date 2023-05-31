@@ -14,10 +14,12 @@ public class MenuGeneral {
 	protected int menuEntries;
 	protected Game parent;
 	private MenuGeneral parentMenu;
+	protected SoundManager smgr;
 	
-	public MenuGeneral(Game g, KBinputHandler kbh) {
+	public MenuGeneral(Game g, KBinputHandler kbh, SoundManager smgr) {
 		this.kbh = kbh;
 		parent = g;
+		this.smgr = smgr;
 		menuEntries = 3;
 		menuDirection = 0;
 	}
@@ -49,26 +51,32 @@ public class MenuGeneral {
 			if(UDLRCCframesHeld[0] == 1 || (UDLRCCframesHeld[0] >= 60 && UDLRCCframesHeld[0] % 5 == 0)) {
 				if(selectedOption == 0) selectedOption = menuEntries - 1;
 				else selectedOption--;
+				smgr.playFromArray(1);
 			}
 			if(UDLRCCframesHeld[1] == 1 || (UDLRCCframesHeld[1] >= 60 && UDLRCCframesHeld[1] % 5 == 0)) {
 				if(selectedOption == menuEntries - 1) selectedOption = 0;
 				else selectedOption++;
+				smgr.playFromArray(1);
 			}
 		}
 		if(menuDirection == 1) {
 			if(UDLRCCframesHeld[2] == 1 || (UDLRCCframesHeld[2] >= 60 && UDLRCCframesHeld[2] % 5 == 0)) {
 				if(selectedOption == 0) selectedOption = menuEntries - 1;
 				else selectedOption--;
+				smgr.playFromArray(1);
 			}
 			if(UDLRCCframesHeld[3] == 1 || (UDLRCCframesHeld[3] >= 60 && UDLRCCframesHeld[3] % 5 == 0)) {
 				if(selectedOption == menuEntries - 1) selectedOption = 0;
 				else selectedOption++;
+				smgr.playFromArray(1);
 			}			
 		}
 		if(UDLRCCframesHeld[4] == 1) {
+			smgr.playFromArray(3);
 			doSelectedOption();
 		}
 		if(UDLRCCframesHeld[5] == 1) {
+			smgr.playFromArray(2);
 			onCancel();
 		}
 	}

@@ -7,8 +7,8 @@ import game.Game.STATE;
 
 public class MenuPause extends MenuGeneral {
 
-	public MenuPause(Game g, KBinputHandler kbh) {
-		super(g, kbh);
+	public MenuPause(Game g, KBinputHandler kbh, SoundManager smgr) {
+		super(g, kbh, smgr);
 		// TODO Auto-generated constructor stub
 	}
 	@Override

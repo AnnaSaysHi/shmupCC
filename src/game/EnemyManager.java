@@ -13,8 +13,9 @@ public class EnemyManager {
 	Player relevantPlayer;
 	int maxSize;
 	BulletManager bmgr;
+	SoundManager smgr;
 
-	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g) {
+	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g, SoundManager smgr) {
 		maxSize = size;
 		enemies = new ArrayList<Enemy>();
 		enemySprites = ss;
@@ -25,6 +26,7 @@ public class EnemyManager {
 		bmgr = mgr;
 		relevantPlayer = p;
 		game = g;
+		this.smgr = smgr;
 		//TODO: initialize enemySpriteReference
 	}
 

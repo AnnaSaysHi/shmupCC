@@ -5,8 +5,8 @@ import java.awt.Graphics;
 
 public class MenuSceneSelect extends MenuGeneral {
 
-	public MenuSceneSelect(Game g, KBinputHandler kbh) {
-		super(g, kbh);
+	public MenuSceneSelect(Game g, KBinputHandler kbh, SoundManager smgr) {
+		super(g, kbh, smgr);
 		menuEntries = 4;
 	}
 	
