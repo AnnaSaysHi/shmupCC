@@ -7,8 +7,6 @@ import game.stages.*;
 import java.awt.geom.AffineTransform;
 import javax.swing.*;
 
-import game.BulletSpawner.Mode;
-
 public class Game extends Canvas implements Runnable{
 
 	private static final long serialVersionUID = 8763681502519222609L;
@@ -109,7 +107,7 @@ public class Game extends Canvas implements Runnable{
 				(PLAYFIELDWIDTH / 2) - pdistfromwalls,
 				pdistfromwalls,
 				PLAYFIELDHEIGHT - pdistfromwalls);
-		playerChar.playerInitAnim(player0, player1, 64, 64, hitbox, 8);
+		playerChar.playerInitAnim(player0, player1, 48, 48, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
 		playercoords = playerChar.getPosAndHitbox();
@@ -222,9 +220,9 @@ public class Game extends Canvas implements Runnable{
 		g.setColor(Color.WHITE);
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
-			ShotMGR.drawShots(g, this);
 			playerChar.drawPlayer(g, this);
 			EnemyMGR.drawEnemies(g);
+			ShotMGR.drawShots(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
 			g.drawImage(HUD, 0, 0, this);
