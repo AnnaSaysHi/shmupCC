@@ -31,7 +31,6 @@ public class SoundManager{
 		try {
 			sfxArray[slot] = AudioCue.makeStereoCue(url, 1);
 			sfxArray[slot].open();
-			System.out.println(sfxArray[slot].getMicrosecondLength());
 			sfxArray[slot].obtainInstance();
 			sfxArray[slot].setVolume(0, 1);
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
