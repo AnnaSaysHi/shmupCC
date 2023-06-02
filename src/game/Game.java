@@ -97,7 +97,7 @@ public class Game extends Canvas implements Runnable{
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
 		menuList[0].activate();
-		BulletMGR = new BulletManager(1000, bullets, SoundMGR);
+		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
 		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
 		

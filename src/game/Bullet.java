@@ -14,10 +14,13 @@ public class Bullet {
 	double xvel;
 	double yvel;
 	
+	BulletManager parentMGR;
+	
 	
 	int type;
 	int color;
 	int grazed; //Amount of frames until this bullet becomes grazeable.
+	int timer;
 	double size; // Diameter, not radius
 	double hitboxSize; // Radius, not diameter
 	int framesTillDespawnOffscreen = 0; // Amount of protection this bullet gets from immediately despawning due to being offscreen after it spawns
@@ -35,7 +38,7 @@ public class Bullet {
 
 	
 	
-	public Bullet() {
+	public Bullet(BulletManager mgr) {
 		xpos = -1;
 		ypos = -1;
 		speed = -1;
@@ -45,8 +48,10 @@ public class Bullet {
 		type = -1;
 		size = 1;
 		hitboxSize = 1;
+		timer = 0;
 		grazed = 0;
 		disabled = true;
+		parentMGR = mgr;
 		renderTransform = new AffineTransform();
 		velMode = 0;
 		transformsEnabled = 0x00000000;
@@ -65,6 +70,7 @@ public class Bullet {
 		renderRotationMode = BulletType.BULLET_ROTATION_MODE[type];
 		renderRotationAngle = Math.PI/2;
 		grazed = 0;
+		timer = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
 		renderTransform.setToIdentity();
@@ -127,8 +133,9 @@ public class Bullet {
 		default:
 			break;
 		}
+		timer++;
 		framesTillDespawnOffscreen--;
-		return ((framesTillDespawnOffscreen <= 0) && isOffscreen());
+		return ((framesTillDespawnOffscreen <= timer) && isOffscreen());
 	}
 	
 	public boolean checkCollision(double xCompare, double yCompare, double radCompare) {
@@ -137,6 +144,9 @@ public class Bullet {
 			this.color = BulletColor.LIGHT_GREY;
 		}
 		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)));
+	}
+	public void eraseSelf() {
+		//TODO: implement this
 	}
 	
 	double getAngleFromVelocity() {

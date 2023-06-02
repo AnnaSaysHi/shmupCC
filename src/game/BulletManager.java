@@ -7,12 +7,14 @@ public class BulletManager {
 	Bullet [] bullets;
 	Spritesheet bulletSprites;
 	SoundManager SoundMGR;
+	Player relevantPlayer;
 	BufferedImage[][] bulletSpriteReference;
 
-	public BulletManager(int size, Spritesheet ss, SoundManager smgr) {
+	public BulletManager(int size, Spritesheet ss, SoundManager smgr, Player player) {
 		bullets = new Bullet[size];
 		SoundMGR = smgr;
-		for(int i = 0; i < size; i++) bullets[i] = new Bullet();
+		relevantPlayer = player;
+		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this);
 		bulletSprites = ss;
 		bulletSpriteReference = new BufferedImage[BulletColor.NUM_BULLET_COLORS][BulletType.NUM_BULLET_TYPES];
 		for(int i = 0; i < BulletColor.NUM_BULLET_COLORS; i++) {

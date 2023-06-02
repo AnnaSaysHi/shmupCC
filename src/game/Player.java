@@ -15,6 +15,7 @@ public class Player {
 	boolean isFocusing;
 	int hitboxAnimSize;
 	double hitboxSize;
+	double grazeboxSize;
 	int playerAnimWidth;
 	int playerAnimHeight;
 	int visXpos;
@@ -45,6 +46,7 @@ public class Player {
 		moveSpeedUF = speedUF;
 		moveSpeedF = speedF;
 		hitboxSize = size;
+		grazeboxSize = 12;
 	}
 	public void playerReInitialize() {
 		x = 0;
