@@ -265,12 +265,14 @@ public class Game extends Canvas implements Runnable{
 		stageList[stage].init();
 	}
 	public void restartStage() {
+		playerChar.playerReInitialize();
 		stageList[stage].init();
 		state = STATE.PLAY;
 	}
 	public void returnToMenu() {
 		state = STATE.MENU;
 		stage = -1;
+		playerChar.playerReInitialize();
 		BulletMGR.deactivateAll();
 	}
 	public void nextStage() {
