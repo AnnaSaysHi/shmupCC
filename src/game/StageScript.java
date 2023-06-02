@@ -7,9 +7,11 @@ public class StageScript {
 	protected Player playerChar;
 	protected EnemyManager enmMgr;
 	protected int stageTimer;
+	protected SoundManager smgr;
 	
-	public StageScript(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr) {
+	public StageScript(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
 		this.mgr = mgr;
+		this.smgr = smgr;
 		parentGame = g;
 		stageTimer = 0;
 		this.playerChar = playerChar;

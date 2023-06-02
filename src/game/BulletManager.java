@@ -6,10 +6,12 @@ import java.awt.image.BufferedImage;
 public class BulletManager {
 	Bullet [] bullets;
 	Spritesheet bulletSprites;
+	SoundManager SoundMGR;
 	BufferedImage[][] bulletSpriteReference;
 
-	public BulletManager(int size, Spritesheet ss) {
+	public BulletManager(int size, Spritesheet ss, SoundManager smgr) {
 		bullets = new Bullet[size];
+		SoundMGR = smgr;
 		for(int i = 0; i < size; i++) bullets[i] = new Bullet();
 		bulletSprites = ss;
 		bulletSpriteReference = new BufferedImage[BulletColor.NUM_BULLET_COLORS][BulletType.NUM_BULLET_TYPES];

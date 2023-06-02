@@ -5,11 +5,12 @@ import game.Enemy;
 import game.EnemyManager;
 import game.Game;
 import game.Player;
+import game.SoundManager;
 
 public class Enm1 extends Enemy {
 
-	public Enm1(BulletManager bmgr, Player p, Game g, EnemyManager emgr) {
-		super(bmgr, p, g, emgr);
+	public Enm1(BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
+		super(bmgr, p, g, emgr, smgr);
 		// TODO Auto-generated constructor stub
 	}
 	

@@ -7,15 +7,17 @@ public class PlayerShotManager {
 	PlayerShot[] shots;
 	Spritesheet shotSprites;
 	BufferedImage[] shotSpriteReference;
+	SoundManager soundMGR;
 	EnemyManager enmMGR;
 	
-	public PlayerShotManager(int size, Spritesheet ss, EnemyManager enmMGR) {
+	public PlayerShotManager(int size, Spritesheet ss, EnemyManager enmMGR, SoundManager soundMGR) {
 		shots = new PlayerShot[size];
 		for(int i = 0; i < size; i++) shots[i] = new PlayerShot();
 		shotSprites = ss;
 		shotSpriteReference = new BufferedImage[1];
 		shotSpriteReference[0] = ss.getSprite(0, 0, 16, 16);
 		this.enmMGR = enmMGR;
+		this.soundMGR = soundMGR;
 	}
 	
 	public void updateShots() {

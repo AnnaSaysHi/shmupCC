@@ -8,8 +8,8 @@ public class Script1_2 extends StageScript {
 	private double anglenum;
 	private double angleIncrement;
 	
-	public Script1_2(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr) {
-		super(mgr, g, playerChar, enmMgr);
+	public Script1_2(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
+		super(mgr, g, playerChar, enmMgr, smgr);
 		// TODO Auto-generated constructor stub
 	}
 

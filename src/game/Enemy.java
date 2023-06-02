@@ -7,6 +7,7 @@ public class Enemy {
 	BulletManager bulletMGR;
 	Player targetPlayer;
 	Game game;
+	SoundManager SoundMGR;
 	EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
 	EnemyScript script;
@@ -42,8 +43,9 @@ public class Enemy {
 	BulletSpawner[] spawners = new BulletSpawner[numSpawners];
 	
 
-	public Enemy(BulletManager bmgr, Player p, Game g, EnemyManager emgr) {
+	public Enemy(BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
 		bulletMGR = bmgr;
+		SoundMGR = smgr;
 		targetPlayer = p;
 		game = g;
 		parentMGR = emgr;

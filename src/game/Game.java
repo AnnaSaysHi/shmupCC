@@ -97,9 +97,9 @@ public class Game extends Canvas implements Runnable{
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
 		menuList[0].activate();
-		BulletMGR = new BulletManager(1000, bullets);
+		BulletMGR = new BulletManager(1000, bullets, SoundMGR);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
-		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR);
+		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
 		playerChar = new Player(kbh, ShotMGR,
@@ -112,10 +112,10 @@ public class Game extends Canvas implements Runnable{
 		
 		playercoords = playerChar.getPosAndHitbox();
 		
-		stageList[0] = new Script1_1(BulletMGR, this, playerChar, EnemyMGR);
-		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR);
-		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR);
-		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR);
+		stageList[0] = new Script1_1(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 
 	}
 	
