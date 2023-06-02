@@ -6,6 +6,9 @@ import javax.sound.sampled.*;
 
 public class SoundManager{
 	public static final int numSFX = 26;
+	public static final int Select = 1;
+	public static final int Cancel = 2;
+	public static final int Confirm = 3;
 	AudioInputStream audioStream;
 	AudioCue[] sfxArray;
 
