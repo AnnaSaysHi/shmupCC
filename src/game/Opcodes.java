@@ -5,6 +5,7 @@ public abstract class Opcodes {
 	//opcodes 0 thru 100
 	public static final int nop = 0;
 	public static final int ret = 10;
+	public static final int call = 11;
 	public static final int wait = 23;
 	
 	
@@ -19,6 +20,7 @@ public abstract class Opcodes {
 	public static final int setAimMode = 607;
 	public static final int setShotSound = 608;
 	public static final int setShootDistance = 627;
+	public static final int setShotFrequency = 642;
 	
 	
 }

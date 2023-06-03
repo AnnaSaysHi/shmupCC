@@ -14,7 +14,7 @@ public class Script1_4 extends StageScript {
 	@Override
 	public void initActions() {
 		//enmMgr.addEnemy(new Enm1(mgr, playerChar, parentGame, enmMgr, smgr));
-		ArrayList<String> al = new ArrayList<String>();
+		/*ArrayList<String> al = new ArrayList<String>();
 		al.add("0");
 		al.add("600");
 		al.add("12");
@@ -22,7 +22,7 @@ public class Script1_4 extends StageScript {
 		al.add("100000");
 		Enemy enemyA = new Enemy(mgr, playerChar, parentGame, enmMgr, smgr);
 		enemyA.setEnemyScript(new EnemyScript(al));
-		enmMgr.addEnemy(enemyA);
+		enmMgr.addEnemy(enemyA);*/
 	}
 
 }

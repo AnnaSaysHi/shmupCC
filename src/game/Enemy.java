@@ -3,6 +3,7 @@ package game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
+import java.util.Stack;
 
 public class Enemy {
 	BulletManager bulletMGR;
@@ -17,6 +18,8 @@ public class Enemy {
 	int scriptPosition;
 	int opcode;
 	HashMap<String, String> variables;
+	Stack<String> callStack;
+	String subName;
 	
 	final int numSpawners = 16;
 	int sprite;
@@ -59,6 +62,8 @@ public class Enemy {
 		interpolator = new EnemyMovementInterpolator(this);
 		scriptPosition = 0;
 		variables = new HashMap<String, String>();
+		callStack = new Stack<String>();
+		subName = "";
 		
 		disabled = true;
 		sprite = 0;
@@ -104,6 +109,8 @@ public class Enemy {
 			spawners[i].reInit();
 		}
 		variables.clear();
+		callStack.clear();
+		subName = "";
 		framesTillDespawnOffscreen = 50;
 		
 		enemyTimer = 0;
@@ -249,11 +256,8 @@ public class Enemy {
 	}
 	
 	public void executeScript() throws SCCLexception {
-		if(scriptPosition >= script.getScriptLength()) {
-			disabled = true;
-			return;
-		}
-		opcode = getIntFromScript(scriptPosition);
+		if(scriptPosition >= script.getScriptLength()) opcode = Opcodes.ret;
+		else opcode = getIntFromScript(scriptPosition);
 		int intArg1;
 		int intArg2;
 		int intArg3;
@@ -263,6 +267,19 @@ public class Enemy {
 		case Opcodes.nop:
 			//System.out.println("nop executed");
 			scriptPosition++;
+			break;
+		case Opcodes.ret:
+			if(callStack.isEmpty()) disabled = true;
+			else {
+				subName = callStack.pop();
+				scriptPosition = Integer.parseInt(callStack.pop());
+			}
+			break;
+		case Opcodes.call:
+			scriptPosition += 2;
+			callStack.push(Integer.toString(scriptPosition));
+			callStack.push(subName);
+			subName = script.getValueAtPos(subName, scriptPosition - 1);
 			break;
 		case Opcodes.wait:
 			intArg1 = getIntFromScript(scriptPosition + 1);
@@ -349,6 +366,16 @@ public class Enemy {
 			scriptPosition += 3;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setMode(intArg2);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
+			}
+			break;
+		case Opcodes.setShotFrequency:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			intArg2 = getIntFromScript(scriptPosition + 2);
+			scriptPosition += 3;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setActivationFrequency(intArg2);
 			}else {
 				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
 			}
