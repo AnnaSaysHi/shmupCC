@@ -3,7 +3,7 @@ package game;
 public class BulletSpawner {
 	BulletManager parentManager;
 	Game game;
-	Mode modeNum;
+	int modeNum;
 	int layers;
 	int ways;
 	double spawnerX;
@@ -19,23 +19,22 @@ public class BulletSpawner {
 	int protectFrames = 10;
 	Player targetPlayer;
 	double[] playercoords;
-	public enum Mode{
-		Fan_Aimed,
-		Fan,
-		Ring_Aimed_Direct,
-		Ring_Aimed_Around,
-		Ring_Nonaimed,
-		Ring_Mode5,
-		Fan_Random_Angle,
-		Ring_Random_Speed,
-		Meek
-	}
+	
+	public static final int Mode_Fan_Aimed = 0;
+	public static final int Mode_Fan = 1;
+	public static final int Mode_Ring_Aimed_Direct = 2;
+	public static final int Mode_Ring_Aimed_Around = 3;
+	public static final int Mode_Ring_Nonaimed = 4;
+	public static final int Mode_Ring_Mode5 = 5;
+	public static final int Mode_Fan_Random_Angle = 6;
+	public static final int Mode_Ring_Random_Speed = 7;
+	public static final int Mode_Meek = 8;
 	//constructors
 	public BulletSpawner(BulletManager parent, Player player, Game game) {
 		parentManager = parent;
 		targetPlayer = player;
 		this.game = game;
-		modeNum = Mode.Fan;
+		modeNum = Mode_Fan;
 		spawnerX = 0;
 		spawnerY = 0;
 		layers = 1;
@@ -82,7 +81,7 @@ public class BulletSpawner {
 		layers = numLayers;
 		ways = numWays;
 	}
-	public void setMode(Mode mode) {
+	public void setMode(int mode) {
 		modeNum = mode;
 	}
 	public void setTypeAndColor(int bulletType, int bulletColor) {
@@ -118,29 +117,29 @@ public class BulletSpawner {
 	public void activate() {
 		double angleAim = angle1;
 		switch(modeNum) {
-		case Fan_Aimed:
+		case Mode_Fan_Aimed:
 			angleAim += this.getAngleToPlayer();
-		case Fan:
+		case Mode_Fan:
 			shootFan(angleAim);
 			break;
-		case Ring_Aimed_Direct:
+		case Mode_Ring_Aimed_Direct:
 			angleAim += this.getAngleToPlayer();
 			shootRing(angleAim);
 			break;
-		case Ring_Aimed_Around:
+		case Mode_Ring_Aimed_Around:
 			angleAim += this.getAngleToPlayer();
-		case Ring_Mode5:
+		case Mode_Ring_Mode5:
 			angleAim += Math.PI / ways;
-		case Ring_Nonaimed:
+		case Mode_Ring_Nonaimed:
 			shootRing(angleAim);
 			break;
-		case Fan_Random_Angle:
+		case Mode_Fan_Random_Angle:
 			shootRandomFan();
 			break;
-		case Ring_Random_Speed:
+		case Mode_Ring_Random_Speed:
 			shootRandomRing(angleAim);
 			break;
-		case Meek:
+		case Mode_Meek:
 			shootPR_Bullet(angle1, angle2, speed1, speed2, layers * ways);
 			break;
 		default:

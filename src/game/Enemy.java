@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 public class Enemy {
 	BulletManager bulletMGR;
@@ -10,7 +11,12 @@ public class Enemy {
 	SoundManager SoundMGR;
 	EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
+	
+	
 	EnemyScript script;
+	int scriptPosition;
+	int opcode;
+	HashMap<String, String> variables;
 	
 	final int numSpawners = 16;
 	int sprite;
@@ -50,6 +56,8 @@ public class Enemy {
 		game = g;
 		parentMGR = emgr;
 		interpolator = new EnemyMovementInterpolator(this);
+		scriptPosition = 0;
+		variables = new HashMap<String, String>();
 		
 		disabled = true;
 		sprite = 0;
@@ -79,6 +87,8 @@ public class Enemy {
 	}
 	
 	public void initActions() {
+		initEnemy(0, 100, 50);
+		setEnemySprite(1);
 	}
 	
 	public void initEnemy(double x, double y, int health) {
@@ -88,9 +98,11 @@ public class Enemy {
 		ypos = y;
 		HP = health;
 		maxHP = health;
+		scriptPosition = 0;
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].reInit();
 		}
+		variables.clear();
 		framesTillDespawnOffscreen = 50;
 		
 		enemyTimer = 0;
@@ -106,6 +118,10 @@ public class Enemy {
 		xaccel = 0;
 		yaccel = 0;
 		
+	}
+	
+	public void setEnemyScript(EnemyScript es) {
+		script = es;
 	}
 	public void setEnemySprite(int spr) {
 		sprite = spr;
@@ -126,7 +142,11 @@ public class Enemy {
 	}
 	
 	protected void doEnemyActions() {
-		
+		try{
+			executeScript();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	private void processEnemyMovement() {
 		speed += accel;
@@ -176,6 +196,10 @@ public class Enemy {
 		return disabled;
 	}
 	
+
+	
+	
+	
 	public void setPosAbs(double x, double y) {
 		xpos = x;
 		ypos = y;
@@ -191,4 +215,103 @@ public class Enemy {
 		interpolator.moveOverTime(x + xpos, y + ypos, t, mode);
 	}
 	
+	protected int getIntFromScript(int pos) {
+		int toRet = 0;
+		String s = script.getValueAtPos(pos);
+		try {
+			if(variables.containsKey(s)) {
+				toRet = Integer.parseInt(variables.get(s));
+			}else {
+				toRet = Integer.parseInt(script.getValueAtPos(pos));
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return toRet;
+	}
+	protected double getFloatFromScript(int pos) {
+		double toRet = 0;
+		String s = script.getValueAtPos(pos);
+		try {
+			if(variables.containsKey(s)) {
+				toRet = Double.parseDouble(variables.get(s));
+			}else {
+				toRet = Double.parseDouble(script.getValueAtPos(pos));
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return toRet;
+	}
+	
+	public void executeScript() throws SCCLexception {
+		opcode = getIntFromScript(scriptPosition);
+		int intArg1;
+		int intArg2;
+		int intArg3;
+		double doubleArg1;
+		double doubleArg2;
+		switch(opcode) {
+		case Opcodes.nop:
+			System.out.println("nop executed");
+			scriptPosition++;
+			break;
+		case Opcodes.resetShooter:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			scriptPosition += 2;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].reInit();
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2));
+			}
+			break;
+		case Opcodes.setAngles:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			doubleArg1 = getFloatFromScript(scriptPosition + 2);
+			doubleArg2 = getFloatFromScript(scriptPosition + 3);
+			scriptPosition += 4;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setAngles(doubleArg1, doubleArg2);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+			}
+			break;
+		case Opcodes.setSpeeds:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			doubleArg1 = getFloatFromScript(scriptPosition + 2);
+			doubleArg2 = getFloatFromScript(scriptPosition + 3);
+			scriptPosition += 4;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setSpeeds(doubleArg1, doubleArg2);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+			}
+			break;
+		case Opcodes.setCounts:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			intArg2 = getIntFromScript(scriptPosition + 2);
+			intArg3 = getIntFromScript(scriptPosition + 3);
+			scriptPosition += 4;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setBulletCounts(intArg2, intArg3);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+			}
+			break;
+		case Opcodes.setAimMode:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			intArg2 = getIntFromScript(scriptPosition + 2);
+			scriptPosition += 3;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setMode(intArg2);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
+			}
+			break;
+		default:
+			scriptPosition++;
+			throw new SCCLexception("Unknown opcode at position " + (scriptPosition - 1));
+		}
+	}
+
 }

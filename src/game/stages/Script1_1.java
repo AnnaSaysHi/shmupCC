@@ -1,7 +1,6 @@
 package game.stages;
 
 import game.*;
-import game.BulletSpawner.Mode;
 
 public class Script1_1 extends StageScript {
 	private BulletSpawner testSpawner;
@@ -15,7 +14,7 @@ public class Script1_1 extends StageScript {
 	public void initActions() {
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
 		testSpawner.setSpawnerPos(0, 40);
-		testSpawner.setMode(Mode.Meek);
+		testSpawner.setMode(BulletSpawner.Mode_Meek);
 		testSpawner.setBulletCounts(3, 1);
 		testSpawner.setSpeeds(5, 1);
 		testSpawner.setAngles(0, 2 * Math.PI);

@@ -1,6 +1,6 @@
 package game.stages;
 import game.*;
-import game.BulletSpawner.Mode;
+
 
 public class Script1_3 extends StageScript{
 	private BulletSpawner testSpawner;
@@ -24,7 +24,7 @@ public class Script1_3 extends StageScript{
 		testSpawner.setTypeAndColor(BulletType.RICE, BulletColor.BRIGHT_RED);
 		testSpawner.setBulletCounts(8, 1);
 		testSpawner.setSpeeds(3.0, 0.0);
-		testSpawner.setMode(Mode.Ring_Nonaimed);
+		testSpawner.setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		//testSpawner.setActivationFrequency(5);
 	}
 	

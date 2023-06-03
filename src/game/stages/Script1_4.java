@@ -1,11 +1,7 @@
 package game.stages;
 
-import game.BulletManager;
-import game.EnemyManager;
-import game.Game;
-import game.Player;
-import game.SoundManager;
-import game.StageScript;
+import game.*;
+import java.util.ArrayList;
 import game.enemyTypes.Enm1;
 
 public class Script1_4 extends StageScript {
@@ -17,7 +13,14 @@ public class Script1_4 extends StageScript {
 	
 	@Override
 	public void initActions() {
-		enmMgr.addEnemy(new Enm1(mgr, playerChar, parentGame, enmMgr, smgr));
+		//enmMgr.addEnemy(new Enm1(mgr, playerChar, parentGame, enmMgr, smgr));
+		ArrayList<String> al = new ArrayList<String>();
+		al.add("0");
+		al.add("600");
+		al.add("17");
+		Enemy enemyA = new Enemy(mgr, playerChar, parentGame, enmMgr, smgr);
+		enemyA.setEnemyScript(new EnemyScript(al));
+		enmMgr.addEnemy(enemyA);
 	}
 
 }

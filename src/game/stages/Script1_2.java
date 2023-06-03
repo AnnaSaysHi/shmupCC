@@ -1,7 +1,6 @@
 package game.stages;
 
 import game.*;
-import game.BulletSpawner.Mode;
 
 public class Script1_2 extends StageScript {
 	private BulletSpawner testSpawner;
@@ -19,7 +18,7 @@ public class Script1_2 extends StageScript {
 		angleIncrement = 0;
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
 		testSpawner.setSpawnerPos(0, 224);
-		testSpawner.setMode(Mode.Ring_Nonaimed);
+		testSpawner.setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		testSpawner.setBulletCounts(5, 1);
 		testSpawner.setSpeeds(3, 3);
 		testSpawner.setAngles(anglenum, anglenum);
