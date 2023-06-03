@@ -33,6 +33,7 @@ public class Enemy {
 	public double yaccel;
 	protected int movementType; //0 = angle and speed, 1 = xSpeed and ySpeed
 	protected int enemyTimer;
+	protected int waitTimer;
 	protected int HP;
 	protected int maxHP;
 	int damageToTake;
@@ -106,6 +107,7 @@ public class Enemy {
 		framesTillDespawnOffscreen = 50;
 		
 		enemyTimer = 0;
+		waitTimer = 0;
 		movementTimer1 = -1;
 		movementTimer2 = -1;
 		
@@ -142,10 +144,12 @@ public class Enemy {
 	}
 	
 	protected void doEnemyActions() {
-		try{
-			executeScript();
-		}catch(Exception e) {
-			e.printStackTrace();
+		while(waitTimer <= enemyTimer) {
+			try{
+				executeScript();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	private void processEnemyMovement() {
@@ -222,7 +226,7 @@ public class Enemy {
 			if(variables.containsKey(s)) {
 				toRet = Integer.parseInt(variables.get(s));
 			}else {
-				toRet = Integer.parseInt(script.getValueAtPos(pos));
+				toRet = Integer.parseInt(s);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -236,7 +240,7 @@ public class Enemy {
 			if(variables.containsKey(s)) {
 				toRet = Double.parseDouble(variables.get(s));
 			}else {
-				toRet = Double.parseDouble(script.getValueAtPos(pos));
+				toRet = Double.parseDouble(s);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -245,6 +249,10 @@ public class Enemy {
 	}
 	
 	public void executeScript() throws SCCLexception {
+		if(scriptPosition >= script.getScriptLength()) {
+			disabled = true;
+			return;
+		}
 		opcode = getIntFromScript(scriptPosition);
 		int intArg1;
 		int intArg2;
@@ -253,8 +261,13 @@ public class Enemy {
 		double doubleArg2;
 		switch(opcode) {
 		case Opcodes.nop:
-			System.out.println("nop executed");
+			//System.out.println("nop executed");
 			scriptPosition++;
+			break;
+		case Opcodes.wait:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			scriptPosition += 2;
+			waitTimer += intArg1;
 			break;
 		case Opcodes.resetShooter:
 			intArg1 = getIntFromScript(scriptPosition + 1);
@@ -265,6 +278,38 @@ public class Enemy {
 				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2));
 			}
 			break;
+		case Opcodes.activate:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			scriptPosition += 2;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].activate();
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2));
+			}
+			break;
+		case Opcodes.setSprites:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			intArg2 = getIntFromScript(scriptPosition + 2);
+			intArg3 = getIntFromScript(scriptPosition + 3);
+			scriptPosition += 4;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setTypeAndColor(intArg2, intArg3);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+			}
+			break;
+		case Opcodes.setRelativeShotOffset:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			doubleArg1 = getFloatFromScript(scriptPosition + 2);
+			doubleArg2 = getFloatFromScript(scriptPosition + 3);
+			scriptPosition += 4;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setRelativePos(doubleArg1, doubleArg2);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+			}
+			break;
+			
 		case Opcodes.setAngles:
 			intArg1 = getIntFromScript(scriptPosition + 1);
 			doubleArg1 = getFloatFromScript(scriptPosition + 2);
@@ -308,6 +353,15 @@ public class Enemy {
 				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
 			}
 			break;
+		case Opcodes.setShootDistance:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			doubleArg1 = getFloatFromScript(scriptPosition + 2);
+			scriptPosition += 3;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setSpawnDistance(doubleArg1);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
+			}
 		default:
 			scriptPosition++;
 			throw new SCCLexception("Unknown opcode at position " + (scriptPosition - 1));

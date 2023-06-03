@@ -17,6 +17,9 @@ public class EnemyScript {
 	public String getValueAtPos(int position) {
 		return sub.get(position);
 	}
+	public int getScriptLength() {
+		return sub.size();
+	}
 	
 	public void getScriptFromFile(String fileName, String subName) {
 		//TODO

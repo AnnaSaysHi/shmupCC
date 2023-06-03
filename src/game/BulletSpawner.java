@@ -3,18 +3,24 @@ package game;
 public class BulletSpawner {
 	BulletManager parentManager;
 	Game game;
+	Enemy parentEnemy;
 	int modeNum;
 	int layers;
 	int ways;
+	boolean followEnemy;
 	double spawnerX;
 	double spawnerY;
+	double relativeX;
+	double relativeY;
 	double speed1;
 	double speed2;
 	double angle1;
 	double angle2;
+	double spawnDistance;
 	int type;
 	int color;
 	int countdown;
+	int soundOnActivate;
 	int activationFreq;
 	int protectFrames = 10;
 	Player targetPlayer;
@@ -37,6 +43,10 @@ public class BulletSpawner {
 		modeNum = Mode_Fan;
 		spawnerX = 0;
 		spawnerY = 0;
+		relativeX = 0;
+		relativeY = 0;
+		spawnDistance = 0;
+		soundOnActivate = SoundManager.No_Sound;
 		layers = 1;
 		ways = 1;
 		speed1 = 1;
@@ -47,19 +57,6 @@ public class BulletSpawner {
 		activationFreq = -1;
 	}
 	
-	//Accessor methods
-	/*public double getAngle1() {
-		return angle1;
-	}
-	public double getAngle2() {
-		return angle2;
-	}
-	public double getSpeed1() {
-		return speed1;
-	}
-	public double getSpeed2() {
-		return speed2;
-	}*/
 	public double[] getSpawnerPos(){
 		return new double[] {spawnerX, spawnerY};
 	}
@@ -77,9 +74,16 @@ public class BulletSpawner {
 		spawnerX = xPos;
 		spawnerY = yPos;
 	}
+	public void setRelativePos(double xPos, double yPos) {
+		relativeX = xPos;
+		relativeY = yPos;
+	}
 	public void setBulletCounts(int numWays, int numLayers) {
 		layers = numLayers;
 		ways = numWays;
+	}
+	public void setSpawnDistance(double distance) {
+		spawnDistance = distance;
 	}
 	public void setMode(int mode) {
 		modeNum = mode;
@@ -162,7 +166,7 @@ public class BulletSpawner {
 		if (layers == 1) speedIncrement = 0;
 		else speedIncrement = (speed2 - speed1) / (layers-1);
 		for(int i = 0; i < layers; i++) {
-			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, type, color, protectFrames);
+			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, type, color, protectFrames, spawnDistance);
 			shotSpeed += speedIncrement;
 		}
 	}
@@ -182,7 +186,7 @@ public class BulletSpawner {
 	private void shootRingLayer(double angleAim, double ringSpeed) {
 		double angleIncrement = (2 * Math.PI) / ways;
 		for(int i = 0; i < ways; i++) {
-			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, type, color, protectFrames);
+			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, type, color, protectFrames, spawnDistance);
 			angleAim += angleIncrement;
 		}
 	}
@@ -211,23 +215,25 @@ public class BulletSpawner {
 		for(int i = 0; i < count; i++) {
 			chosenSpeed = (game.FetchRNG().nextDouble() * (speedMax - speedMin)) + speedMin;
 			chosenAngle = (game.FetchRNG().nextDouble() * (angleMax - angleMin)) + angleMin;
-			parentManager.addBullet(spawnerX, spawnerY, chosenSpeed, chosenAngle, type, color, protectFrames);
+			parentManager.addBullet(spawnerX, spawnerY, chosenSpeed, chosenAngle, type, color, protectFrames, spawnDistance);
 		}
 	}
 	public void reInit() {
-		layers = 1;
-		ways = 1;
+		modeNum = Mode_Fan;
 		spawnerX = 0;
 		spawnerY = 0;
-		speed1 = 0;
-		speed2 = 0;
+		relativeX = 0;
+		relativeY = 0;
+		spawnDistance = 0;
+		soundOnActivate = SoundManager.No_Sound;
+		layers = 1;
+		ways = 1;
+		speed1 = 1;
+		speed2 = 1;
 		angle1 = 0;
 		angle2 = 0;
-		type = 0;
-		color = 0;
 		countdown = -1;
 		activationFreq = -1;
-		
 	}
 
 }

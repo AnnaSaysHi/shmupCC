@@ -122,8 +122,7 @@ public class Bullet {
 		doBulletTransformations();
 		switch(velMode) {
 		case 0:
-			xpos += Math.cos(angle) * speed;
-			ypos += Math.sin(angle) * speed;
+			step(speed);
 			break;
 		case 1:
 			xpos += xvel;
@@ -136,6 +135,11 @@ public class Bullet {
 		timer++;
 		framesTillDespawnOffscreen--;
 		return ((framesTillDespawnOffscreen <= timer) && isOffscreen());
+	}
+	public void step(double dist) {
+		xpos += Math.cos(angle) * dist;
+		ypos += Math.sin(angle) * dist;
+		
 	}
 	
 	public boolean checkCollision(double xCompare, double yCompare, double radCompare) {

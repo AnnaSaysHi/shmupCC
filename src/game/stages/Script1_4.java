@@ -17,7 +17,9 @@ public class Script1_4 extends StageScript {
 		ArrayList<String> al = new ArrayList<String>();
 		al.add("0");
 		al.add("600");
-		al.add("17");
+		al.add("12");
+		al.add("23");
+		al.add("100000");
 		Enemy enemyA = new Enemy(mgr, playerChar, parentGame, enmMgr, smgr);
 		enemyA.setEnemyScript(new EnemyScript(al));
 		enmMgr.addEnemy(enemyA);

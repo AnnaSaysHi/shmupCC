@@ -10,6 +10,10 @@ public class SoundManager{
 	public static final int Select = 1;
 	public static final int Cancel = 2;
 	public static final int Confirm = 3;
+	public static final int EnemyShootLoud = 10;
+	public static final int EnemyShootMed = 11;
+	public static final int EnemyShootMuted = 12;
+	public static final int Sparkle = 13;
 	AudioInputStream audioStream;
 	AudioCue[] sfxArray;
 
@@ -23,6 +27,10 @@ public class SoundManager{
 			loadIntoArray(1, "/sfx/select00.wav");
 			loadIntoArray(2, "/sfx/cancel00.wav");
 			loadIntoArray(3, "/sfx/ok00.wav");
+			loadIntoArray(10, "/sfx/tan00.wav");
+			loadIntoArray(11, "/sfx/tan01.wav");
+			loadIntoArray(12, "/sfx/tan02.wav");
+			loadIntoArray(13, "/sfx/kira00.wav");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}		
