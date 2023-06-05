@@ -258,15 +258,20 @@ public class Enemy {
 		return toRet;
 	}
 	
+	//GIANT SWITCH STATEMENT OF DOOM
 	public void executeScript() throws SCCLexception {
 		if(scriptPosition >= script.getSubLength(subName)) opcode = Opcodes.ret;
 		else opcode = getIntFromScript(scriptPosition);
+		String stringArg1;
 		int intArg1;
 		int intArg2;
 		int intArg3;
 		double doubleArg1;
 		double doubleArg2;
 		switch(opcode) {
+		
+		
+		//OPCODES 000-100, CONTROL FLOW AND MISCELLANEOUS STUFF
 		case Opcodes.nop:
 			//System.out.println("nop executed");
 			scriptPosition++;
@@ -283,12 +288,34 @@ public class Enemy {
 			mainCallStack.push(Integer.toString(scriptPosition));
 			mainCallStack.push(subName);
 			subName = script.getValueAtPos(subName, scriptPosition - 1);
+			scriptPosition = 0;
 			break;
 		case Opcodes.wait:
 			intArg1 = getIntFromScript(scriptPosition + 1);
 			scriptPosition += 2;
 			waitTimer += intArg1;
 			break;
+			
+			
+		//OPCODES 300-399, ENEMY CREATION
+		case Opcodes.enemyCreateRel:
+			stringArg1 = script.getValueAtPos(subName, scriptPosition + 1);
+			doubleArg1 = getFloatFromScript(scriptPosition + 2);
+			doubleArg2 = getFloatFromScript(scriptPosition + 3);
+			intArg1 = getIntFromScript(scriptPosition + 4);
+			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
+			scriptPosition += 5;
+			break;
+		case Opcodes.enemyCreateAbs:
+			stringArg1 = script.getValueAtPos(subName, scriptPosition + 1);
+			doubleArg1 = getFloatFromScript(scriptPosition + 2);
+			doubleArg2 = getFloatFromScript(scriptPosition + 3);
+			intArg1 = getIntFromScript(scriptPosition + 4);
+			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
+			scriptPosition += 5;
+			break;
+			
+		//OPCODES 600-699, BULLET-RELATED STUFF
 		case Opcodes.resetShooter:
 			intArg1 = getIntFromScript(scriptPosition + 1);
 			scriptPosition += 2;

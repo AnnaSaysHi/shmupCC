@@ -8,6 +8,10 @@ public abstract class Opcodes {
 	public static final int call = 11;
 	public static final int wait = 23;
 	
+	//opcodes 300 thru 399
+	public static final int enemyCreateRel = 300;
+	public static final int enemyCreateAbs = 301;
+	
 	
 	//opcodes 600 thru 699
 	public static final int resetShooter = 600;
