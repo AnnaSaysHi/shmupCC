@@ -391,6 +391,7 @@ public class Enemy {
 			scriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setRelativePos(doubleArg1, doubleArg2);
+				spawners[intArg1].setParentEnemy(this);
 			}else {
 				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
 			}

@@ -55,6 +55,11 @@ public class BulletSpawner {
 		angle2 = 0;
 		countdown = -1;
 		activationFreq = -1;
+		followEnemy = false;
+	}
+	public void setParentEnemy(Enemy e) {
+		parentEnemy = e;
+		followEnemy = true;
 	}
 	
 	public double[] getSpawnerPos(){
@@ -106,6 +111,10 @@ public class BulletSpawner {
 	
 	
 	public void tickSpawner() {
+		if(followEnemy) {
+			spawnerX = parentEnemy.xpos + relativeX;
+			spawnerY = parentEnemy.ypos + relativeY;
+		}
 		playercoords = targetPlayer.getPosAndHitbox();
 		countdown--;
 		if(countdown == 0) {
@@ -223,6 +232,7 @@ public class BulletSpawner {
 	}
 	public void reInit() {
 		modeNum = Mode_Fan;
+		followEnemy = false;
 		spawnerX = 0;
 		spawnerY = 0;
 		relativeX = 0;
