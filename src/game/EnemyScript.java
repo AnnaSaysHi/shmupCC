@@ -54,8 +54,11 @@ public class EnemyScript {
 			while(s.hasNextLine()) {
 				if(parsing) {
 					String t = s.next();
-					toReturn.add(t);
-					if(t.equals("10")) break;
+					if(t.equals("ret")) {
+						toReturn.add("10");
+						break;
+					}else toReturn.add(t);
+
 				} else {
 					lineGet = new Scanner(s.nextLine());
 					if(lineGet.hasNext()) {
@@ -63,11 +66,11 @@ public class EnemyScript {
 							parsing = true;
 							while(lineGet.hasNext()) {
 								String u = lineGet.next();
-								toReturn.add(u);
-								if(u.equals("10")) {
+								if(u.equals("ret")) {
+									toReturn.add("10");
 									parsing = false;
 									break;
-								}
+								}else toReturn.add(u);
 							}
 						}
 						
