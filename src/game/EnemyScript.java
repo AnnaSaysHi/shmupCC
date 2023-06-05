@@ -20,12 +20,13 @@ public class EnemyScript {
 	}
 	public EnemyScript(String filename) {
 		sub = new ArrayList<String>();
+		subs = new HashMap<String, ArrayList<String>>();
 		getScriptFromFile(filename);
 	}
 	
-	public String getValueAtPos(int position) {
+	/*public String getValueAtPos(int position) {
 		return sub.get(position);
-	}
+	}*/
 	public String getValueAtPos(String sub, int position) {
 		if(subs.containsKey(sub)) {
 			return subs.get(sub).get(position);
@@ -35,7 +36,7 @@ public class EnemyScript {
 	public int getScriptLength() {
 		return sub.size();
 	}
-	public int getScriptLength(String sub) {
+	public int getSubLength(String sub) {
 		return subs.get(sub).size();
 	}
 	
@@ -57,11 +58,19 @@ public class EnemyScript {
 					if(t.equals("10")) break;
 				} else {
 					lineGet = new Scanner(s.nextLine());
-					if(lineGet.next().equals(subName)) {
-						parsing = true;
-						while(lineGet.hasNext()) {
-							toReturn.add(lineGet.next());
+					if(lineGet.hasNext()) {
+						if(lineGet.next().equals(subName)) {
+							parsing = true;
+							while(lineGet.hasNext()) {
+								String u = lineGet.next();
+								toReturn.add(u);
+								if(u.equals("10")) {
+									parsing = false;
+									break;
+								}
+							}
 						}
+						
 					}
 					lineGet.close();
 				}
@@ -71,9 +80,6 @@ public class EnemyScript {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 		return toReturn;
 	}
 	public void getScriptFromFile(String fileName) {
@@ -89,6 +95,8 @@ public class EnemyScript {
 			s.close();
 			for(String t : subNames) {
 				ArrayList<String> al = getSubFromFile(fileName, t);
+				//System.out.println(t);
+				//System.out.println(al.toString());
 				subs.put(t, al);
 			}
 			

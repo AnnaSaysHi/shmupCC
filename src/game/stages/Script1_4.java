@@ -13,6 +13,8 @@ public class Script1_4 extends StageScript {
 	
 	@Override
 	public void initActions() {
+		
+		enmMgr.loadStage("resources/scripts/scene14.sccl");
 		//enmMgr.addEnemy(new Enm1(mgr, playerChar, parentGame, enmMgr, smgr));
 		/*ArrayList<String> al = new ArrayList<String>();
 		al.add("0");

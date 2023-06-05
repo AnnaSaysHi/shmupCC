@@ -26,13 +26,12 @@ public class Player {
 	private BufferedImage animHitbox;
 	byte[]dirs;
 	
-	public Player(KBinputHandler k, PlayerShotManager mgr, int lowXbound, int highXbound, int lowYbound, int highYbound) {
+	public Player(KBinputHandler k, int lowXbound, int highXbound, int lowYbound, int highYbound) {
 		isFocusing = false;
 		kbh = k;
-		ShotMGR = mgr;
-		shotType = new ShotType((byte) 1, this);
 		moveLimits = new int[] {lowXbound, highXbound, lowYbound, highYbound};
-		playerReInitialize();
+		x = 0;
+		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height, BufferedImage hitbox, int hbSize) {
 		animIdle = neutral;
@@ -52,6 +51,10 @@ public class Player {
 		x = 0;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
 		ShotMGR.deactivateAll();
+	}
+	public void playerSetShotMGR(PlayerShotManager psm) {
+		ShotMGR = psm;
+		shotType = new ShotType((byte) 1, this);
 	}
 
 	public void tickPlayer() {

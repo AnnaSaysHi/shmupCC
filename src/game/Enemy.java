@@ -18,7 +18,7 @@ public class Enemy {
 	int scriptPosition;
 	int opcode;
 	HashMap<String, String> variables;
-	Stack<String> callStack;
+	Stack<String> mainCallStack;
 	String subName;
 	
 	final int numSpawners = 16;
@@ -62,7 +62,7 @@ public class Enemy {
 		interpolator = new EnemyMovementInterpolator(this);
 		scriptPosition = 0;
 		variables = new HashMap<String, String>();
-		callStack = new Stack<String>();
+		mainCallStack = new Stack<String>();
 		subName = "";
 		
 		disabled = true;
@@ -93,8 +93,7 @@ public class Enemy {
 	}
 	
 	public void initActions() {
-		initEnemy(0, 100, 50);
-		setEnemySprite(1);
+		
 	}
 	
 	public void initEnemy(double x, double y, int health) {
@@ -109,7 +108,7 @@ public class Enemy {
 			spawners[i].reInit();
 		}
 		variables.clear();
-		callStack.clear();
+		mainCallStack.clear();
 		subName = "";
 		framesTillDespawnOffscreen = 50;
 		
@@ -129,8 +128,9 @@ public class Enemy {
 		
 	}
 	
-	public void setEnemyScript(EnemyScript es) {
-		script = es;
+	public void setEnemyScript(EnemyScript scriptStruct, String subName) {
+		script = scriptStruct;
+		this.subName = subName;
 	}
 	public void setEnemySprite(int spr) {
 		sprite = spr;
@@ -206,6 +206,9 @@ public class Enemy {
 	public boolean isDisabled() {
 		return disabled;
 	}
+	public void disable() {
+		disabled = true;
+	}
 	
 
 	
@@ -228,7 +231,7 @@ public class Enemy {
 	
 	protected int getIntFromScript(int pos) {
 		int toRet = 0;
-		String s = script.getValueAtPos(pos);
+		String s = script.getValueAtPos(subName, pos);
 		try {
 			if(variables.containsKey(s)) {
 				toRet = Integer.parseInt(variables.get(s));
@@ -242,7 +245,7 @@ public class Enemy {
 	}
 	protected double getFloatFromScript(int pos) {
 		double toRet = 0;
-		String s = script.getValueAtPos(pos);
+		String s = script.getValueAtPos(subName, pos);
 		try {
 			if(variables.containsKey(s)) {
 				toRet = Double.parseDouble(variables.get(s));
@@ -256,7 +259,7 @@ public class Enemy {
 	}
 	
 	public void executeScript() throws SCCLexception {
-		if(scriptPosition >= script.getScriptLength()) opcode = Opcodes.ret;
+		if(scriptPosition >= script.getSubLength(subName)) opcode = Opcodes.ret;
 		else opcode = getIntFromScript(scriptPosition);
 		int intArg1;
 		int intArg2;
@@ -269,16 +272,16 @@ public class Enemy {
 			scriptPosition++;
 			break;
 		case Opcodes.ret:
-			if(callStack.isEmpty()) disabled = true;
+			if(mainCallStack.isEmpty()) disabled = true;
 			else {
-				subName = callStack.pop();
-				scriptPosition = Integer.parseInt(callStack.pop());
+				subName = mainCallStack.pop();
+				scriptPosition = Integer.parseInt(mainCallStack.pop());
 			}
 			break;
 		case Opcodes.call:
 			scriptPosition += 2;
-			callStack.push(Integer.toString(scriptPosition));
-			callStack.push(subName);
+			mainCallStack.push(Integer.toString(scriptPosition));
+			mainCallStack.push(subName);
 			subName = script.getValueAtPos(subName, scriptPosition - 1);
 			break;
 		case Opcodes.wait:
@@ -389,6 +392,7 @@ public class Enemy {
 			}else {
 				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
 			}
+			break;
 		default:
 			scriptPosition++;
 			throw new SCCLexception("Unknown opcode at position " + (scriptPosition - 1));

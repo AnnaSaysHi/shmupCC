@@ -97,18 +97,25 @@ public class Game extends Canvas implements Runnable{
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
 		menuList[0].activate();
-		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar);
-		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
-		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
-		playerChar = new Player(kbh, ShotMGR,
+		playerChar = new Player(kbh,
 				pdistfromwalls - (PLAYFIELDWIDTH / 2),
 				(PLAYFIELDWIDTH / 2) - pdistfromwalls,
 				pdistfromwalls,
 				PLAYFIELDHEIGHT - pdistfromwalls);
+		
+		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar);
+		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
+		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
+		playerChar.playerSetShotMGR(ShotMGR);
+		
+
 		playerChar.playerInitAnim(player0, player1, 48, 48, hitbox, 8);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
+		
+
+
 		
 		playercoords = playerChar.getPosAndHitbox();
 		

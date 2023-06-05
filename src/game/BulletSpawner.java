@@ -92,6 +92,9 @@ public class BulletSpawner {
 		type = bulletType;
 		color = bulletColor;
 	}
+	public void setSound(int sound) {
+		soundOnActivate = sound;
+	}
 	public void setActivationFrequency(int frequency) {
 		activationFreq = frequency;
 		countdown = frequency;
