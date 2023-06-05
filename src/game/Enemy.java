@@ -40,9 +40,21 @@ public class Enemy {
 	protected int HP;
 	protected int maxHP;
 	int damageToTake;
-	protected int framesTillDespawnOffscreen = 0;
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
+	
+	int flags;
+	/* flag definitions
+	 * 
+	 * 0: Enemy has no hurtbox (shots pass through enemy)
+	 * 1: Enemy has no hitbox (cannot kill player via contact)
+	 * 2: Enemy does not despawn offscreen
+	 * 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
+	 * 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
+	 * 5: Enemy retains its hurtbox, but becomes invincible. (not implemented yet)
+	 * 
+	 * 
+	 * */
 	
 	
 	protected int renderSize; //radius
@@ -66,9 +78,10 @@ public class Enemy {
 		subName = "";
 		
 		disabled = true;
-		sprite = 0;
+		sprite = -1;
 		xpos = -1;
 		ypos = -1;
+		flags = 0x00000000;
 		
 		angle = 0;
 		speed = 0;
@@ -98,7 +111,7 @@ public class Enemy {
 	
 	public void initEnemy(double x, double y, int health) {
 		disabled = false;
-		
+		sprite = -1;
 		xpos = x;
 		ypos = y;
 		HP = health;
@@ -110,7 +123,7 @@ public class Enemy {
 		variables.clear();
 		mainCallStack.clear();
 		subName = "";
-		framesTillDespawnOffscreen = 50;
+		flags = 0x00000000;
 		
 		enemyTimer = 0;
 		waitTimer = 0;
@@ -144,8 +157,9 @@ public class Enemy {
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].tickSpawner();
 		}
-		framesTillDespawnOffscreen--;
-		if(framesTillDespawnOffscreen <= 0 && game.isOutsidePlayfield(xpos, ypos, size)) {
+		boolean diesOffscreen = !(testFlag(2) || testFlag(3));
+		
+		if(diesOffscreen && game.isOutsidePlayfield(xpos, ypos, size)) {
 			disabled = true;
 		}
 	}
@@ -211,7 +225,10 @@ public class Enemy {
 	}
 	
 
-	
+	public boolean testFlag(int flagNum) {
+		int bitmask = 0x00000001 << flagNum;
+		return (!((flags & bitmask) == 0));
+	}
 	
 	
 	public void setPosAbs(double x, double y) {
@@ -314,6 +331,28 @@ public class Enemy {
 			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
 			scriptPosition += 5;
 			break;
+		case Opcodes.enemySetSprite:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			sprite = intArg1;
+			scriptPosition += 2;
+			break;
+			
+			
+			
+			
+		//OPCODES 500-599, ENEMY PROPERTY MANAGEMENT
+		case Opcodes.flagSet:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			scriptPosition += 2;
+			flags = flags | intArg1;
+			break;
+		case Opcodes.flagClear:
+			intArg1 = getIntFromScript(scriptPosition + 1);
+			scriptPosition += 2;
+			flags = flags & ~intArg1;
+			break;
+			
+					
 			
 		//OPCODES 600-699, BULLET-RELATED STUFF
 		case Opcodes.resetShooter:
@@ -322,7 +361,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].reInit();
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.activate:
@@ -331,7 +370,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].activate();
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setSprites:
@@ -342,7 +381,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setTypeAndColor(intArg2, intArg3);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setRelativeShotOffset:
@@ -353,7 +392,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setRelativePos(doubleArg1, doubleArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
 			}
 			break;
 			
@@ -365,7 +404,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setAngles(doubleArg1, doubleArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setSpeeds:
@@ -376,7 +415,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setSpeeds(doubleArg1, doubleArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setCounts:
@@ -387,7 +426,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setBulletCounts(intArg2, intArg3);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setAimMode:
@@ -397,7 +436,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setMode(intArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setShotFrequency:
@@ -407,7 +446,7 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setActivationFrequency(intArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3) + " in subroutine " + subName);
 			}
 			break;
 		case Opcodes.setShootDistance:
@@ -417,12 +456,12 @@ public class Enemy {
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setSpawnDistance(doubleArg1);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3));
+				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3) + " in subroutine " + subName);
 			}
 			break;
 		default:
 			scriptPosition++;
-			throw new SCCLexception("Unknown opcode at position " + (scriptPosition - 1));
+			throw new SCCLexception("Unknown opcode at position " + (scriptPosition - 1) + " in subroutine " + subName);
 		}
 	}
 

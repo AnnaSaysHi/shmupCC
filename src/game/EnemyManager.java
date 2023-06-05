@@ -47,7 +47,11 @@ public class EnemyManager {
 	public void drawEnemies(Graphics2D g) {
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
-				e.renderEnemy(g, enemySpriteReference[e.returnEnemySprite()][0]);
+				int s = e.returnEnemySprite();
+				if(s != -1) {
+					e.renderEnemy(g, enemySpriteReference[s][0]);
+					
+				}
 			}
 		}		
 	}
@@ -55,10 +59,12 @@ public class EnemyManager {
 		double radSum;
 		for(int i = 0; i < maxSize; i++) {
 			if(!enemies[i].isDisabled()) {
-				radSum = hitbox + enemies[i].hurtboxSize;
-				if(Math.pow(enemies[i].xpos - x, 2) + Math.pow(enemies[i].ypos - y, 2) <= Math.pow(radSum, 2)) {
-					enemies[i].addDamage(damage);
-					return true;
+				if(!(enemies[i].testFlag(0) || enemies[i].testFlag(3))){
+					radSum = hitbox + enemies[i].hurtboxSize;
+					if(Math.pow(enemies[i].xpos - x, 2) + Math.pow(enemies[i].ypos - y, 2) <= Math.pow(radSum, 2)) {
+						enemies[i].addDamage(damage);
+						return true;
+					}					
 				}
 			}
 		}
@@ -70,7 +76,6 @@ public class EnemyManager {
 			if(enemies[i].isDisabled()){
 				enemies[i].initEnemy(xpos, ypos, HP);
 				enemies[i].setEnemyScript(scriptObject, subName);
-				enemies[i].setEnemySprite(1);
 				break;
 			}
 		}
