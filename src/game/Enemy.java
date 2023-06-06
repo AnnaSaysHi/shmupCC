@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class Enemy {
 	BulletManager bulletMGR;
@@ -26,6 +27,7 @@ public class Enemy {
 	ArrayList<Integer> asyncWaitTimer;
 	
 	final int numSpawners = 16;
+	private static final double DEG_TO_RAD = 0.017453292519943295; 
 	int sprite;
 	public double xpos;
 	public double ypos;
@@ -329,7 +331,13 @@ public class Enemy {
 			if(variables.containsKey(s)) {
 				toRet = Double.parseDouble(variables.get(s));
 			}else {
-				toRet = Double.parseDouble(s);
+				if(Pattern.matches("r-?[0-9]+[.][0-9]+", s) || Pattern.matches("r-?[0-9]+", s)) {
+					s = s.substring(1);
+					toRet = Double.parseDouble(s);
+					toRet = toRet * Enemy.DEG_TO_RAD;
+				}else{
+					toRet = Double.parseDouble(s);
+				}
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
