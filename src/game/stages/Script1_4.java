@@ -1,7 +1,6 @@
 package game.stages;
 
 import game.*;
-import java.util.ArrayList;
 
 public class Script1_4 extends StageScript {
 
@@ -14,16 +13,6 @@ public class Script1_4 extends StageScript {
 	public void initActions() {
 		
 		enmMgr.loadStage("resources/scripts/scene14.sccl");
-		//enmMgr.addEnemy(new Enm1(mgr, playerChar, parentGame, enmMgr, smgr));
-		/*ArrayList<String> al = new ArrayList<String>();
-		al.add("0");
-		al.add("600");
-		al.add("12");
-		al.add("23");
-		al.add("100000");
-		Enemy enemyA = new Enemy(mgr, playerChar, parentGame, enmMgr, smgr);
-		enemyA.setEnemyScript(new EnemyScript(al));
-		enmMgr.addEnemy(enemyA);*/
 	}
 
 }
