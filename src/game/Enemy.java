@@ -2,6 +2,7 @@ package game;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -15,11 +16,14 @@ public class Enemy {
 	
 	
 	EnemyScript script;
-	int scriptPosition;
+	int workingScriptPosition;
 	int opcode;
 	HashMap<String, String> variables;
-	Stack<String> mainCallStack;
-	String subName;
+	String workingSubName;
+	ArrayList<Stack<String>> asyncCallStack;
+	ArrayList<Integer> asyncScriptPosition;
+	int asyncSlotNum;
+	ArrayList<Integer> asyncWaitTimer;
 	
 	final int numSpawners = 16;
 	int sprite;
@@ -36,7 +40,6 @@ public class Enemy {
 	public double yaccel;
 	protected int movementType; //0 = angle and speed, 1 = xSpeed and ySpeed
 	protected int enemyTimer;
-	protected int waitTimer;
 	protected int HP;
 	protected int maxHP;
 	int damageToTake;
@@ -72,10 +75,14 @@ public class Enemy {
 		game = g;
 		parentMGR = emgr;
 		interpolator = new EnemyMovementInterpolator(this);
-		scriptPosition = 0;
+		workingScriptPosition = 0;
 		variables = new HashMap<String, String>();
-		mainCallStack = new Stack<String>();
-		subName = "";
+		workingSubName = "";
+		asyncCallStack = new ArrayList<Stack<String>>();
+		asyncScriptPosition = new ArrayList<Integer>();
+		asyncWaitTimer = new ArrayList<Integer>();
+		asyncSlotNum = 0;
+		
 		
 		disabled = true;
 		sprite = -1;
@@ -109,24 +116,34 @@ public class Enemy {
 		
 	}
 	
-	public void initEnemy(double x, double y, int health) {
+	public void initEnemy(double x, double y, int health, EnemyScript scriptStruct, String subName) {
 		disabled = false;
 		sprite = -1;
 		xpos = x;
 		ypos = y;
 		HP = health;
 		maxHP = health;
-		scriptPosition = 0;
+		workingScriptPosition = 0;
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].reInit();
 		}
 		variables.clear();
-		mainCallStack.clear();
-		subName = "";
+		script = scriptStruct;
+		workingSubName = subName;
+		asyncCallStack.clear();
+		asyncScriptPosition.clear();
+		asyncWaitTimer.clear();
+		
+		asyncCallStack.add(new Stack<String>());
+		asyncScriptPosition.add(0);
+		asyncWaitTimer.add(0);
+		
+		asyncCallStack.get(0).push("0");
+		asyncCallStack.get(0).push(subName);
+		
 		flags = 0x00000000;
 		
 		enemyTimer = 0;
-		waitTimer = 0;
 		movementTimer1 = -1;
 		movementTimer2 = -1;
 		
@@ -143,10 +160,22 @@ public class Enemy {
 	
 	public void setEnemyScript(EnemyScript scriptStruct, String subName) {
 		script = scriptStruct;
-		this.subName = subName;
+		asyncCallStack.get(0).push("0");
+		asyncCallStack.get(0).push(subName);
+		this.workingSubName = subName;
 	}
 	public void setEnemySprite(int spr) {
 		sprite = spr;
+	}
+	public void swapCallStack(int stackSlot) {
+		Integer i = asyncWaitTimer.get(asyncSlotNum);
+		if(i != null) {
+			asyncCallStack.get(asyncSlotNum).push(Integer.toString(workingScriptPosition));
+			asyncCallStack.get(asyncSlotNum).push(workingSubName);
+		}
+		asyncSlotNum = stackSlot;
+		workingSubName = asyncCallStack.get(asyncSlotNum).pop();
+		workingScriptPosition = Integer.parseInt(asyncCallStack.get(asyncSlotNum).pop());
 	}
 	
 	public void tickEnemy() {
@@ -165,12 +194,35 @@ public class Enemy {
 	}
 	
 	protected void doEnemyActions() {
-		while(waitTimer <= enemyTimer) {
-			try{
-				executeScript();
-			}catch(Exception e) {
-				e.printStackTrace();
+		int n = asyncCallStack.size();
+		for(int j = 0; j < n; j++) {
+			swapCallStack(j);
+			Integer k = asyncWaitTimer.get(asyncSlotNum);
+			if(!(k.equals(null))) {
+				while(true) {
+					Integer l = asyncWaitTimer.get(asyncSlotNum);
+					if(l == null) break;
+					if(l > enemyTimer || disabled) break;
+					
+					try{
+						executeScript();
+					}catch(Exception e) {
+						e.printStackTrace();
+					}
+				}
+				
 			}
+			
+		}
+		swapCallStack(0);
+		while(asyncCallStack.remove(null)) {
+			int i = 1;
+		}
+		while(asyncWaitTimer.remove(null)) {
+			
+		}
+		while(asyncScriptPosition.remove(null)) {
+			
 		}
 	}
 	private void processEnemyMovement() {
@@ -229,6 +281,16 @@ public class Enemy {
 		int bitmask = 0x00000001 << flagNum;
 		return (!((flags & bitmask) == 0));
 	}
+	protected void terminateAsync(int slot) {
+		if(slot == 0) {
+			disabled = true;
+		}else {
+			asyncCallStack.set(slot, null);
+			asyncScriptPosition.set(slot, null);
+			asyncWaitTimer.set(slot, null);
+		}
+		
+	}
 	
 	
 	public void setPosAbs(double x, double y) {
@@ -239,16 +301,16 @@ public class Enemy {
 		xpos += x;
 		ypos += y;
 	}
-	public void setPosAbsTime(double x, double y, int t, int mode) {
+	public void setPosAbsTime(int t, int mode, double x, double y) {
 		interpolator.moveOverTime(x, y, t, mode);
 	}
-	public void setPosRelTime(double x, double y, int t, int mode) {
+	public void setPosRelTime(int t, int mode, double x, double y) {
 		interpolator.moveOverTime(x + xpos, y + ypos, t, mode);
 	}
 	
 	protected int getIntFromScript(int pos) {
 		int toRet = 0;
-		String s = script.getValueAtPos(subName, pos);
+		String s = script.getValueAtPos(workingSubName, pos);
 		try {
 			if(variables.containsKey(s)) {
 				toRet = Integer.parseInt(variables.get(s));
@@ -262,7 +324,7 @@ public class Enemy {
 	}
 	protected double getFloatFromScript(int pos) {
 		double toRet = 0;
-		String s = script.getValueAtPos(subName, pos);
+		String s = script.getValueAtPos(workingSubName, pos);
 		try {
 			if(variables.containsKey(s)) {
 				toRet = Double.parseDouble(variables.get(s));
@@ -277,8 +339,8 @@ public class Enemy {
 	
 	//GIANT SWITCH STATEMENT OF DOOM
 	public void executeScript() throws SCCLexception {
-		if(scriptPosition >= script.getSubLength(subName)) opcode = Opcodes.ret;
-		else opcode = getIntFromScript(scriptPosition);
+		if(workingScriptPosition >= script.getSubLength(workingSubName)) opcode = Opcodes.ret;
+		else opcode = getIntFromScript(workingScriptPosition);
 		String stringArg1;
 		int intArg1;
 		int intArg2;
@@ -291,64 +353,113 @@ public class Enemy {
 		//OPCODES 000-100, CONTROL FLOW AND MISCELLANEOUS STUFF
 		case Opcodes.nop:
 			//System.out.println("nop executed");
-			scriptPosition++;
+			workingScriptPosition++;
 			break;
 		case Opcodes.ret:
-			if(mainCallStack.isEmpty()) disabled = true;
+			if(asyncCallStack.get(asyncSlotNum).isEmpty()) {
+				terminateAsync(asyncSlotNum);
+			}
 			else {
-				subName = mainCallStack.pop();
-				scriptPosition = Integer.parseInt(mainCallStack.pop());
+				workingSubName = asyncCallStack.get(asyncSlotNum).pop();
+				workingScriptPosition = Integer.parseInt(asyncCallStack.get(asyncSlotNum).pop());
 			}
 			break;
 		case Opcodes.call:
-			scriptPosition += 2;
-			mainCallStack.push(Integer.toString(scriptPosition));
-			mainCallStack.push(subName);
-			subName = script.getValueAtPos(subName, scriptPosition - 1);
-			scriptPosition = 0;
+			workingScriptPosition += 2;
+			asyncCallStack.get(asyncSlotNum).push(Integer.toString(workingScriptPosition));
+			asyncCallStack.get(asyncSlotNum).push(workingSubName);
+			workingSubName = script.getValueAtPos(workingSubName, workingScriptPosition - 1);
+			workingScriptPosition = 0;
 			break;
+		case Opcodes.callAsync:
+			workingScriptPosition += 2;
+			Stack<String> newSub = new Stack<String>();
+			newSub.push("0");
+			newSub.push(script.getValueAtPos(workingSubName, workingScriptPosition - 1));
+			asyncCallStack.add(newSub);
+			asyncCallStack.get(asyncSlotNum).pop();
+			asyncCallStack.get(asyncSlotNum).pop();
+			asyncCallStack.get(asyncSlotNum).push(Integer.toString(workingScriptPosition));
+			asyncCallStack.get(asyncSlotNum).push(workingSubName);
+			asyncScriptPosition.set(asyncSlotNum, workingScriptPosition);
+			asyncScriptPosition.add(0);
+			asyncWaitTimer.add(enemyTimer);
+			break;
+			
 		case Opcodes.wait:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			scriptPosition += 2;
-			waitTimer += intArg1;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			asyncWaitTimer.set(asyncSlotNum, enemyTimer + intArg1);
 			break;
 			
 			
 		//OPCODES 300-399, ENEMY CREATION
 		case Opcodes.enemyCreateRel:
-			stringArg1 = script.getValueAtPos(subName, scriptPosition + 1);
-			doubleArg1 = getFloatFromScript(scriptPosition + 2);
-			doubleArg2 = getFloatFromScript(scriptPosition + 3);
-			intArg1 = getIntFromScript(scriptPosition + 4);
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			intArg1 = getIntFromScript(workingScriptPosition + 4);
 			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
-			scriptPosition += 5;
+			workingScriptPosition += 5;
 			break;
 		case Opcodes.enemyCreateAbs:
-			stringArg1 = script.getValueAtPos(subName, scriptPosition + 1);
-			doubleArg1 = getFloatFromScript(scriptPosition + 2);
-			doubleArg2 = getFloatFromScript(scriptPosition + 3);
-			intArg1 = getIntFromScript(scriptPosition + 4);
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			intArg1 = getIntFromScript(workingScriptPosition + 4);
 			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
-			scriptPosition += 5;
+			workingScriptPosition += 5;
 			break;
 		case Opcodes.enemySetSprite:
-			intArg1 = getIntFromScript(scriptPosition + 1);
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			sprite = intArg1;
-			scriptPosition += 2;
+			workingScriptPosition += 2;
 			break;
 			
+			
+		//OPCODES 400-499, ENEMY MOVEMENT
+		case Opcodes.setPosAbs:
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 1);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 2);
+			xpos = doubleArg1;
+			ypos = doubleArg2;
+			workingScriptPosition += 3;
+			break;
+		case Opcodes.setPosAbsTime:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 4);
+			setPosAbsTime(intArg1, intArg2, doubleArg1, doubleArg2);
+			workingScriptPosition += 5;
+			break;
+		case Opcodes.setPosRel:
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 1);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 2);
+			xpos += doubleArg1;
+			ypos += doubleArg2;
+			workingScriptPosition += 3;
+			break;
+		case Opcodes.setPosRelTime:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 4);
+			setPosRelTime(intArg1, intArg2, doubleArg1, doubleArg2);
+			workingScriptPosition += 5;
+			break;
 			
 			
 			
 		//OPCODES 500-599, ENEMY PROPERTY MANAGEMENT
 		case Opcodes.flagSet:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			scriptPosition += 2;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
 			flags = flags | intArg1;
 			break;
 		case Opcodes.flagClear:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			scriptPosition += 2;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
 			flags = flags & ~intArg1;
 			break;
 			
@@ -356,113 +467,113 @@ public class Enemy {
 			
 		//OPCODES 600-699, BULLET-RELATED STUFF
 		case Opcodes.resetShooter:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			scriptPosition += 2;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].reInit();
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 2) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.activate:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			scriptPosition += 2;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].activate();
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 2) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 2) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setSprites:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			intArg2 = getIntFromScript(scriptPosition + 2);
-			intArg3 = getIntFromScript(scriptPosition + 3);
-			scriptPosition += 4;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setTypeAndColor(intArg2, intArg3);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setRelativeShotOffset:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			doubleArg1 = getFloatFromScript(scriptPosition + 2);
-			doubleArg2 = getFloatFromScript(scriptPosition + 3);
-			scriptPosition += 4;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setRelativePos(doubleArg1, doubleArg2);
 				spawners[intArg1].setParentEnemy(this);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
 			}
 			break;
 			
 		case Opcodes.setAngles:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			doubleArg1 = getFloatFromScript(scriptPosition + 2);
-			doubleArg2 = getFloatFromScript(scriptPosition + 3);
-			scriptPosition += 4;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setAngles(doubleArg1, doubleArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setSpeeds:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			doubleArg1 = getFloatFromScript(scriptPosition + 2);
-			doubleArg2 = getFloatFromScript(scriptPosition + 3);
-			scriptPosition += 4;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setSpeeds(doubleArg1, doubleArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setCounts:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			intArg2 = getIntFromScript(scriptPosition + 2);
-			intArg3 = getIntFromScript(scriptPosition + 3);
-			scriptPosition += 4;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setBulletCounts(intArg2, intArg3);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 4) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setAimMode:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			intArg2 = getIntFromScript(scriptPosition + 2);
-			scriptPosition += 3;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setMode(intArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setShotFrequency:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			intArg2 = getIntFromScript(scriptPosition + 2);
-			scriptPosition += 3;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setActivationFrequency(intArg2);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}
 			break;
 		case Opcodes.setShootDistance:
-			intArg1 = getIntFromScript(scriptPosition + 1);
-			doubleArg1 = getFloatFromScript(scriptPosition + 2);
-			scriptPosition += 3;
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setSpawnDistance(doubleArg1);
 			}else {
-				throw new SCCLexception("Spawner index out of range at position " + (scriptPosition - 3) + " in subroutine " + subName);
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}
 			break;
 		default:
-			scriptPosition++;
-			throw new SCCLexception("Unknown opcode at position " + (scriptPosition - 1) + " in subroutine " + subName);
+			workingScriptPosition++;
+			throw new SCCLexception("Unknown opcode at position " + (workingScriptPosition - 1) + " in subroutine " + workingSubName);
 		}
 	}
 

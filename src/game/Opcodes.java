@@ -4,14 +4,26 @@ public abstract class Opcodes {
 	
 	//opcodes 0 thru 100
 	public static final int nop = 0;
+	public static final int delete = 1;
 	public static final int ret = 10;
 	public static final int call = 11;
+	public static final int callAsync = 15;
+	public static final int killAllAsync = 21;
 	public static final int wait = 23;
 	
 	//opcodes 300 thru 399
 	public static final int enemyCreateRel = 300;
 	public static final int enemyCreateAbs = 301;
 	public static final int enemySetSprite = 302;
+	
+	
+	//opcodes 400 thru 499
+	public static final int setPosAbs = 400;
+	public static final int setPosAbsTime = 401;
+	public static final int setPosRel = 402;
+	public static final int setPosRelTime = 403;
+	public static final int setSpeedAndAngle = 404;
+	public static final int setXVelAndYVel = 405;
 	
 	//opcodes 500 thru 599
 	public static final int flagSet = 502;

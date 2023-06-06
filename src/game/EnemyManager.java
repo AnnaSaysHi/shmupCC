@@ -74,8 +74,7 @@ public class EnemyManager {
 	public void addEnemy(String subName, double xpos, double ypos, int HP) {
 		for(int i = 0; i < maxSize; i++) {
 			if(enemies[i].isDisabled()){
-				enemies[i].initEnemy(xpos, ypos, HP);
-				enemies[i].setEnemyScript(scriptObject, subName);
+				enemies[i].initEnemy(xpos, ypos, HP, scriptObject, subName);
 				break;
 			}
 		}
