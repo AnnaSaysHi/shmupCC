@@ -2,14 +2,23 @@ package game;
 
 public abstract class Opcodes {
 	
-	//opcodes 0 thru 100
+	//opcodes 0 thru 40
 	public static final int nop = 0;
 	public static final int delete = 1;
+	public static final int declareVariable = 2;
+	public static final int declareAndInitialize = 3;
+	public static final int closeVariable = 4;
 	public static final int ret = 10;
 	public static final int call = 11;
 	public static final int callAsync = 15;
 	public static final int killAllAsync = 21;
 	public static final int wait = 23;
+	
+	
+	//opcodes 41 thru 100
+	public static final int setVarString = 41;
+	public static final int setVarInt = 43;
+	public static final int setVarFloat = 45;
 	
 	//opcodes 300 thru 399
 	public static final int enemyCreateRel = 300;

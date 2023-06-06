@@ -324,7 +324,7 @@ public class Enemy {
 		}
 		return toRet;
 	}
-	protected double getFloatFromScript(int pos) {
+	protected double getDoubleFromScript(int pos) {
 		double toRet = 0;
 		String s = script.getValueAtPos(workingSubName, pos);
 		try {
@@ -350,6 +350,7 @@ public class Enemy {
 		if(workingScriptPosition >= script.getSubLength(workingSubName)) opcode = Opcodes.ret;
 		else opcode = getIntFromScript(workingScriptPosition);
 		String stringArg1;
+		String stringArg2;
 		int intArg1;
 		int intArg2;
 		int intArg3;
@@ -372,6 +373,42 @@ public class Enemy {
 				workingScriptPosition = Integer.parseInt(asyncCallStack.get(asyncSlotNum).pop());
 			}
 			break;
+		case Opcodes.declareVariable:
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(variables.containsKey(stringArg1)) {
+				throw new SCCLexception("Duplicate declaration of variable " + stringArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				variables.put(stringArg1, "");
+			}
+			break;
+		case Opcodes.declareAndInitialize:
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			stringArg2 = script.getValueAtPos(workingSubName, workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(variables.containsKey(stringArg1)) {
+				throw new SCCLexception("Duplicate declaration of variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				if(Pattern.matches("r-?[0-9]+[.][0-9]+", stringArg2) || Pattern.matches("r-?[0-9]+", stringArg2)) {
+					stringArg2 = stringArg2.substring(1);
+					double toStore = Double.parseDouble(stringArg2);
+					toStore = toStore * Enemy.DEG_TO_RAD;
+					variables.put(stringArg1, Double.toString(toStore));
+				}else{
+					variables.put(stringArg1, stringArg2);
+				}
+			}
+			break;
+		case Opcodes.closeVariable:
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(!variables.containsKey(stringArg1)) {
+				throw new SCCLexception("Could not close undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				variables.remove(stringArg1);
+			}
+			break;
+			
 		case Opcodes.call:
 			workingScriptPosition += 2;
 			asyncCallStack.get(asyncSlotNum).push(Integer.toString(workingScriptPosition));
@@ -400,20 +437,50 @@ public class Enemy {
 			asyncWaitTimer.set(asyncSlotNum, enemyTimer + intArg1);
 			break;
 			
+		case Opcodes.setVarString:
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			stringArg2 = script.getValueAtPos(workingSubName, workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(!variables.containsKey(stringArg1)) {
+				throw new SCCLexception("Attempted assignment of undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				variables.replace(stringArg1, stringArg2);
+			}
+			break;
+		case Opcodes.setVarInt:
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			intArg1 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(!variables.containsKey(stringArg1)) {
+				throw new SCCLexception("Attempted assignment of undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				variables.replace(stringArg1, Integer.toString(intArg1));
+			}
+			break;
+		case Opcodes.setVarFloat:
+			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(!variables.containsKey(stringArg1)) {
+				throw new SCCLexception("Attempted assignment of undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				variables.replace(stringArg1, Double.toString(doubleArg1));
+			}
+			break;
 			
 		//OPCODES 300-399, ENEMY CREATION
 		case Opcodes.enemyCreateRel:
 			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
 			intArg1 = getIntFromScript(workingScriptPosition + 4);
 			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
 			workingScriptPosition += 5;
 			break;
 		case Opcodes.enemyCreateAbs:
 			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
 			intArg1 = getIntFromScript(workingScriptPosition + 4);
 			parentMGR.addEnemy(stringArg1, doubleArg1 + xpos, doubleArg2 + ypos, intArg1);
 			workingScriptPosition += 5;
@@ -427,8 +494,8 @@ public class Enemy {
 			
 		//OPCODES 400-499, ENEMY MOVEMENT
 		case Opcodes.setPosAbs:
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 1);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
 			xpos = doubleArg1;
 			ypos = doubleArg2;
 			workingScriptPosition += 3;
@@ -436,14 +503,14 @@ public class Enemy {
 		case Opcodes.setPosAbsTime:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			intArg2 = getIntFromScript(workingScriptPosition + 2);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 3);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 4);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 3);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 4);
 			setPosAbsTime(intArg1, intArg2, doubleArg1, doubleArg2);
 			workingScriptPosition += 5;
 			break;
 		case Opcodes.setPosRel:
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 1);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
 			xpos += doubleArg1;
 			ypos += doubleArg2;
 			workingScriptPosition += 3;
@@ -451,8 +518,8 @@ public class Enemy {
 		case Opcodes.setPosRelTime:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			intArg2 = getIntFromScript(workingScriptPosition + 2);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 3);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 4);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 3);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 4);
 			setPosRelTime(intArg1, intArg2, doubleArg1, doubleArg2);
 			workingScriptPosition += 5;
 			break;
@@ -505,8 +572,8 @@ public class Enemy {
 			break;
 		case Opcodes.setRelativeShotOffset:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
 			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setRelativePos(doubleArg1, doubleArg2);
@@ -518,8 +585,8 @@ public class Enemy {
 			
 		case Opcodes.setAngles:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
 			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setAngles(doubleArg1, doubleArg2);
@@ -529,8 +596,8 @@ public class Enemy {
 			break;
 		case Opcodes.setSpeeds:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
-			doubleArg2 = getFloatFromScript(workingScriptPosition + 3);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
 			workingScriptPosition += 4;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setSpeeds(doubleArg1, doubleArg2);
@@ -571,7 +638,7 @@ public class Enemy {
 			break;
 		case Opcodes.setShootDistance:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
-			doubleArg1 = getFloatFromScript(workingScriptPosition + 2);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
 			workingScriptPosition += 3;
 			if(intArg1 >= 0 && intArg1 < numSpawners) {
 				spawners[intArg1].setSpawnDistance(doubleArg1);
