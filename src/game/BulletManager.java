@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 public class BulletManager {
 	Bullet [] bullets;
 	Spritesheet bulletSprites;
-	SoundManager SoundMGR;
+	public SoundManager SoundMGR;
 	Player relevantPlayer;
 	BufferedImage[][] bulletSpriteReference;
 
@@ -14,7 +14,7 @@ public class BulletManager {
 		bullets = new Bullet[size];
 		SoundMGR = smgr;
 		relevantPlayer = player;
-		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this);
+		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this, relevantPlayer);
 		bulletSprites = ss;
 		bulletSpriteReference = new BufferedImage[BulletColor.NUM_BULLET_COLORS][BulletType.NUM_BULLET_TYPES];
 		for(int i = 0; i < BulletColor.NUM_BULLET_COLORS; i++) {
@@ -44,9 +44,20 @@ public class BulletManager {
 	}
 	
 	public void checkCollision(double x, double y, double rad) {
-		for(int i = 0; i < bullets.length; i++) {
-			if (bullets[i].isDisabled() == false) {
-				bullets[i].checkCollision(x, y, rad);
+		for(Bullet b : bullets) {
+			if (b.isDisabled() == false) {
+				if(b.checkCollision(x, y, rad)) {
+					b.collideWithPlayer();
+				}
+			}
+		}
+	}
+	public void checkGraze(double x, double y, double rad) {
+		for(Bullet b : bullets) {
+			if (b.isDisabled() == false) {
+				if((b.grazed == 0) && b.checkCollision(x, y, rad)) {
+					b.grazedByPlayer();
+				}
 			}
 		}
 	}

@@ -10,6 +10,8 @@ public class SoundManager{
 	public static final int Select = 1;
 	public static final int Cancel = 2;
 	public static final int Confirm = 3;
+	public static final int Graze = 4;
+	public static final int Pichuun = 5;
 	public static final int EnemyShootLoud = 10;
 	public static final int EnemyShootMed = 11;
 	public static final int EnemyShootMuted = 12;
@@ -23,10 +25,11 @@ public class SoundManager{
 	
 	void init() {
 		try {
-			loadIntoArray(0, "/sfx/graze.wav");
 			loadIntoArray(1, "/sfx/select00.wav");
 			loadIntoArray(2, "/sfx/cancel00.wav");
 			loadIntoArray(3, "/sfx/ok00.wav");
+			loadIntoArray(4, "/sfx/graze.wav");
+			loadIntoArray(5, "/sfx/pldead00.wav");
 			loadIntoArray(10, "/sfx/tan00.wav");
 			loadIntoArray(11, "/sfx/tan01.wav");
 			loadIntoArray(12, "/sfx/tan02.wav");

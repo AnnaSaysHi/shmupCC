@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 public class Player {
 	KBinputHandler kbh;
 	PlayerShotManager ShotMGR;
+	SoundManager SoundMGR;
 	double x;
 	double y;
 	int[] moveLimits;
@@ -26,9 +27,10 @@ public class Player {
 	private BufferedImage animHitbox;
 	byte[]dirs;
 	
-	public Player(KBinputHandler k, int lowXbound, int highXbound, int lowYbound, int highYbound) {
+	public Player(KBinputHandler k, SoundManager sndmgr, int lowXbound, int highXbound, int lowYbound, int highYbound) {
 		isFocusing = false;
 		kbh = k;
+		SoundMGR = sndmgr;
 		moveLimits = new int[] {lowXbound, highXbound, lowYbound, highYbound};
 		x = 0;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
@@ -92,7 +94,7 @@ public class Player {
 		
 	}
 	public void collideWithBullet() {
-		
+		SoundMGR.playFromArray(SoundManager.Pichuun);
 	}
 	
 	public void useBomb() {
@@ -104,7 +106,7 @@ public class Player {
 	}
 	
 	public double[] getPosAndHitbox() {
-		return new double[] {x, y, hitboxSize};
+		return new double[] {x, y, hitboxSize, grazeboxSize};
 	}
 	
 	public void drawPlayer(Graphics2D g, Game m) {

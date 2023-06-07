@@ -99,7 +99,7 @@ public class Game extends Canvas implements Runnable{
 		menuList[0].activate();
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
-		playerChar = new Player(kbh,
+		playerChar = new Player(kbh, SoundMGR,
 				pdistfromwalls - (PLAYFIELDWIDTH / 2),
 				(PLAYFIELDWIDTH / 2) - pdistfromwalls,
 				pdistfromwalls,
@@ -186,7 +186,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		if(state == STATE.PLAY) {
 			if(kbh.getHeldKeys()[8]) {
-				state = state.PAUSE;	
+				state = STATE.PAUSE;	
 				pauseMenu.activate();
 			} else {
 				stageList[stage].tick();
@@ -197,6 +197,7 @@ public class Game extends Canvas implements Runnable{
 				playerChar.tickPlayer();
 				playercoords = playerChar.getPosAndHitbox();
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
+				BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
 			}
 		}
 		else if (state == STATE.MENU) {

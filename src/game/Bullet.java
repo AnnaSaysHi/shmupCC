@@ -15,11 +15,12 @@ public class Bullet {
 	double yvel;
 	
 	BulletManager parentMGR;
+	Player relevantPlayer;
 	
 	
 	int type;
 	int color;
-	int grazed; //Amount of frames until this bullet becomes grazeable.
+	public int grazed; //Amount of frames until this bullet becomes grazeable.
 	int timer;
 	double size; // Diameter, not radius
 	double hitboxSize; // Radius, not diameter
@@ -38,7 +39,7 @@ public class Bullet {
 
 	
 	
-	public Bullet(BulletManager mgr) {
+	public Bullet(BulletManager mgr, Player p) {
 		xpos = -1;
 		ypos = -1;
 		speed = -1;
@@ -52,6 +53,7 @@ public class Bullet {
 		grazed = 0;
 		disabled = true;
 		parentMGR = mgr;
+		relevantPlayer = p;
 		renderTransform = new AffineTransform();
 		velMode = 0;
 		transformsEnabled = 0x00000000;
@@ -149,7 +151,16 @@ public class Bullet {
 		}
 		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)));
 	}
+	public void collideWithPlayer() {
+		relevantPlayer.collideWithBullet();
+		eraseSelf();
+	}
+	public void grazedByPlayer() {
+		parentMGR.SoundMGR.playFromArray(SoundManager.Graze);
+		grazed = -1;
+	}
 	public void eraseSelf() {
+		disabled = true;
 		//TODO: implement this
 	}
 	
