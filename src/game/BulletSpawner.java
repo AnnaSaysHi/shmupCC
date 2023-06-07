@@ -132,6 +132,7 @@ public class BulletSpawner {
 	
 	public void activate() {
 		double angleAim = angle1;
+		parentManager.SoundMGR.playFromArray(soundOnActivate);
 		switch(modeNum) {
 		case Mode_Fan_Aimed:
 			angleAim += this.getAngleToPlayer();
