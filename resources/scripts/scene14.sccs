@@ -1,0 +1,38 @@
+sub main{
+flagSet(8)
+setVarInt(I0, 3)
+loopPoint: decVarInt(I0)
+wait(45)
+enmCreateRel(en1, 0, 100, 400)
+equalsInts($I0, 0)
+jumpTrue(loopPoint)
+wait(10000)
+ret()
+}
+
+
+sub en1{
+enSetSprite(1)
+wait(10)
+setPosRelTime(60, 3, 30, 30)
+wait(130)
+setPosRelTime(60, 3, -30, 30)
+callAsync(en1att)
+wait(130)
+ret()
+}
+
+
+sub en1att{
+resetShooter(0)
+setSprites(0, BULLET_ARROWHEAD, COLOR16_DARK_RED)
+setRelativeShotOffset(0, 0, 0)
+setAimMode(0, RING_UNAIMED)
+setShotFrequency(0, 2)
+setAngles(0, rad(-90), rad(90))
+setSpeeds(0, 1, 4.5)
+setCounts(0, 1, 3)
+wait(100)
+resetShooter(0)
+ret()
+}
