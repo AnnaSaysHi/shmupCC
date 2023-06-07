@@ -399,6 +399,27 @@ public class Enemy {
 			workingSubName = script.getValueAtPos(workingSubName, workingScriptPosition - 1);
 			workingScriptPosition = 0;
 			break;
+			
+		case Opcodes.jump:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += intArg1;
+			break;
+		case Opcodes.jumpTrue:
+			if(recentEval) {
+				intArg1 = getIntFromScript(workingScriptPosition + 1);
+				workingScriptPosition += intArg1;
+			}else {
+				workingScriptPosition += 2;
+			}
+			break;
+		case Opcodes.jumpFalse:
+			if(!recentEval) {
+				intArg1 = getIntFromScript(workingScriptPosition + 1);
+				workingScriptPosition += intArg1;
+			}else {
+				workingScriptPosition += 2;
+			}
+			break;
 		case Opcodes.callAsync:
 			workingScriptPosition += 2;
 			Stack<String> newSub = new Stack<String>();
@@ -662,6 +683,7 @@ public class Enemy {
 			}else {
 				intVariables[intArg1] = intArg1 - 1;
 			}
+			break;
 		case Opcodes.sineArg:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);

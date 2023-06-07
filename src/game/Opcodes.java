@@ -7,6 +7,9 @@ public abstract class Opcodes {
 	public static final int delete = 1;
 	public static final int ret = 10;
 	public static final int call = 11;
+	public static final int jump = 12;
+	public static final int jumpTrue = 13;
+	public static final int jumpFalse = 14;
 	public static final int callAsync = 15;
 	public static final int killAllAsync = 21;
 	public static final int wait = 23;
