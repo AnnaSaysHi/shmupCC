@@ -228,7 +228,7 @@ public class Game extends Canvas implements Runnable{
 		at.scale(SCALE/ScreenResolutionConstant.res, SCALE/ScreenResolutionConstant.res);
 		g.setTransform(at);
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-		g.setColor(Color.WHITE);
+		Font fpsfont = g.getFont();
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			playerChar.drawPlayer(g, this);
@@ -238,6 +238,10 @@ public class Game extends Canvas implements Runnable{
 			playerChar.drawHitbox(g, this);
 			playerChar.drawPlayerDeathAnim(g, this);
 			g.drawImage(HUD, 0, 0, this);
+			Font scoreFont = new Font("THBiolinum", Font.PLAIN, 24);
+			g.setColor(new Color(0x4f4f4f));
+			g.setFont(scoreFont);
+			g.drawString("Score: ", 440, 48);
 		}
 		if(state == STATE.MENU) {
 			for(int i = 0; i < menuList.length; i++) {
@@ -247,7 +251,8 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
-
+		g.setFont(fpsfont);
+		g.setColor(Color.WHITE);
 		g.drawString(String.format("%.2f", measuredFpS), 10, 10);
 		g.dispose();
 		bufferStrat.show();
