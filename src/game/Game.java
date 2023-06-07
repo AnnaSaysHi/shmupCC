@@ -58,6 +58,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage hitbox = null;
 	private BufferedImage HUD = null;
 	private BufferedImage shot = null;
+	private BufferedImage explosionSheet = null;
 	private Player playerChar;
 	int bulletTimer;
 	
@@ -71,6 +72,7 @@ public class Game extends Canvas implements Runnable{
 			hitbox = loader.loadImage("/HitboxIndicator.png");
 			shot = loader.loadImage("/playerShot.png");
 			HUD = loader.loadImage("/HUD.png");
+			explosionSheet = loader.loadImage("/ExplosionSheet.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
@@ -81,6 +83,7 @@ public class Game extends Canvas implements Runnable{
 		Spritesheet bullets = new Spritesheet(bulletSprites);
 		Spritesheet enemies = new Spritesheet(enemySprites);
 		Spritesheet shots = new Spritesheet(shot);
+		Spritesheet explosion = new Spritesheet(explosionSheet);
 		kbh = new KBinputHandler(this);
 		this.addKeyListener(kbh);
 
@@ -111,7 +114,7 @@ public class Game extends Canvas implements Runnable{
 		playerChar.playerSetShotMGR(ShotMGR);
 		
 
-		playerChar.playerInitAnim(player0, player1, 48, 48, hitbox, 8);
+		playerChar.playerInitAnim(player0, player1, 48, 48, hitbox, 8, explosion, 70, 100, 17);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
 
@@ -181,7 +184,7 @@ public class Game extends Canvas implements Runnable{
 			ticksInLastPeriod = 0;
 			lastTickPeriodMeasurement = System.nanoTime();
 		}
-		if(kbh.getHeldKeys()[9]) {
+		if(kbh.getHeldKeys()[10]) {
 			System.out.println("b");
 		}
 		if(state == STATE.PLAY) {

@@ -12,6 +12,7 @@ public class SoundManager{
 	public static final int Confirm = 3;
 	public static final int Graze = 4;
 	public static final int Pichuun = 5;
+	public static final int Explosion = 6;
 	public static final int EnemyShootLoud = 10;
 	public static final int EnemyShootMed = 11;
 	public static final int EnemyShootMuted = 12;
@@ -30,6 +31,7 @@ public class SoundManager{
 			loadIntoArray(3, "/sfx/ok00.wav");
 			loadIntoArray(4, "/sfx/graze.wav");
 			loadIntoArray(5, "/sfx/pldead00.wav");
+			loadIntoArray(6, "/sfx/deltaexplosion00.wav");
 			loadIntoArray(10, "/sfx/tan00.wav");
 			loadIntoArray(11, "/sfx/tan01.wav");
 			loadIntoArray(12, "/sfx/tan02.wav");
