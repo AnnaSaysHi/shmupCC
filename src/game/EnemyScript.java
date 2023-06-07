@@ -87,6 +87,7 @@ public class EnemyScript {
 	}
 	public void getScriptFromFile(String fileName) {
 		File f = new File(fileName);
+		subs.clear();
 		try {
 			Scanner s = new Scanner(f);
 			ArrayList<String> subNames = new ArrayList<String>();
