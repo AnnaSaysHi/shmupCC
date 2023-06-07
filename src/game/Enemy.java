@@ -3,6 +3,7 @@ package game;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.regex.Pattern;
@@ -19,12 +20,16 @@ public class Enemy {
 	EnemyScript script;
 	int workingScriptPosition;
 	int opcode;
-	HashMap<String, String> variables;
+	boolean recentEval;
 	String workingSubName;
 	ArrayList<Stack<String>> asyncCallStack;
 	ArrayList<Integer> asyncScriptPosition;
 	int asyncSlotNum;
 	ArrayList<Integer> asyncWaitTimer;
+	int[] intVariables;
+	double[] doubleVariables;
+	private static final int NUM_INT_VARIABLES = 16;
+	private static final int NUM_DOUBLE_VARIABLES = 16;
 	
 	final int numSpawners = 16;
 	private static final double DEG_TO_RAD = 0.017453292519943295; 
@@ -78,12 +83,14 @@ public class Enemy {
 		parentMGR = emgr;
 		interpolator = new EnemyMovementInterpolator(this);
 		workingScriptPosition = 0;
-		variables = new HashMap<String, String>();
 		workingSubName = "";
 		asyncCallStack = new ArrayList<Stack<String>>();
 		asyncScriptPosition = new ArrayList<Integer>();
 		asyncWaitTimer = new ArrayList<Integer>();
 		asyncSlotNum = 0;
+		intVariables = new int[Enemy.NUM_INT_VARIABLES];
+		doubleVariables = new double[Enemy.NUM_DOUBLE_VARIABLES];
+		recentEval = false;
 		
 		
 		disabled = true;
@@ -129,12 +136,14 @@ public class Enemy {
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].reInit();
 		}
-		variables.clear();
+		Arrays.fill(intVariables, 0);
+		Arrays.fill(doubleVariables, 0);
 		script = scriptStruct;
 		workingSubName = subName;
 		asyncCallStack.clear();
 		asyncScriptPosition.clear();
 		asyncWaitTimer.clear();
+		recentEval = false;
 		
 		asyncCallStack.add(new Stack<String>());
 		asyncScriptPosition.add(0);
@@ -314,9 +323,13 @@ public class Enemy {
 		int toRet = 0;
 		String s = script.getValueAtPos(workingSubName, pos);
 		try {
-			if(variables.containsKey(s)) {
-				toRet = Integer.parseInt(variables.get(s));
-			}else {
+			if(Pattern.matches("[$]I[0-9]+", s)){
+				s = s.substring(2);
+				int index = Integer.parseInt(s);
+				if(index >= 0 && index < Enemy.NUM_INT_VARIABLES) {
+					toRet = intVariables[index];
+				}else toRet = 0;
+			} else {
 				toRet = Integer.parseInt(s);
 			}
 		}catch(Exception e) {
@@ -328,9 +341,13 @@ public class Enemy {
 		double toRet = 0;
 		String s = script.getValueAtPos(workingSubName, pos);
 		try {
-			if(variables.containsKey(s)) {
-				toRet = Double.parseDouble(variables.get(s));
-			}else {
+			if(Pattern.matches("[$]F[0-9]+", s)){
+				s = s.substring(2);
+				int index = Integer.parseInt(s);
+				if(index >= 0 && index < Enemy.NUM_DOUBLE_VARIABLES) {
+					toRet = doubleVariables[index];
+				} else toRet = 0;
+			} else {
 				if(Pattern.matches("r-?[0-9]+[.][0-9]+", s) || Pattern.matches("r-?[0-9]+", s)) {
 					s = s.substring(1);
 					toRet = Double.parseDouble(s);
@@ -350,16 +367,17 @@ public class Enemy {
 		if(workingScriptPosition >= script.getSubLength(workingSubName)) opcode = Opcodes.ret;
 		else opcode = getIntFromScript(workingScriptPosition);
 		String stringArg1;
-		String stringArg2;
 		int intArg1;
 		int intArg2;
 		int intArg3;
 		double doubleArg1;
 		double doubleArg2;
+		double doubleArg3;
+		double doubleArg4;
 		switch(opcode) {
 		
 		
-		//OPCODES 000-100, CONTROL FLOW AND MISCELLANEOUS STUFF
+		//OPCODES 000-100, CONTROL FLOW AND VARIABLE-RELATED STUFF
 		case Opcodes.nop:
 			//System.out.println("nop executed");
 			workingScriptPosition++;
@@ -371,41 +389,6 @@ public class Enemy {
 			else {
 				workingSubName = asyncCallStack.get(asyncSlotNum).pop();
 				workingScriptPosition = Integer.parseInt(asyncCallStack.get(asyncSlotNum).pop());
-			}
-			break;
-		case Opcodes.declareVariable:
-			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			workingScriptPosition += 2;
-			if(variables.containsKey(stringArg1)) {
-				throw new SCCLexception("Duplicate declaration of variable " + stringArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
-			}else {
-				variables.put(stringArg1, "");
-			}
-			break;
-		case Opcodes.declareAndInitialize:
-			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			stringArg2 = script.getValueAtPos(workingSubName, workingScriptPosition + 2);
-			workingScriptPosition += 3;
-			if(variables.containsKey(stringArg1)) {
-				throw new SCCLexception("Duplicate declaration of variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
-			}else {
-				if(Pattern.matches("r-?[0-9]+[.][0-9]+", stringArg2) || Pattern.matches("r-?[0-9]+", stringArg2)) {
-					stringArg2 = stringArg2.substring(1);
-					double toStore = Double.parseDouble(stringArg2);
-					toStore = toStore * Enemy.DEG_TO_RAD;
-					variables.put(stringArg1, Double.toString(toStore));
-				}else{
-					variables.put(stringArg1, stringArg2);
-				}
-			}
-			break;
-		case Opcodes.closeVariable:
-			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			workingScriptPosition += 2;
-			if(!variables.containsKey(stringArg1)) {
-				throw new SCCLexception("Could not close undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
-			}else {
-				variables.remove(stringArg1);
 			}
 			break;
 			
@@ -437,36 +420,337 @@ public class Enemy {
 			asyncWaitTimer.set(asyncSlotNum, enemyTimer + intArg1);
 			break;
 			
-		case Opcodes.setVarString:
-			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			stringArg2 = script.getValueAtPos(workingSubName, workingScriptPosition + 2);
-			workingScriptPosition += 3;
-			if(!variables.containsKey(stringArg1)) {
-				throw new SCCLexception("Attempted assignment of undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
-			}else {
-				variables.replace(stringArg1, stringArg2);
-			}
-			break;
+
 		case Opcodes.setVarInt:
-			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
-			intArg1 = getIntFromScript(workingScriptPosition + 2);
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
 			workingScriptPosition += 3;
-			if(!variables.containsKey(stringArg1)) {
-				throw new SCCLexception("Attempted assignment of undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}else {
-				variables.replace(stringArg1, Integer.toString(intArg1));
+				intVariables[intArg1] = intArg2;
 			}
 			break;
 		case Opcodes.setVarFloat:
-			stringArg1 = script.getValueAtPos(workingSubName, workingScriptPosition + 1);
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
 			workingScriptPosition += 3;
-			if(!variables.containsKey(stringArg1)) {
-				throw new SCCLexception("Attempted assignment of undeclared variable " + stringArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}else {
-				variables.replace(stringArg1, Double.toString(doubleArg1));
+				doubleVariables[intArg1] = doubleArg1;
 			}
 			break;
+		case Opcodes.addInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 + intArg3;
+			}
+			break;
+		case Opcodes.addFloats:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = doubleArg1 + doubleArg2;
+			}
+			break;
+		case Opcodes.subtractInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 - intArg3;
+			}
+			break;
+		case Opcodes.subtractFloats:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = doubleArg1 - doubleArg2;
+			}
+			break;
+		case Opcodes.multInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 * intArg3;
+			}
+			break;
+		case Opcodes.multFloats:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = doubleArg1 * doubleArg2;
+			}
+			break;
+		case Opcodes.divInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else if(intArg3 == 0) {
+				throw new SCCLexception("Attempted division by 0 at " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 / intArg3;
+			}
+			break;
+		case Opcodes.divFloats:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else if (doubleArg2 == 0.0){
+				throw new SCCLexception("Attempted division by 0 at " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = doubleArg1 + doubleArg2;
+			}
+			break;
+		case Opcodes.modInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else if(intArg3 == 0) {
+				throw new SCCLexception("Attempted modulo by 0 at " + (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 % intArg3;
+			}
+			break;
+			
+			
+		case Opcodes.equalsInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (intArg1 == intArg2);
+			break;
+		case Opcodes.equalsFloats:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (doubleArg1 == doubleArg2);
+			break;
+		case Opcodes.notEqualsInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (intArg1 != intArg2);
+			break;
+		case Opcodes.notEqualsFloats:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (doubleArg1 != doubleArg2);
+			break;
+		case Opcodes.lessThanInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (intArg1 < intArg2);
+			break;
+		case Opcodes.lessThanFloats:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (doubleArg1 < doubleArg2);
+			break;
+		case Opcodes.lessEqualsInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (intArg1 <= intArg2);
+			break;
+		case Opcodes.lessEqualsFloats:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (doubleArg1 <= doubleArg2);
+			break;
+		case Opcodes.greaterThanInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (intArg1 > intArg2);
+			break;
+		case Opcodes.greaterThanFloats:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (doubleArg1 > doubleArg2);
+			break;
+		case Opcodes.greaterEqualsInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (intArg1 >= intArg2);
+			break;
+		case Opcodes.greaterEqualsFloats:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			recentEval = (doubleArg1 >= doubleArg2);
+			break;
+			
+		case Opcodes.bitwiseXorInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 ^ intArg3;
+			}
+			break;
+		case Opcodes.bitwiseOrInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 | intArg3;
+			}
+			break;
+		case Opcodes.bitwiseAndInts:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			intArg3 = getIntFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg2 & intArg3;
+			}
+			break;
+		case Opcodes.decrementVariable:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = intArg1 - 1;
+			}
+		case Opcodes.sineArg:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = Math.sin(doubleArg1);
+			}
+			break;
+		case Opcodes.cosineArg:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = Math.cos(doubleArg1);
+			}
+			break;
+		case Opcodes.circlePos:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 3);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 4);
+			workingScriptPosition += 5;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 5) + " in subroutine " + workingSubName);
+			}else if (intArg2 < 0 || intArg2 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg2 + " at "+ (workingScriptPosition - 5) + " in subroutine " + workingSubName);
+			}else{
+				doubleVariables[intArg1] = (Math.cos(doubleArg1) * doubleArg2);
+				doubleVariables[intArg2] = (Math.sin(doubleArg1) * doubleArg2);
+			}
+			break;
+		case Opcodes.normalizeAngle:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = doubleVariables[intArg1] % (Math.PI * 2);
+			}
+			break;
+		case Opcodes.absInt:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = Math.abs(intArg2);
+			}
+			break;
+		case Opcodes.absFloat:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = Math.abs(doubleArg1);
+			}
+			break;
+		case Opcodes.angleFromPoints:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
+			doubleArg3 = getDoubleFromScript(workingScriptPosition + 4);
+			doubleArg4 = getDoubleFromScript(workingScriptPosition + 5);
+			workingScriptPosition += 6;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 6) + " in subroutine " + workingSubName);
+			}else{
+				doubleVariables[intArg1] = Math.atan2(doubleArg1 - doubleArg3, doubleArg2 - doubleArg4);
+			}
+			break;
+		case Opcodes.sqrt:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = Math.sqrt(doubleArg1);
+			}
+			break;
+			
+		
 			
 		//OPCODES 300-399, ENEMY CREATION
 		case Opcodes.enemyCreateRel:
