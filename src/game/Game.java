@@ -236,6 +236,7 @@ public class Game extends Canvas implements Runnable{
 			ShotMGR.drawShots(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g, this);
+			playerChar.drawPlayerDeathAnim(g, this);
 			g.drawImage(HUD, 0, 0, this);
 		}
 		if(state == STATE.MENU) {

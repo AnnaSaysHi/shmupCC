@@ -191,26 +191,21 @@ public class Player {
 	}
 	
 	public void drawPlayer(Graphics2D g, Game m) {
-		switch(playerState) {
-		case 0:
-		case 2:
-		case 3:
-		case 4:
+		if(playerState != 1) {
 			visXpos = (int)(x) - (playerAnimWidth / 2);
 			visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 			visYpos = (int)(y) - (playerAnimHeight / 2);
 			visYpos += Game.PLAYFIELDYOFFSET;
 			g.drawImage(animIdle, visXpos, visYpos, m);
-			break;
-		case 1:
-			
+		}
+	}
+	public void drawPlayerDeathAnim(Graphics2D g, Game m) {
+		if(playerState == 1) {
 			visXpos = (int)(x) - (deathAnimWidth / 2);
 			visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 			visYpos = (int)(y) - (deathAnimHeight / 2);
 			visYpos += Game.PLAYFIELDYOFFSET;
 			g.drawImage(deathAnimFrames[(stateTimer - 1) / deathAnimFramerate], visXpos, visYpos, m);
-			break;
-
 		}
 	}
 	public void drawHitbox(Graphics2D g, Game m) {
