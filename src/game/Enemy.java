@@ -681,7 +681,7 @@ public class Enemy {
 			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
 				throw new SCCLexception("Attempted assignment of out of range integer " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
 			}else {
-				intVariables[intArg1] = intArg1 - 1;
+				intVariables[intArg1] = intVariables[intArg1] - 1;
 			}
 			break;
 		case Opcodes.sineArg:
