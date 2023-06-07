@@ -57,7 +57,7 @@ public abstract class Opcodes {
 	//opcodes 300 thru 399
 	public static final int enemyCreateRel = 300;
 	public static final int enemyCreateAbs = 301;
-	public static final int enemySetSprite = 302;
+	public static final int enemySetSprite = 303;
 	
 	
 	//opcodes 400 thru 499
