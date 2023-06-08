@@ -16,7 +16,7 @@ public class EnemyManager {
 	EnemyScript scriptObject;
 
 	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g, SoundManager smgr) {
-		maxSize = size;
+		maxSize = 3;
 		enemySprites = ss;
 		enemySpriteReference = new BufferedImage[3][1];
 		for(int i = 0; i < 3; i++) {

@@ -153,10 +153,10 @@ public class Player {
 			stateTimer++;
 			break;
 		case 2:
-			stateTimer++;
+			stateTimer = 9;
 			if(stateTimer > deathbombWindow) {
 				playerState = 1;
-				stateTimer = 9;
+				stateTimer = 1;
 				SoundMGR.playFromArray(SoundManager.Explosion);
 				break;
 			}

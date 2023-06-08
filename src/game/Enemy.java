@@ -335,6 +335,8 @@ public class Enemy {
 					toRet = (int) doubleVariables[index];
 				} else toRet = 0;
 				toRet = Integer.parseInt(s);
+			} else {
+				toRet = Integer.parseInt(s);
 			}
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -389,7 +391,7 @@ public class Enemy {
 		
 		//OPCODES 000-100, CONTROL FLOW AND VARIABLE-RELATED STUFF
 		case Opcodes.nop:
-			//System.out.println("nop executed");
+			System.out.println("nop executed");
 			workingScriptPosition++;
 			break;
 		case Opcodes.ret:
