@@ -65,14 +65,14 @@ public class Game extends Canvas implements Runnable{
 	public void init() {
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try {
-			bulletSprites = loader.loadImage("/bulletsheet.png");
-			enemySprites = loader.loadImage("/EnemySheet.png");
-			player0 = loader.loadImage("/ShipStationary.png");
-			player1 = loader.loadImage("/ShipLeanLeft.png");
-			hitbox = loader.loadImage("/HitboxIndicator.png");
-			shot = loader.loadImage("/playerShot.png");
-			HUD = loader.loadImage("/HUD.png");
-			explosionSheet = loader.loadImage("/ExplosionSheet.png");
+			bulletSprites = loader.loadImage("/images/bulletsheet.png");
+			enemySprites = loader.loadImage("/images/EnemySheet.png");
+			player0 = loader.loadImage("/images/ShipStationary.png");
+			player1 = loader.loadImage("/images/ShipLeanLeft.png");
+			hitbox = loader.loadImage("/images/HitboxIndicator.png");
+			shot = loader.loadImage("/images/playerShot.png");
+			HUD = loader.loadImage("/images/HUD.png");
+			explosionSheet = loader.loadImage("/images/ExplosionSheet.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
