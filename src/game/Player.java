@@ -7,6 +7,7 @@ public class Player {
 	KBinputHandler kbh;
 	PlayerShotManager ShotMGR;
 	SoundManager SoundMGR;
+	Game game;
 	double x;
 	double y;
 	int[] moveLimits;
@@ -42,17 +43,24 @@ public class Player {
 	 * 3 = respawning 
 	 * 4 = bombing
 	 */
+	public int lives;
+	public int bombs;
+	public int score;
 	
-	public Player(KBinputHandler k, SoundManager sndmgr, int lowXbound, int highXbound, int lowYbound, int highYbound) {
+	public Player(KBinputHandler k, SoundManager sndmgr, Game g, int lowXbound, int highXbound, int lowYbound, int highYbound) {
 		isFocusing = false;
 		bombHeldPrevFrame = true;
 		kbh = k;
 		SoundMGR = sndmgr;
+		game = g;
 		moveLimits = new int[] {lowXbound, highXbound, lowYbound, highYbound};
 		playerState = 0;
 		stateTimer = 0;
 		x = 0;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
+		lives = 2;
+		bombs = 3;
+		score = 0;
 		iframes = 20;
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height, BufferedImage hitbox, int hbSize, Spritesheet deathAnim, int w, int h, int frames) {
@@ -84,6 +92,9 @@ public class Player {
 		stateTimer = 0;
 		bombHeldPrevFrame = true;
 		iframes = 20;
+		lives = 2;
+		bombs = 3;
+		score = 0;
 	}
 	public void playerSetShotMGR(PlayerShotManager psm) {
 		ShotMGR = psm;
@@ -134,6 +145,9 @@ public class Player {
 				x = 0;
 				y = Game.PLAYFIELDHEIGHT + playerAnimHeight;
 				stateTimer = 0;
+				if(lives == 0){
+					game.state = Game.STATE.GAME_OVER;
+				}else lives--;
 				break;
 			}
 			stateTimer++;
@@ -190,31 +204,31 @@ public class Player {
 		return new double[] {x, y, hitboxSize, grazeboxSize};
 	}
 	
-	public void drawPlayer(Graphics2D g, Game m) {
+	public void drawPlayer(Graphics2D g) {
 		if(playerState != 1) {
 			visXpos = (int)(x) - (playerAnimWidth / 2);
 			visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 			visYpos = (int)(y) - (playerAnimHeight / 2);
 			visYpos += Game.PLAYFIELDYOFFSET;
-			g.drawImage(animIdle, visXpos, visYpos, m);
+			g.drawImage(animIdle, visXpos, visYpos, game);
 		}
 	}
-	public void drawPlayerDeathAnim(Graphics2D g, Game m) {
+	public void drawPlayerDeathAnim(Graphics2D g) {
 		if(playerState == 1) {
 			visXpos = (int)(x) - (deathAnimWidth / 2);
 			visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 			visYpos = (int)(y) - (deathAnimHeight / 2);
 			visYpos += Game.PLAYFIELDYOFFSET;
-			g.drawImage(deathAnimFrames[(stateTimer - 1) / deathAnimFramerate], visXpos, visYpos, m);
+			g.drawImage(deathAnimFrames[(stateTimer - 1) / deathAnimFramerate], visXpos, visYpos, game);
 		}
 	}
-	public void drawHitbox(Graphics2D g, Game m) {
+	public void drawHitbox(Graphics2D g) {
 		if(playerState != 3 && playerState != 1) {
 			visXpos = (int)(x) - (hitboxAnimSize / 2);
 			visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
 			visYpos = (int)(y) - (hitboxAnimSize / 2);
 			visYpos += Game.PLAYFIELDYOFFSET;
-			g.drawImage(animHitbox, visXpos, visYpos, m);
+			g.drawImage(animHitbox, visXpos, visYpos, game);
 		}
 		
 	}

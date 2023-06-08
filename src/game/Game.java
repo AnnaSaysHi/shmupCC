@@ -59,6 +59,8 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage HUD = null;
 	private BufferedImage shot = null;
 	private BufferedImage explosionSheet = null;
+	private BufferedImage lifeIcon = null;
+	private BufferedImage bombIcon = null;
 	private Player playerChar;
 	int bulletTimer;
 	
@@ -73,6 +75,7 @@ public class Game extends Canvas implements Runnable{
 			shot = loader.loadImage("/images/playerShot.png");
 			HUD = loader.loadImage("/images/HUD.png");
 			explosionSheet = loader.loadImage("/images/ExplosionSheet.png");
+			lifeIcon = loader.loadImage("/images/LifeIcon.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
@@ -102,7 +105,7 @@ public class Game extends Canvas implements Runnable{
 		menuList[0].activate();
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
-		playerChar = new Player(kbh, SoundMGR,
+		playerChar = new Player(kbh, SoundMGR, this,
 				pdistfromwalls - (PLAYFIELDWIDTH / 2),
 				(PLAYFIELDWIDTH / 2) - pdistfromwalls,
 				pdistfromwalls,
@@ -231,17 +234,21 @@ public class Game extends Canvas implements Runnable{
 		Font fpsfont = g.getFont();
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
-			playerChar.drawPlayer(g, this);
+			playerChar.drawPlayer(g);
 			EnemyMGR.drawEnemies(g);
 			ShotMGR.drawShots(g, this);
 			BulletMGR.drawBullets(g, this);
-			playerChar.drawHitbox(g, this);
-			playerChar.drawPlayerDeathAnim(g, this);
+			playerChar.drawHitbox(g);
+			playerChar.drawPlayerDeathAnim(g);
 			g.drawImage(HUD, 0, 0, this);
 			Font scoreFont = new Font("THBiolinum", Font.PLAIN, 24);
 			g.setColor(new Color(0x4f4f4f));
 			g.setFont(scoreFont);
-			g.drawString("Score: ", 440, 48);
+			g.drawString("Score: ", 440, 60);
+			g.drawString("Lives: ", 440, 92);
+			for(int i = 0; i < playerChar.lives; i++) {
+				g.drawImage(lifeIcon, 490 + (20 * i), 80, this);
+			}
 		}
 		if(state == STATE.MENU) {
 			for(int i = 0; i < menuList.length; i++) {
