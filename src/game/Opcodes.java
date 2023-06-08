@@ -51,6 +51,7 @@ public abstract class Opcodes {
 	public static final int absFloat = 84;
 	public static final int angleFromPoints = 87;
 	public static final int sqrt = 88;
+	public static final int angleToPlayerSelf = 89;
 	public static final int floatChangeOverTime = 91;
 	
 	
@@ -83,6 +84,7 @@ public abstract class Opcodes {
 	public static final int setCounts = 606;
 	public static final int setAimMode = 607;
 	public static final int setShotSound = 608;
+	public static final int angleToPlayerArgs = 623;
 	public static final int setShootDistance = 627;
 	public static final int setShotFrequency = 642;
 	

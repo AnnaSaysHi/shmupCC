@@ -328,7 +328,12 @@ public class Enemy {
 				if(index >= 0 && index < Enemy.NUM_INT_VARIABLES) {
 					toRet = intVariables[index];
 				}else toRet = 0;
-			} else {
+			} else if(Pattern.matches("[$]F[0-9]+", s)){
+				s = s.substring(2);
+				int index = Integer.parseInt(s);
+				if(index >= 0 && index < Enemy.NUM_DOUBLE_VARIABLES) {
+					toRet = (int) doubleVariables[index];
+				} else toRet = 0;
 				toRet = Integer.parseInt(s);
 			}
 		}catch(Exception e) {
@@ -340,7 +345,13 @@ public class Enemy {
 		double toRet = 0;
 		String s = script.getValueAtPos(workingSubName, pos);
 		try {
-			if(Pattern.matches("[$]F[0-9]+", s)){
+			if(Pattern.matches("[$]I[0-9]+", s)){
+				s = s.substring(2);
+				int index = Integer.parseInt(s);
+				if(index >= 0 && index < Enemy.NUM_INT_VARIABLES) {
+					toRet = intVariables[index];
+				}else toRet = 0;
+			} else if(Pattern.matches("[$]F[0-9]+", s)){
 				s = s.substring(2);
 				int index = Integer.parseInt(s);
 				if(index >= 0 && index < Enemy.NUM_DOUBLE_VARIABLES) {
@@ -770,6 +781,15 @@ public class Enemy {
 				doubleVariables[intArg1] = Math.sqrt(doubleArg1);
 			}
 			break;
+		case Opcodes.angleToPlayerSelf:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = game.getAngleToPlayer(xpos, ypos);
+			}
+			break;
 			
 		
 			
@@ -941,6 +961,18 @@ public class Enemy {
 				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}
 			break;
+		case Opcodes.angleToPlayerArgs:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 3);
+			workingScriptPosition += 4;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 4) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = game.getAngleToPlayer(doubleArg1, doubleArg2);
+			}
+			break;
+			
 		case Opcodes.setShootDistance:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			doubleArg1 = getDoubleFromScript(workingScriptPosition + 2);
