@@ -156,13 +156,13 @@ public class Player {
 			stateTimer++;
 			if(stateTimer > deathbombWindow) {
 				playerState = 1;
-				stateTimer = 1;
+				stateTimer = 9;
 				SoundMGR.playFromArray(SoundManager.Explosion);
 				break;
 			}
 			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9]) {
-				playerState = 4;
-				stateTimer = 0;
+				//playerState = 4;
+				//stateTimer = 0;
 			}
 			break;
 		case 3:
@@ -186,7 +186,7 @@ public class Player {
 		if(playerState == 0) {
 			if(iframes <= 0) {
 				playerState = 2;
-				SoundMGR.playFromArray(SoundManager.Pichuun);
+				//SoundMGR.playFromArray(SoundManager.Pichuun);
 				stateTimer = 0;
 			}
 		}
