@@ -951,6 +951,16 @@ public class Enemy {
 				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 3) + " in subroutine " + workingSubName);
 			}
 			break;
+		case Opcodes.setShotSound:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			intArg2 = getIntFromScript(workingScriptPosition + 2);
+			workingScriptPosition += 3;
+			if(intArg1 >= 0 && intArg1 < numSpawners) {
+				spawners[intArg1].setSound(intArg2);
+			}else {
+				throw new SCCLexception("Spawner index out of range at position " + (workingScriptPosition - 3) + " in subroutine " + workingSubName);
+			}
+			break;
 		case Opcodes.setShotFrequency:
 			intArg1 = getIntFromScript(workingScriptPosition + 1);
 			intArg2 = getIntFromScript(workingScriptPosition + 2);
