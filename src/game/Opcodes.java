@@ -53,6 +53,9 @@ public abstract class Opcodes {
 	public static final int sqrt = 88;
 	public static final int angleToPlayerSelf = 89;
 	public static final int floatChangeOverTime = 91;
+	public static final int getRandomInt = 94;
+	public static final int getRandomFloat = 95;
+	public static final int getRandomAngle = 96;
 	
 	
 	//opcodes 300 thru 399

@@ -792,7 +792,33 @@ public class Enemy {
 				doubleVariables[intArg1] = game.getAngleToPlayer(xpos, ypos);
 			}
 			break;
-			
+		case Opcodes.getRandomInt:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_INT_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range int " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				intVariables[intArg1] = game.FetchRNG().nextInt();
+			}
+			break;
+		case Opcodes.getRandomFloat:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = game.FetchRNG().nextDouble();
+			}
+			break;
+		case Opcodes.getRandomAngle:
+			intArg1 = getIntFromScript(workingScriptPosition + 1);
+			workingScriptPosition += 2;
+			if(intArg1 < 0 || intArg1 >= Enemy.NUM_DOUBLE_VARIABLES) {
+				throw new SCCLexception("Attempted assignment of out of range double " + intArg1 + " at "+ (workingScriptPosition - 2) + " in subroutine " + workingSubName);
+			}else {
+				doubleVariables[intArg1] = game.FetchRNG().nextDouble(Math.PI * -1, Math.PI);
+			}
+			break;
 		
 			
 		//OPCODES 300-399, ENEMY CREATION
