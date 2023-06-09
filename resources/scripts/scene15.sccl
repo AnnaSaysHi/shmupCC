@@ -1,4 +1,4 @@
-main fronthalf1 fronthalf2 en1 en1att en2 en3 en3att
+main fronthalf1 fronthalf2 en1 en1att en2 en3 en3att en4
 
 main 502 8
 23 60
@@ -29,7 +29,8 @@ fronthalf2
 300 en3 $F0 -60 250
 59 $I0 0
 14 -22
-
+23 30
+300 en4 0 -60 1000
 ret
 
 en1 502 4
@@ -80,6 +81,8 @@ ret
 
 en3 502 4
 303 0
+43 0 1
+43 2 15
 403 60 2 0 160
 23 60
 15 en3att
@@ -89,10 +92,23 @@ en3 502 4
 23 1000
 ret
 
+en4 502 4
+43 0 6
+43 2 0
+303 2
+403 60 2 0 160
+23 60
+15 en3att
+503 4
+23 600
+403 60 1 0 -160
+23 1000
+ret
+
 en3att 600 0
 600 1
-602 1 1 1
-602 0 6 15
+602 1 1 $I0
+602 0 6 $I2
 603 0 0 0
 604 0 r-180 r180
 604 1 0 0
