@@ -98,7 +98,7 @@ public class Player {
 	}
 	public void playerSetShotMGR(PlayerShotManager psm) {
 		ShotMGR = psm;
-		shotType = new ShotType((byte) 1, this);
+		shotType = new ShotType((byte) 3, this);
 	}
 
 	public void tickPlayer() {
@@ -170,7 +170,7 @@ public class Player {
 			if(y <= (7 * Game.PLAYFIELDHEIGHT) / 8){
 				playerState = 0;
 				stateTimer = 0;
-				iframes = 20;
+				iframes = 60;
 			}
 			break;
 		case 4:
