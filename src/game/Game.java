@@ -45,7 +45,7 @@ public class Game extends Canvas implements Runnable{
 	private int activeMenu;
 	private long rngInitSeed;
 	
-	private StageScript[] stageList = new StageScript[4];	
+	private StageScript[] stageList = new StageScript[5];	
 	private int stage = -1;
 	
 	private double[] playercoords;
@@ -98,7 +98,7 @@ public class Game extends Canvas implements Runnable{
 		sceneMenu = new MenuSceneSelect(this, kbh, SoundMGR);
 		pauseMenu = new MenuPause(this, kbh, SoundMGR);
 		sceneMenu.setParentMenu(menu);
-		sceneMenu.setMenuLengthAndDirection(4, (byte) 0);
+		sceneMenu.setMenuLengthAndDirection(5, (byte) 0);
 		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
@@ -129,6 +129,7 @@ public class Game extends Canvas implements Runnable{
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[4] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "resources/scripts/scene15.sccl");
 
 	}
 	
@@ -274,10 +275,10 @@ public class Game extends Canvas implements Runnable{
 		return RNG;
 	}
 	public boolean isOutsidePlayfield(double xpos, double ypos, double size) {
-		if (xpos > size + Game.PLAYFIELDWIDTH + Game.PLAYFIELDXOFFSET) return true;
-		if (xpos < Game.PLAYFIELDXOFFSET - size) return true;
-		if (ypos < Game.PLAYFIELDYOFFSET - size) return true;
-		if (ypos > size + Game.PLAYFIELDHEIGHT + Game.PLAYFIELDYOFFSET) return true;
+		if (xpos > size + (Game.PLAYFIELDWIDTH / 2)) return true;
+		if (xpos < (-size - (Game.PLAYFIELDWIDTH / 2))) return true;
+		if (ypos < -size) return true;
+		if (ypos > size + Game.PLAYFIELDHEIGHT) return true;
 		return false;
 	}
 	
