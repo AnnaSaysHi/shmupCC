@@ -131,6 +131,10 @@ public class BulletSpawner {
 	
 	
 	public void activate() {
+		if(followEnemy) {
+			spawnerX = parentEnemy.xpos + relativeX;
+			spawnerY = parentEnemy.ypos + relativeY;
+		}
 		double angleAim = angle1;
 		parentManager.SoundMGR.playFromArray(soundOnActivate);
 		switch(modeNum) {
