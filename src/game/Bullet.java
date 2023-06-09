@@ -146,9 +146,9 @@ public class Bullet {
 	
 	public boolean checkCollision(double xCompare, double yCompare, double radCompare) {
 		
-		if(((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)))) {
+		/*if(((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)))) {
 			this.color = BulletColor.LIGHT_GREY;
-		}
+		}*/
 		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)));
 	}
 	public void collideWithPlayer() {
