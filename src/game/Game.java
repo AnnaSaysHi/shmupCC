@@ -8,7 +8,9 @@ import java.awt.geom.AffineTransform;
 import javax.swing.*;
 
 public class Game extends Canvas implements Runnable{
-
+	
+	public final int SCRIPT_MAX = 6;
+	
 	private static final long serialVersionUID = 8763681502519222609L;
 	public static final int WIDTH = 640;
 	public static final int HEIGHT = 480;
@@ -45,7 +47,7 @@ public class Game extends Canvas implements Runnable{
 	private int activeMenu;
 	private long rngInitSeed;
 	
-	private StageScript[] stageList = new StageScript[5];	
+	private StageScript[] stageList = new StageScript[SCRIPT_MAX];	
 	private int stage = -1;
 	
 	private double[] playercoords;
@@ -98,7 +100,7 @@ public class Game extends Canvas implements Runnable{
 		sceneMenu = new MenuSceneSelect(this, kbh, SoundMGR);
 		pauseMenu = new MenuPause(this, kbh, SoundMGR);
 		sceneMenu.setParentMenu(menu);
-		sceneMenu.setMenuLengthAndDirection(5, (byte) 0);
+		sceneMenu.setMenuLengthAndDirection(SCRIPT_MAX, (byte) 0);
 		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
 		menuList[1] = sceneMenu;
@@ -130,6 +132,7 @@ public class Game extends Canvas implements Runnable{
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[4] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "resources/scripts/scene15.sccl");
+		stageList[5] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "resources/scripts/scene16.sccl");
 
 	}
 	

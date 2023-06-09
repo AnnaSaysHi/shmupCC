@@ -117,6 +117,9 @@ public class Enemy {
 		}		
 		hitboxSize = renderSize;
 		hurtboxSize = size / 2;
+		
+
+		movementType = 1;
 		initActions();
 	}
 	
@@ -165,6 +168,8 @@ public class Enemy {
 		yvel = 0;
 		xaccel = 0;
 		yaccel = 0;
+		
+		movementType = 1;
 		
 	}
 	
@@ -875,6 +880,22 @@ public class Enemy {
 			doubleArg2 = getDoubleFromScript(workingScriptPosition + 4);
 			setPosRelTime(intArg1, intArg2, doubleArg1, doubleArg2);
 			workingScriptPosition += 5;
+			break;
+		case Opcodes.setSpeedAndAngle:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			speed = doubleArg1;
+			angle = doubleArg2;
+			movementType = 0;
+			workingScriptPosition += 3;
+			break;
+		case Opcodes.setXVelAndYVel:
+			doubleArg1 = getDoubleFromScript(workingScriptPosition + 1);
+			doubleArg2 = getDoubleFromScript(workingScriptPosition + 2);
+			xvel = doubleArg1;
+			yvel = doubleArg2;
+			movementType = 1;
+			workingScriptPosition += 3;
 			break;
 			
 			

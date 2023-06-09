@@ -7,7 +7,7 @@ public class MenuSceneSelect extends MenuGeneral {
 
 	public MenuSceneSelect(Game g, KBinputHandler kbh, SoundManager smgr) {
 		super(g, kbh, smgr);
-		menuEntries = 5;
+		menuEntries = g.SCRIPT_MAX;
 	}
 	
 	@Override
@@ -23,6 +23,7 @@ public class MenuSceneSelect extends MenuGeneral {
 		g.drawString("VIV_test", 100, 200);
 		g.drawString("Enemy Test", 100, 250);
 		g.drawString("Showcase 1", 100, 300);
+		g.drawString("Showcase_2", 100, 350);
 		g.drawString(">", 90, 100 + 50 * selectedOption);
 	}
 
