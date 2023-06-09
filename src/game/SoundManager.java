@@ -51,7 +51,7 @@ public class SoundManager{
 			e.printStackTrace();
 		}
 	}
-	void playFromArray(int slot){
+	public void playFromArray(int slot){
 		if(slot == No_Sound) return;
 		try {
 			sfxArray[slot].stop(0);
