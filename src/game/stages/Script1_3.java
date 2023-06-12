@@ -5,7 +5,7 @@ import game.*;
 public class Script1_3 extends StageScript{
 	private BulletSpawner testSpawner;
 	
-	private double m_x = 0.0, m_y = 0.0;
+	//private double m_x = 0.0, m_y = 0.0;
 
 	final int RING_BULLET_CNT = 12;
 	final double SCR_OX = 0.0;

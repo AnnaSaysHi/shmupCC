@@ -24,6 +24,7 @@ public class Player {
 	int visYpos;
 	ShotType shotType;
 	private BufferedImage animIdle;
+	@SuppressWarnings("unused")
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
 	private BufferedImage[] deathAnimFrames;

@@ -2,11 +2,8 @@ package game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
-import java.net.URL;
 
 public class EnemyScript {
 

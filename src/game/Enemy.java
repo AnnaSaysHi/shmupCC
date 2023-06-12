@@ -231,7 +231,7 @@ public class Enemy {
 		}
 		swapCallStack(0);
 		while(asyncCallStack.remove(null)) {
-			int i = 1;
+			//int i = 1;
 		}
 		while(asyncWaitTimer.remove(null)) {
 			

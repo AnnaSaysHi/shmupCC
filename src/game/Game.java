@@ -44,7 +44,7 @@ public class Game extends Canvas implements Runnable{
 	private MenuGeneral[] menuList = new MenuGeneral[2];
 	private MenuPause pauseMenu;
 	private MenuSceneSelect sceneMenu;
-	private int activeMenu;
+	@SuppressWarnings("unused")
 	private long rngInitSeed;
 	
 	private StageScript[] stageList = new StageScript[SCRIPT_MAX];	
@@ -62,6 +62,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage shot = null;
 	private BufferedImage explosionSheet = null;
 	private BufferedImage lifeIcon = null;
+	@SuppressWarnings("unused")
 	private BufferedImage bombIcon = null;
 	private Player playerChar;
 	int bulletTimer;
