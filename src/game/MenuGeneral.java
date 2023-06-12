@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 public class MenuGeneral {
@@ -106,6 +107,12 @@ public class MenuGeneral {
 	
 	public void render(Graphics g) {
 		g.setColor(Color.WHITE);
+		Font scoreFont = new Font("THBiolinum", Font.PLAIN, 48);
+		g.setColor(Color.WHITE);
+		g.setFont(scoreFont);
+		g.drawString("ShmupCC showcase build", 50, 50);
+		scoreFont = new Font("THbiolinum", Font.PLAIN, 24);
+		g.setFont(scoreFont);
 		g.drawString("Start", 100, 100);
 		g.drawString("????", 100, 150);
 		g.drawString("Exit", 100, 200);
