@@ -131,8 +131,8 @@ public class Game extends Canvas implements Runnable{
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-		stageList[4] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "resources/scripts/scene16.sccl");
-		stageList[5] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "resources/scripts/scene15.sccl");
+		stageList[4] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene16.sccl");
+		stageList[5] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene15.sccl");
 
 	}
 	
@@ -245,9 +245,9 @@ public class Game extends Canvas implements Runnable{
 			playerChar.drawHitbox(g);
 			playerChar.drawPlayerDeathAnim(g);
 			g.drawImage(HUD, 0, 0, this);
-			//Font scoreFont = new Font("THBiolinum", Font.PLAIN, 24);
-			//g.setColor(new Color(0x4f4f4f));
-			//g.setFont(scoreFont);
+			Font scoreFont = new Font("THBiolinum", Font.PLAIN, 24);
+			g.setColor(new Color(0x4f4f4f));
+			g.setFont(scoreFont);
 			//g.drawString("Score: ", 440, 60);
 			g.drawString("Lives: ", 440, 60);
 			for(int i = 0; i < playerChar.lives; i++) {
