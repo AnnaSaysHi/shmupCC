@@ -27,6 +27,7 @@ public class Player {
 	@SuppressWarnings("unused")
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
+	private BufferedImage animOption;
 	private BufferedImage[] deathAnimFrames;
 	private int deathAnimWidth;
 	private int deathAnimHeight;
@@ -213,6 +214,9 @@ public class Player {
 			visYpos += Game.PLAYFIELDYOFFSET;
 			g.drawImage(animIdle, visXpos, visYpos, game);
 		}
+	}
+	public void drawPlayerOptions(Graphics2D g) {
+		
 	}
 	public void drawPlayerDeathAnim(Graphics2D g) {
 		if(playerState == 1) {

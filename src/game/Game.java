@@ -70,6 +70,13 @@ public class Game extends Canvas implements Runnable{
 	public void init() {
 		BufferedImageLoader loader = new BufferedImageLoader();
 		try {
+			ShotData sd = new ShotData();
+			sd.getShotInfoFromFile("/player/pl00.sht");
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+		try {
 			bulletSprites = loader.loadImage("/images/bulletsheet.png");
 			enemySprites = loader.loadImage("/images/EnemySheet.png");
 			player0 = loader.loadImage("/images/ShipStationary.png");
