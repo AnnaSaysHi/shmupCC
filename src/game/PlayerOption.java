@@ -11,6 +11,8 @@ public class PlayerOption implements Interpolable {
 	double visYpos;
 	double currentOffX;
 	double currentOffY;
+	double graphicH;
+	double graphicW;
 	
 	double angle;
 	double renderAngle;
@@ -25,6 +27,10 @@ public class PlayerOption implements Interpolable {
 			interpolators[i] = new InterpolatorGeneral(this);
 		}
 	}
+	/*public void updateSize(double h, double w) {
+		graphicH = h;
+		graphicW = w;
+	}*/
 
 	public void tick() {
 		doInterpolation();

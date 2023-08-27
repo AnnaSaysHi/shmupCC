@@ -62,6 +62,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage shot = null;
 	private BufferedImage explosionSheet = null;
 	private BufferedImage lifeIcon = null;
+	private BufferedImage option = null;
 	@SuppressWarnings("unused")
 	private BufferedImage bombIcon = null;
 	private Player playerChar;
@@ -86,6 +87,7 @@ public class Game extends Canvas implements Runnable{
 			HUD = loader.loadImage("/images/HUD.png");
 			explosionSheet = loader.loadImage("/images/ExplosionSheet.png");
 			lifeIcon = loader.loadImage("/images/LifeIcon.png");
+			option = loader.loadImage("/images/optionTypeA.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
@@ -127,7 +129,10 @@ public class Game extends Canvas implements Runnable{
 		playerChar.playerSetShotMGR(ShotMGR);
 		
 
-		playerChar.playerInitAnim(player0, player1, 48, 48, hitbox, 8, explosion, 70, 100, 17);
+		playerChar.playerInitAnim(player0, player1, 48, 48, 
+				hitbox, 8, 
+				explosion, 70, 100, 17,
+				option, 24, 24);
 		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
 		
 

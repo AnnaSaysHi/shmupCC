@@ -23,15 +23,24 @@ public class Player {
 	int visXpos;
 	int visYpos;
 	ShotType shotType;
+	PlayerOption[] optionArray;
+	
+	
+	
+	//graphics
 	private BufferedImage animIdle;
 	@SuppressWarnings("unused")
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
 	private BufferedImage animOption;
+	private int optionAnimWidth;
+	private int optionAnimHeight;
 	private BufferedImage[] deathAnimFrames;
 	private int deathAnimWidth;
 	private int deathAnimHeight;
 	private int deathAnimFramerate = 2;
+	
+	//input
 	byte[]dirs;
 	int playerState;
 	int stateTimer;
@@ -65,7 +74,10 @@ public class Player {
 		score = 0;
 		iframes = 20;
 	}
-	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height, BufferedImage hitbox, int hbSize, Spritesheet deathAnim, int w, int h, int frames) {
+	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height,
+			BufferedImage hitbox, int hbSize,
+			Spritesheet deathAnim, int w, int h, int frames,
+			BufferedImage option, int optionW, int optionH) {
 		animIdle = neutral;
 		animStrafe = strafe;
 		animHitbox = hitbox;
@@ -78,6 +90,9 @@ public class Player {
 		for(int i = 0; i < frames; i++) {
 			deathAnimFrames[i] = deathAnim.getSprite(i, 0, w, h);
 		}
+		animOption = option;
+		optionAnimWidth = optionW;
+		optionAnimHeight = optionH;
 	}
 	public void playerInitShotAndSpeed(double speedUF, double speedF, double size) {
 		moveSpeedUF = speedUF;
