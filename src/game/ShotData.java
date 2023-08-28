@@ -31,27 +31,82 @@ public class ShotData {
 	 * N = number of options, unsigned byte
 	 */
 	int numOptionOffsets;
+	int numMaxOptions;
 	double[] optionPos;
 	
 	public ShotData() {
 		// TODO Auto-generated constructor stub
 	}
+	public double[] getPlayerAttributesFloat(){
+		return new double[] {
+				move_UF,
+				move_F,
+				hitboxSize,
+				grazeboxSize,
+				itemboxSize
+		};
+	}
+	public int[] getPlayerAttributesInt() {
+		return new int[] {
+				dmg_cap_type,
+				dmg_cap_val,
+				deathbomb_window,
+				option_behavior,
+				numMaxOptions,
+				optionMoveTime
+		};
+	}
 	
-	public void getShotInfoFromFile(String fileName) throws IOException{
-		InputStream shtFile = null;
-		try {			
-			shtFile = this.getClass().getResourceAsStream(fileName);
-			readHeader(shtFile);
-			int a = (int)(num_power_levels) * ((int)(num_power_levels) + 1) * 2;
-			int b = (num_static_options & 127);
-			b *= 4;
-			numOptionOffsets = (num_static_options == 0) ? a : b;
-			optionPos = new double[numOptionOffsets];
-			readOptionPositions(shtFile);			
-		}catch(IOException e) {
+	public int getMaxOptions() {
+		return numMaxOptions;
+	}
+	public double[] getOptionPositions(int powerLevel, int config) {
+
+		if(num_static_options == 0) {
+			int a = powerLevel * 2;
+			int b = num_power_levels;
+			b = b * (b + 1);
+			int c = powerLevel * (powerLevel + 1);
+			int offset = (b * config) + c;
+			double[] toReturn = new double[a];
+			for(int i = 0; i < a; i++) {
+				toReturn[i] = optionPos[i + offset];
+			}
+			return toReturn;	
+		}else {
+			if((num_static_options & 0x80) == 0 && powerLevel == 0) return new double[0];
+			int a = num_static_options & 127;
+			a *= 2;
+			double[] toReturn = new double[a];
+			int offset = config * a;
+			for(int i = 0; i < a; i++) {
+				toReturn[i] = optionPos[i + offset];
+			}
+			return toReturn;
+		}
+	}
+	
+	
+	public void getShotInfoFromFile(String fileName){
+		try {
+			InputStream shtFile = null;
+			try {			
+				shtFile = this.getClass().getResourceAsStream(fileName);
+				readHeader(shtFile);
+				int a = (int)(num_power_levels) * ((int)(num_power_levels) + 1) * 2;
+				int b = (num_static_options & 127);
+				numMaxOptions = (num_static_options == 0) ? (num_power_levels - 1) : b;
+				b *= 4;
+				numOptionOffsets = (num_static_options == 0) ? a : b;
+				optionPos = new double[numOptionOffsets];
+				readOptionPositions(shtFile);			
+			}catch(IOException e) {
+				e.printStackTrace();
+			}finally {
+				shtFile.close();
+			}
+		}catch(IOException e){
 			e.printStackTrace();
-		}finally {
-			shtFile.close();
 		}
 	}
 	private void readHeader(InputStream shtFile) throws IOException {

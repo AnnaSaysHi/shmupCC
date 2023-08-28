@@ -18,11 +18,14 @@ public class PlayerOption implements Interpolable {
 	double renderAngle;
 	double behavior;
 	InterpolatorGeneral[] interpolators;
+	public boolean disabled;
 	
 	public PlayerOption(Player parent) {
 		parentPlayer = parent;
 		interpolables = new double[6];
 		interpolators = new InterpolatorGeneral[2];
+		angle = -(Math.PI) / 2;
+		disabled = true;
 		for(int i = 0; i < interpolators.length; i++) {
 			interpolators[i] = new InterpolatorGeneral(this);
 		}
@@ -39,8 +42,8 @@ public class PlayerOption implements Interpolable {
 		ypos = playercoords[1] + interpolables[5];
 	}
 	public void shiftToPos(double newTargetOffX, double newTargetOffY, int time) {
-		interpolators[0].interpFloatOverTime(4, newTargetOffX, time, 11);
-		interpolators[1].interpFloatOverTime(5, newTargetOffY, time, 11);
+		interpolators[0].interpFloatOverTime(4, newTargetOffX, time, 10);
+		interpolators[1].interpFloatOverTime(5, newTargetOffY, time, 10);
 	}
 	public void snapToPos(double newOffX, double newOffY) {
 		interpolators[0].disabled = true;
@@ -57,6 +60,15 @@ public class PlayerOption implements Interpolable {
 				interp.tickInterp();
 			}
 		}
+	}
+	public double[] returnRenderCoords(double animW, double animH) {
+		visXpos = xpos - (animW / 2);
+		visYpos = ypos - (animH / 2);
+		return new double[] {
+				visXpos,
+				visYpos,
+				angle + (Math.PI/2)
+		};
 	}
 	
 	public double[] getPosAndAngle() {

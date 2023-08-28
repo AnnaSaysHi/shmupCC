@@ -70,13 +70,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public void init() {
 		BufferedImageLoader loader = new BufferedImageLoader();
-		try {
-			ShotData sd = new ShotData();
-			sd.getShotInfoFromFile("/player/pl00.sht");
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
+
 		try {
 			bulletSprites = loader.loadImage("/images/bulletsheet.png");
 			enemySprites = loader.loadImage("/images/EnemySheet.png");
@@ -133,7 +127,7 @@ public class Game extends Canvas implements Runnable{
 				hitbox, 8, 
 				explosion, 70, 100, 17,
 				option, 24, 24);
-		playerChar.playerInitShotAndSpeed(4.5, 2, 3);
+		playerChar.playerInitShotAndSpeed("/player/pl00.sht");
 		
 
 
@@ -252,6 +246,7 @@ public class Game extends Canvas implements Runnable{
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			playerChar.drawPlayer(g);
+			playerChar.drawPlayerOptions(g);
 			EnemyMGR.drawEnemies(g);
 			ShotMGR.drawShots(g, this);
 			BulletMGR.drawBullets(g, this);

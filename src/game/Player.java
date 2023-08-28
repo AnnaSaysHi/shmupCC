@@ -1,6 +1,7 @@
 package game;
 
 import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Player {
@@ -22,12 +23,16 @@ public class Player {
 	int playerAnimHeight;
 	int visXpos;
 	int visYpos;
+	int numActiveOptions;
+	int optionMoveTime;
 	ShotType shotType;
+	ShotData shotData;
 	PlayerOption[] optionArray;
 	
 	
 	
 	//graphics
+	AffineTransform optionRenderTransform;
 	private BufferedImage animIdle;
 	@SuppressWarnings("unused")
 	private BufferedImage animStrafe; // left movement
@@ -73,6 +78,8 @@ public class Player {
 		bombs = 3;
 		score = 0;
 		iframes = 20;
+		shotData = new ShotData();
+		optionRenderTransform = new AffineTransform();
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height,
 			BufferedImage hitbox, int hbSize,
@@ -94,12 +101,25 @@ public class Player {
 		optionAnimWidth = optionW;
 		optionAnimHeight = optionH;
 	}
-	public void playerInitShotAndSpeed(double speedUF, double speedF, double size) {
-		moveSpeedUF = speedUF;
-		moveSpeedF = speedF;
-		hitboxSize = size;
-		grazeboxSize = 12;
-		deathbombWindow = 8;
+	public void playerInitShotAndSpeed(String shot) {
+		shotData.getShotInfoFromFile(shot);
+		double[] attrsF = shotData.getPlayerAttributesFloat();
+		moveSpeedUF = attrsF[0];
+		moveSpeedF = attrsF[1];
+		hitboxSize = attrsF[2];
+		grazeboxSize = attrsF[3];
+		int[] attrsI = shotData.getPlayerAttributesInt();
+		deathbombWindow = attrsI[2];
+		numActiveOptions = attrsI[4];
+		optionMoveTime = attrsI[5];
+		playerInitOptions(numActiveOptions);
+		changeNumOptions(numActiveOptions);
+	}
+	public void playerInitOptions(int numMaxOptions) {
+		optionArray = new PlayerOption[numMaxOptions];
+		for(int i = 0; i < numMaxOptions; i++) {
+			optionArray[i] = new PlayerOption(this);
+		}
 	}
 	public void playerReInitialize() {
 		x = 0;
@@ -122,8 +142,13 @@ public class Player {
 
 		switch(playerState) {
 		case 0:
-			shotType.tickShooters();
+			boolean focusingPrevFrame = isFocusing;
 			isFocusing = kbh.getHeldKeys()[6];
+			if(focusingPrevFrame != isFocusing) {
+				switchOptionConfig();
+			}
+			manageOptions();
+			shotType.tickShooters();
 			speed = isFocusing ? moveSpeedF : moveSpeedUF;
 			dirs = kbh.getDirections();
 			if(dirs[0] != 0 && dirs[1] != 0) speed = speed / Math.sqrt(2);
@@ -216,6 +241,29 @@ public class Player {
 	public void respawn() {
 		
 	}
+	public void switchOptionConfig(){
+		int newConfig = isFocusing ? 1 : 0;
+		double[]newOptionPos = shotData.getOptionPositions(0, newConfig);
+		for(int i = 0; i < numActiveOptions; i++) {
+			optionArray[i].shiftToPos(newOptionPos[2*i], newOptionPos[(2*i) + 1], optionMoveTime);
+		}
+	}
+	public void changeNumOptions(int num) {
+		numActiveOptions = num;
+		for(int i = 0; i < numActiveOptions; i++) {
+			optionArray[i].disabled = false;
+		}
+		for(int i = num; i < optionArray.length; i++) {
+			optionArray[i].disabled = true;
+		}
+		switchOptionConfig();
+	}
+	public void manageOptions() {
+		for (PlayerOption o : optionArray) {
+			if(!(o.disabled)) o.tick();
+
+		}
+	}
 	
 	public double[] getPosAndHitbox() {
 		return new double[] {x, y, hitboxSize, grazeboxSize};
@@ -231,7 +279,20 @@ public class Player {
 		}
 	}
 	public void drawPlayerOptions(Graphics2D g) {
-		
+		double[] optionDrawInfo;
+		for(PlayerOption o : optionArray) {
+			if(!(o.disabled)){
+
+				optionDrawInfo = o.returnRenderCoords(optionAnimWidth, optionAnimHeight);
+				optionRenderTransform.setToIdentity();
+				optionRenderTransform.translate(Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2), Game.PLAYFIELDYOFFSET);
+				optionRenderTransform.translate(optionDrawInfo[0], optionDrawInfo[1]);
+				optionRenderTransform.rotate(optionDrawInfo[2], optionAnimWidth, optionAnimHeight);
+				g.drawImage(animOption, optionRenderTransform, game);
+			}
+
+		}
+		int i = 0;
 	}
 	public void drawPlayerDeathAnim(Graphics2D g) {
 		if(playerState == 1) {

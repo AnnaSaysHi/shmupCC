@@ -23,6 +23,7 @@ public class InterpolatorGeneral {
 	
 	public void interpFloatOverTime(int index, double goal, int time, int mode) {
 		disabled = false;
+		this.index = index;
 		this.initialF = interpolableFloats[index];
 		this.currentF = initialF;
 		this.goalF = goal;
