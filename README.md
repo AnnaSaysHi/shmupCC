@@ -3,12 +3,14 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewh
 
 
 
-# Features (as of current version 0.0.0)
+# Features (as of current version 1.0.0)
 -Move your placeholder asset ship and shoot placeholder asset enemies!
 
 -Explode on touching a bullet!
 
 -Choose from several different test patterns!
+
+-Use a hex editor (not included) to adjust your shot's properties!
 
 # Can I use this engine to make my own STGs?
 Feel free to use this however you wish - but I'd prefer that it not be used to make paid games. Also, some basic features haven't been properly implemented yet. That said, if you want to make scripts for this engine, join the discord server below and @ me - I'll try to explain how to script in this engine.
