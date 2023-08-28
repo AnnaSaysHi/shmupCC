@@ -11,7 +11,7 @@ public class PlayerShot {
 	double speed;
 	double angle;
 	double size; // Diameter, not radius
-	int hitboxSize; // Radius, not diameter
+	double hitboxSize; // Radius, not diameter
 	
 	int damage;
 	
@@ -38,7 +38,7 @@ public class PlayerShot {
 	
 	public void respawnShot(double x, double y,
 			double speed, double angle, int damage,
-			int graphic, double renderSize, int hitboxSize) {
+			int graphic, double renderSize, double hitboxSize) {
 		this.xpos = x;
 		this.ypos = y;
 		this.speed = speed;

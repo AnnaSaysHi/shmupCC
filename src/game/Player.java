@@ -112,6 +112,9 @@ public class Player {
 		deathbombWindow = attrsI[2];
 		numActiveOptions = attrsI[4];
 		optionMoveTime = attrsI[5];
+		
+		shotType = new ShotType(shotData, this);
+		shotType.switchShootersets(0, 1);
 		playerInitOptions(numActiveOptions);
 		changeNumOptions(numActiveOptions);
 	}
@@ -135,7 +138,6 @@ public class Player {
 	}
 	public void playerSetShotMGR(PlayerShotManager psm) {
 		ShotMGR = psm;
-		shotType = new ShotType((byte) 3, this);
 	}
 
 	public void tickPlayer() {
@@ -267,6 +269,9 @@ public class Player {
 	
 	public double[] getPosAndHitbox() {
 		return new double[] {x, y, hitboxSize, grazeboxSize};
+	}
+	public double[] getOptionCoords(int optionNum) {
+		return optionArray[optionNum].getPosAndAngle();
 	}
 	
 	public void drawPlayer(Graphics2D g) {

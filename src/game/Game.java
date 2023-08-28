@@ -245,10 +245,10 @@ public class Game extends Canvas implements Runnable{
 		Font fpsfont = g.getFont();
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
+			ShotMGR.drawShots(g, this);
 			playerChar.drawPlayer(g);
 			playerChar.drawPlayerOptions(g);
 			EnemyMGR.drawEnemies(g);
-			ShotMGR.drawShots(g, this);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g);
 			playerChar.drawPlayerDeathAnim(g);

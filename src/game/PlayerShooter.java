@@ -4,26 +4,34 @@ public class PlayerShooter {
 	PlayerShotManager parentManager;
 	//Game game;
 	Player parentPlayer;
-	byte optionNum;
+
+	short fireRate;
+	short startDelay;
+	int shotDamage;
+	
 	double offset_x;
 	double offset_y;
+	double hitboxSize;
 	double shotAngle;
 	double shotSpeed;
-	int shotDamage;
-	int shotGraphic;
+	
 	double shotSize;
-	int hitboxSize;
-	int activationDelay;
-	int activationFreq;
-	int timer;
+	byte optionNum;
+	byte shotGraphic;
+	byte shotAnimHit;
+	byte sfx_on_shoot;
+	int func_on_init;
+	int func_on_tick;
+	int func_on_draw;
+	int func_on_hit;
 
-	public PlayerShooter(int activationFreq, int activationDelay, int shotDamage, 
-			double offsetX, double offsetY, double shotAngle, double shotSpeed, byte optionNum, 
-			int shotGraphic, double shotSize, int hitboxSize,
-			PlayerShotManager parentManager, Player parentPlayer) {
-		timer = 0;
-		this.activationFreq = activationFreq;
-		this.activationDelay = activationDelay;
+
+	public PlayerShooter(short activationFreq, short activationDelay, int shotDamage, 
+			double offsetX, double offsetY, double hitboxSize, double shotAngle, double shotSpeed, double shotSize, byte optionNum, 
+			byte shotGraphic) {
+
+		fireRate = activationFreq;
+		startDelay = activationDelay;
 		this.shotDamage = shotDamage;
 		this.offset_x = offsetX;
 		this.offset_y = offsetY;
@@ -34,31 +42,33 @@ public class PlayerShooter {
 		this.shotSize = shotSize;
 		this.hitboxSize = hitboxSize;
 		//this.game = game;
+	}
+	public void assignPlayerAndManager(PlayerShotManager parentManager, Player parentPlayer) {
 		this.parentManager = parentManager;
 		this.parentPlayer = parentPlayer;
 	}
 	
-	public void tickShooter() {
-		
-		if(timer != 0 || parentPlayer.getShotHeld()) {
-			if((timer - activationDelay) % activationFreq == 0 && timer >= activationDelay) {
-				shoot();
-			}
-			timer++;
-			if(timer == 15) timer = 0;
-			
+	public void tickShooter(int timer) {
+		if((timer - startDelay) % fireRate == 0 && timer >= startDelay) {
+			shoot();
 		}
 	}
-	private double getAdjustedX() {
-		return	parentPlayer.getPosAndHitbox()[0] + offset_x;
-	}
-	private double getAdjustedY() {
-		return	parentPlayer.getPosAndHitbox()[1] + offset_y;
+	private double[] getAdjustedCoords() {
+		double[] toRet = null;
+		if(optionNum == 0) {
+			toRet = parentPlayer.getPosAndHitbox();
+		} else {
+			toRet = parentPlayer.getOptionCoords(optionNum - 1);
+		}
+		toRet[0] = toRet[0] + offset_x;
+		toRet[1] = toRet[1] + offset_y;
+		return toRet;
 	}
 	
 	
 	private void shoot() {
-		parentManager.addShot(getAdjustedX(), getAdjustedY(), shotSpeed, shotAngle, shotDamage, shotGraphic, shotSize, hitboxSize);
+		double[] newCoords = getAdjustedCoords();
+		parentManager.addShot(newCoords[0], newCoords[1], shotSpeed, shotAngle, shotDamage, shotGraphic, shotSize, hitboxSize);
 	}
 
 }

@@ -40,7 +40,7 @@ public class PlayerShotManager {
 			shots[i].disable();
 		}
 	}
-	public void addShot(double xPos, double yPos, double speed, double angle, int damage, int graphic, double renderSize, int hitboxSize) {
+	public void addShot(double xPos, double yPos, double speed, double angle, int damage, int graphic, double renderSize, double hitboxSize) {
 		for(int i = 0; i < shots.length; i++) {
 			if (shots[i].isDisabled()) {
 				shots[i].respawnShot(xPos, yPos, speed, angle, damage, graphic, renderSize, hitboxSize);

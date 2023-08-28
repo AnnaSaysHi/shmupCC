@@ -1,24 +1,32 @@
 package game;
 
 public class ShotType {
-	byte numShooters;
+	short numShooters;
 	Player parentPlayer;
 	PlayerShooter[] shooters;
+	int shotTimer;
+	int UFoffset;
+	int Foffset;
+	ShotData shotData;
 	
 	
-	public ShotType(byte shooterCnt, Player parentPlayer) {
-		numShooters = shooterCnt;
+	
+	public ShotType(ShotData data, Player parentPlayer) {
 		this.parentPlayer = parentPlayer;
-		shooters = new PlayerShooter[numShooters];
-		shooters[0] = new PlayerShooter(5, 0, 16, 0.0, 0.0, -Math.PI/2, 10, (byte)0, 0, 16.0, 8, parentPlayer.getShotMGR(), parentPlayer);
-		shooters[1] = new PlayerShooter(5, 0, 8, 0.0, 0.0, -Math.PI/2 + Math.PI/36, 10, (byte)0, 0, 16.0, 8, parentPlayer.getShotMGR(), parentPlayer);
-		shooters[2] = new PlayerShooter(5, 0, 8, 0.0, 0.0, -Math.PI/2 - Math.PI/36, 10, (byte)0, 0, 16.0, 8, parentPlayer.getShotMGR(), parentPlayer);
+		shotData = data;
+		shotData.assignShootersToPlayer(parentPlayer.getShotMGR(), parentPlayer);
+	}
+	public void switchShootersets(int UF, int F) {
+		UFoffset = UF;
+		Foffset = F;
 	}
 	
 	public void tickShooters() {
-		for(byte i = 0; i < numShooters; i++) {
-			shooters[i].tickShooter();
+		if(shotTimer != 0 || parentPlayer.getShotHeld()) {
+			int set = parentPlayer.isFocusing ? Foffset : UFoffset;
+			shotData.tickShooterSet(set, shotTimer);
+			shotTimer++;
+			if(shotTimer == 15) shotTimer = 0;
 		}
 	}
-
 }
