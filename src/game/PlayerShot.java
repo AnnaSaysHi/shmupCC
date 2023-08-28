@@ -10,7 +10,7 @@ public class PlayerShot {
 	double ypos;
 	double speed;
 	double angle;
-	double size; // Diameter, not radius
+	double size;
 	double hitboxSize; // Radius, not diameter
 	
 	int damage;
@@ -75,9 +75,9 @@ public class PlayerShot {
 		
 		renderTransform.setToIdentity();
 		renderTransform.translate(Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2), Game.PLAYFIELDYOFFSET);
-		renderTransform.translate(xpos - size/2, ypos - size/2);
+		renderTransform.translate(xpos - size, ypos - size);
 		if(renderRotationMode != (byte)(1)) {
-			renderTransform.rotate(renderRotationAngle, size/2, size/2);
+			renderTransform.rotate(renderRotationAngle, size, size);
 		}
 		g.drawImage(b, renderTransform, m);
 	}

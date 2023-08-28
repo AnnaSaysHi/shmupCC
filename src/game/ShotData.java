@@ -170,9 +170,8 @@ public class ShotData {
 	private void readOffsetTable(InputStream shtFile) throws IOException{
 		byte[] byteBuf2 = new byte[2];
 		ByteBuffer bb2;
-		shootersetOffsetList = new short[numOffsets + 1];
-		shootersetOffsetList[0] = 0;
-		for(int i = 1; i <= numOffsets; i++) {
+		shootersetOffsetList = new short[numOffsets];
+		for(int i = 0; i < numOffsets; i++) {
 			shtFile.readNBytes(byteBuf2, 0, 2);
 			bb2 = ByteBuffer.wrap(byteBuf2);
 			shootersetOffsetList[i] = bb2.getShort();
@@ -181,12 +180,14 @@ public class ShotData {
 	private void readAllShooters(InputStream shtFile) throws IOException{
 		shooterSetArray = new PlayerShooter[numOffsets][];
 		for(int i = 0; i < numOffsets; i++) {
-			int start = shootersetOffsetList[i];
-			int numShootersInSet = shootersetOffsetList[i + 1] - start;
+			int numShootersInSet = shootersetOffsetList[i];
 			PlayerShooter[] toRet = new PlayerShooter[numShootersInSet];
-			for(int j = 0; j < numShootersInSet; j++) toRet[j] = readShooter(shtFile);
+			for(int j = 0; j < numShootersInSet; j++) {
+				toRet[j] = readShooter(shtFile);
+			}
 			shooterSetArray[i] = toRet;
 		}
+		int a = 0;
 	}
 	private PlayerShooter readShooter(InputStream shtFile) throws IOException{
 		byte[] byteBuf8 = new byte[8];
