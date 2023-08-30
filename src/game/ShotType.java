@@ -3,7 +3,6 @@ package game;
 public class ShotType {
 	short numShooters;
 	Player parentPlayer;
-	PlayerShooter[] shooters;
 	int shotTimer;
 	int UFoffset;
 	int Foffset;

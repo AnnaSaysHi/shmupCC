@@ -27,8 +27,9 @@ public class PlayerShooter {
 
 
 	public PlayerShooter(short activationFreq, short activationDelay, int shotDamage, 
-			double offsetX, double offsetY, double hitboxSize, double shotAngle, double shotSpeed, double shotSize, byte optionNum, 
-			byte shotGraphic) {
+			double offsetX, double offsetY, double hitboxSize,
+			double shotAngle, double shotSpeed,
+			double shotSize, byte optionNum, byte shotGraphic) {
 
 		fireRate = activationFreq;
 		startDelay = activationDelay;
