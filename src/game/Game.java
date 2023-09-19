@@ -10,6 +10,7 @@ import javax.swing.*;
 public class Game extends Canvas implements Runnable{
 	
 	public final int SCRIPT_MAX = 6;
+	public final int MAX_MENU_DEPTH = 10;
 	
 	private static final long serialVersionUID = 8763681502519222609L;
 	public static final int WIDTH = 640;
@@ -51,6 +52,12 @@ public class Game extends Canvas implements Runnable{
 	private int stage = -1;
 	
 	private double[] playercoords;
+	
+	public int[] globalsInt;
+	public double[] globalsFloat;
+	
+	private int[] menuCallStack = new int[MAX_MENU_DEPTH];
+	private int[] storedMenuPositions = new int[MAX_MENU_DEPTH];
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage bulletSprites = null;
