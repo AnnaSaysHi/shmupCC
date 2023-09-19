@@ -8,7 +8,6 @@ public class MenuGeneral {
 
 	KBinputHandler kbh;
 	int selectedOption = 0;
-	protected boolean isActive = false;
 	private int[] UDLRCCframesHeld = new int[] {0, 0, 0, 0, 2, 2}; // up, down, left, right, confirm, cancel
 	private boolean[] activeKeys;
 	protected byte menuDirection; // 0 = vertical, 1 = horizontal
@@ -33,16 +32,11 @@ public class MenuGeneral {
 		menuEntries = len;
 		menuDirection = direction;
 	}
-	public boolean getActive() {
-		return isActive;
-	}
 	public void activate() {
-		isActive = true;
 		selectedOption = 0;
 		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
 	}
 	public void activate(int newOption) {
-		isActive = true;
 		selectedOption = newOption;
 		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
 	}
@@ -93,10 +87,8 @@ public class MenuGeneral {
 	
 	protected void onCancel() {
 		if(parentMenu == null) selectedOption = menuEntries - 1;
-		else {
-			isActive = false;
-			parent.changeMenus(-1);
-		}
+		else parent.changeMenus(-1);
+
 		
 	}
 	
@@ -104,7 +96,6 @@ public class MenuGeneral {
 	public void doSelectedOption () {
 		switch(selectedOption) {
 		case 0:
-			isActive = false;
 			parent.changeMenus(1);
 			break;
 		case 2:
