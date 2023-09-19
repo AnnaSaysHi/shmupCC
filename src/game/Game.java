@@ -114,7 +114,6 @@ public class Game extends Canvas implements Runnable{
 		menu = new MenuGeneral(this, kbh, SoundMGR);
 		sceneMenu = new MenuSceneSelect(this, kbh, SoundMGR);
 		pauseMenu = new MenuPause(this, kbh, SoundMGR);
-		sceneMenu.setParentMenu(menu);
 		sceneMenu.setMenuLengthAndDirection(SCRIPT_MAX, (byte) 0);
 		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
 		menuList[0] = menu;
@@ -298,9 +297,14 @@ public class Game extends Canvas implements Runnable{
 	
 	public void changeMenus(int changeTo) {
 		if(changeTo == -1) {
-			menuCurrentDepth -= 1;
-			currentMenu = menuCallStack[menuCurrentDepth];
-			menuList[currentMenu].activate(storedMenuPositions[menuCurrentDepth]);
+			if(menuCurrentDepth == 0) {
+				if(menuList[0].isOnLastEntry()) System.exit(1);
+				else menuList[0].setLastEntry();
+			}else {
+				menuCurrentDepth -= 1;
+				currentMenu = menuCallStack[menuCurrentDepth];
+				menuList[currentMenu].activate(storedMenuPositions[menuCurrentDepth]);				
+			}
 			return;
 		}else if(changeTo == 0) {
 			menuCurrentDepth = 0;

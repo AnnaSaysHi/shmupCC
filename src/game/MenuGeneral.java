@@ -13,7 +13,6 @@ public class MenuGeneral {
 	protected byte menuDirection; // 0 = vertical, 1 = horizontal
 	protected int menuEntries;
 	protected Game parent;
-	private MenuGeneral parentMenu;
 	protected SoundManager smgr;
 	
 	public MenuGeneral(Game g, KBinputHandler kbh, SoundManager smgr) {
@@ -24,9 +23,6 @@ public class MenuGeneral {
 		menuDirection = 0;
 	}
 	
-	public void setParentMenu(MenuGeneral m) {
-		parentMenu = m;
-	}
 	
 	public void setMenuLengthAndDirection(int len, byte direction) {
 		menuEntries = len;
@@ -43,7 +39,12 @@ public class MenuGeneral {
 	public int getCurrOption() {
 		return selectedOption;
 	}
-	
+	public boolean isOnLastEntry() {
+		return (selectedOption == (menuEntries - 1));
+	}
+	public void setLastEntry() {
+		selectedOption = menuEntries - 1;
+	}
 	
 	public void tick() {
 		activeKeys = kbh.getHeldKeys();
@@ -86,10 +87,7 @@ public class MenuGeneral {
 	}
 	
 	protected void onCancel() {
-		if(parentMenu == null) selectedOption = menuEntries - 1;
-		else parent.changeMenus(-1);
-
-		
+		parent.changeMenus(-1);		
 	}
 	
 	
