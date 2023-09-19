@@ -38,7 +38,16 @@ public class MenuGeneral {
 	}
 	public void activate() {
 		isActive = true;
+		selectedOption = 0;
 		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
+	}
+	public void activate(int newOption) {
+		isActive = true;
+		selectedOption = newOption;
+		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
+	}
+	public int getCurrOption() {
+		return selectedOption;
 	}
 	
 	
@@ -86,7 +95,7 @@ public class MenuGeneral {
 		if(parentMenu == null) selectedOption = menuEntries - 1;
 		else {
 			isActive = false;
-			parentMenu.activate();
+			parent.changeMenus(-1);
 		}
 		
 	}

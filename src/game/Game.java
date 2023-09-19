@@ -41,10 +41,16 @@ public class Game extends Canvas implements Runnable{
 	public STATE state = STATE.MENU;
 	private Thread thread;
 	private Random RNG;
+	
+	private int menuCurrentDepth = 0;
+	private int[] menuCallStack = new int[MAX_MENU_DEPTH];
+	private int[] storedMenuPositions = new int[MAX_MENU_DEPTH];
+	private int currentMenu = 0;
 	private MenuGeneral menu;
 	private MenuGeneral[] menuList = new MenuGeneral[2];
 	private MenuPause pauseMenu;
 	private MenuSceneSelect sceneMenu;
+	
 	@SuppressWarnings("unused")
 	private long rngInitSeed;
 	
@@ -56,8 +62,6 @@ public class Game extends Canvas implements Runnable{
 	public int[] globalsInt;
 	public double[] globalsFloat;
 	
-	private int[] menuCallStack = new int[MAX_MENU_DEPTH];
-	private int[] storedMenuPositions = new int[MAX_MENU_DEPTH];
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private BufferedImage bulletSprites = null;
@@ -225,11 +229,12 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		else if (state == STATE.MENU) {
-			for(int i = 0; i < menuList.length; i++) {
+			menuList[currentMenu].tick();
+			/*for(int i = 0; i < menuList.length; i++) {
 				if(menuList[i].getActive()) {
 					menuList[i].tick();
 				}
-			}
+			}*/
 		}
 		else if (state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			pauseMenu.tick();
@@ -270,11 +275,12 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		if(state == STATE.MENU) {
-			for(int i = 0; i < menuList.length; i++) {
+			/*for(int i = 0; i < menuList.length; i++) {
 				if(menuList[i].getActive()) {
 					menuList[i].render(g);
 				}
-			}
+			}*/
+			menuList[currentMenu].render(g);
 		}
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
 		g.setFont(fpsfont);
@@ -301,6 +307,21 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public void changeMenus(int changeTo) {
+		if(changeTo == -1) {
+			menuCurrentDepth -= 1;
+			currentMenu = menuCallStack[menuCurrentDepth];
+			menuList[currentMenu].activate(storedMenuPositions[menuCurrentDepth]);
+			return;
+		}else if(changeTo == 0) {
+			menuCurrentDepth = 0;
+			currentMenu = 0;
+			menuList[0].activate(storedMenuPositions[0]);
+			return;
+		}
+		menuCallStack[menuCurrentDepth] = currentMenu;
+		storedMenuPositions[menuCurrentDepth] = menuList[currentMenu].getCurrOption();
+		currentMenu = changeTo;
+		menuCurrentDepth++;
 		menuList[changeTo].activate();
 	}
 	public void setStage (int i) {
