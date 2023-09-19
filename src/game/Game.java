@@ -230,11 +230,6 @@ public class Game extends Canvas implements Runnable{
 		}
 		else if (state == STATE.MENU) {
 			menuList[currentMenu].tick();
-			/*for(int i = 0; i < menuList.length; i++) {
-				if(menuList[i].getActive()) {
-					menuList[i].tick();
-				}
-			}*/
 		}
 		else if (state == STATE.PAUSE || state == STATE.GAME_OVER) {
 			pauseMenu.tick();
@@ -275,11 +270,6 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		if(state == STATE.MENU) {
-			/*for(int i = 0; i < menuList.length; i++) {
-				if(menuList[i].getActive()) {
-					menuList[i].render(g);
-				}
-			}*/
 			menuList[currentMenu].render(g);
 		}
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
