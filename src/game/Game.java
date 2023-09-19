@@ -137,7 +137,7 @@ public class Game extends Canvas implements Runnable{
 		stageList[0] = new Script1_1(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[3] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene14.sccl");
 		stageList[4] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene15.sccl");
 		stageList[5] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene16.sccl");
 
