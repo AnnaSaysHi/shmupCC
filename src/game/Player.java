@@ -297,7 +297,6 @@ public class Player {
 			}
 
 		}
-		int i = 0;
 	}
 	public void drawPlayerDeathAnim(Graphics2D g) {
 		if(playerState == 1) {
