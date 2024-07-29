@@ -47,10 +47,6 @@ public class Game extends Canvas implements Runnable{
 	private int[] menuCallStack = new int[MAX_MENU_DEPTH];
 	private int[] storedMenuPositions = new int[MAX_MENU_DEPTH];
 	private int currentMenu = 0;
-	private MenuGeneral menu;
-	private MenuGeneral[] menuList = new MenuGeneral[2];
-	private MenuPause pauseMenuOld;
-	private MenuSceneSelect sceneMenu;
 	
 	@SuppressWarnings("unused")
 	private long rngInitSeed;
@@ -286,27 +282,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public void changeMenus(int changeTo) {
-		if(changeTo == -1) {
-			if(menuCurrentDepth == 0) {
-				if(menuList[0].isOnLastEntry()) System.exit(1);
-				else menuList[0].setLastEntry();
-			}else {
-				menuCurrentDepth -= 1;
-				currentMenu = menuCallStack[menuCurrentDepth];
-				menuList[currentMenu].activate(storedMenuPositions[menuCurrentDepth]);				
-			}
-			return;
-		}else if(changeTo == 0) {
-			menuCurrentDepth = 0;
-			currentMenu = 0;
-			menuList[0].activate(storedMenuPositions[0]);
-			return;
-		}
-		menuCallStack[menuCurrentDepth] = currentMenu;
-		storedMenuPositions[menuCurrentDepth] = menuList[currentMenu].getCurrOption();
-		currentMenu = changeTo;
-		menuCurrentDepth++;
-		menuList[changeTo].activate();
+		//TODO
 	}
 	public void setStage (int i) {
 		stage = i;
