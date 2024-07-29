@@ -1,9 +1,10 @@
-package game;
+package game.menu;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import game.Game;
 import game.Game.STATE;
 
 public class MenuEntry {

@@ -1,4 +1,4 @@
-package game;
+package game.audio;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +24,7 @@ public class SoundManager{
 		sfxArray = new AudioCue[numSFX];
 	}
 	
-	void init() {
+	public void init() {
 		try {
 			loadIntoArray(1, "/sfx/select00.wav");
 			loadIntoArray(2, "/sfx/cancel00.wav");

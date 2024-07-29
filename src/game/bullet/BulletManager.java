@@ -1,7 +1,12 @@
-package game;
+package game.bullet;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import game.Game;
+import game.Spritesheet;
+import game.audio.SoundManager;
+import game.player.Player;
 
 public class BulletManager {
 	Bullet [] bullets;

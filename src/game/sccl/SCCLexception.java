@@ -1,4 +1,4 @@
-package game;
+package game.sccl;
 
 public class SCCLexception extends Exception {
 

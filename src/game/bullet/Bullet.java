@@ -1,8 +1,12 @@
-package game;
+package game.bullet;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+
+import game.Game;
+import game.audio.SoundManager;
+import game.player.Player;
 
 public class Bullet {
 	int velMode; //0 = angle / speed, 1 = xspeed/yspeed

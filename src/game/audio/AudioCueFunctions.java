@@ -1,4 +1,4 @@
-package game;
+package game.audio;
 
 import java.util.function.Function;
 

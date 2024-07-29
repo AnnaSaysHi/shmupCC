@@ -1,4 +1,4 @@
-package game;
+package game.sccl;
 
 public abstract class Opcodes {
 	
@@ -90,6 +90,75 @@ public abstract class Opcodes {
 	public static final int angleToPlayerArgs = 623;
 	public static final int setShootDistance = 627;
 	public static final int setShotFrequency = 642;
+	
+	
+	public static String OpcodeNameToString(String s) {
+		switch(s) {
+		case "nop":
+			return "0";
+		case "delete":
+			return "1";
+		case "call":
+			return "11";
+		case "jump":
+			return "12";
+		case "jumpTrue":
+			return "13";
+		case "jumpFalse":
+			return "14";
+		case "callAsync":
+			return "15";
+		case "killAllAsync":
+			return "21";
+		case "wait":
+			return "23";
+		case "setVarInt":
+			return "43";
+		case "setVarFloat":
+			return "45";
+		case "addInts":
+			return "50";
+		case "addFloats":
+			return "51";
+		case "subtractInts":
+			return "52";
+		case "subtractFloats":
+			return "53";
+		case "multInts":
+			return "54";
+		case "multFloats":
+			return "55";
+		case "divInts":
+			return "56";
+		case "divFloats":
+			return "57";
+		case "modInts":
+			return "58";
+		case "equalsInts":
+			return "59";
+		case "equalsFloats":
+			return "60";
+		case "notEqualsInts":
+			return "61";
+		case "notEqualsFloats":
+			return "62";
+		case "lessThanInts":
+			return "63";
+		case "lessThanFloats":
+			return "64";
+		case "lessEqualsInts":
+			return "65";
+		case "lessEqualsFloats":
+			return "66";
+		case "greaterThanInts":
+			return "67";
+		case "greaterThanFloats":
+			return "68";
+		
+		default:
+			return s;
+		}
+	}
 	
 	
 }

@@ -1,4 +1,4 @@
-package game;
+package game.player;
 
 import java.io.IOException;
 import java.io.InputStream;

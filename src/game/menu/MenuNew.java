@@ -1,10 +1,14 @@
-package game;
+package game.menu;
 
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.util.ArrayList;
+
+import game.Game;
+import game.KBinputHandler;
+import game.audio.SoundManager;
 
 public class MenuNew {
 	KBinputHandler kbh;

@@ -1,4 +1,4 @@
-package game;
+package game.audio;
 
 import java.io.IOException;
 import java.net.URL;
@@ -13,9 +13,9 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Line.Info;
 
-import game.AudioCueFunctions.PanType;
-import game.AudioCueFunctions.VolType;
-import game.AudioCueInstanceEvent.Type;
+import game.audio.AudioCueFunctions.PanType;
+import game.audio.AudioCueFunctions.VolType;
+import game.audio.AudioCueInstanceEvent.Type;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;

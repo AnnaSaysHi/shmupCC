@@ -1,4 +1,4 @@
-package game;
+package game.bullet;
 
 public abstract class BulletType {
 	

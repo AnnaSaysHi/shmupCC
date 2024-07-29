@@ -1,7 +1,12 @@
-package game;
+package game.player;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import game.Game;
+import game.Spritesheet;
+import game.audio.SoundManager;
+import game.enemy.EnemyManager;
 
 public class PlayerShotManager {
 	PlayerShot[] shots;

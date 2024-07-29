@@ -3,6 +3,13 @@ import java.awt.*;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.Random;
+
+import game.audio.SoundManager;
+import game.bullet.BulletManager;
+import game.enemy.EnemyManager;
+import game.menu.MenuManager;
+import game.player.Player;
+import game.player.PlayerShotManager;
 import game.stages.*;
 import java.awt.geom.AffineTransform;
 import javax.swing.*;

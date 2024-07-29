@@ -1,4 +1,7 @@
-package game;
+package game.player;
+
+import game.Interpolable;
+import game.InterpolatorGeneral;
 
 public class PlayerOption implements Interpolable {
 

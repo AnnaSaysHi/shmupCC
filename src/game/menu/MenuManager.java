@@ -1,7 +1,11 @@
-package game;
+package game.menu;
 
 import java.awt.Graphics;
 import java.util.Stack;
+
+import game.Game;
+import game.KBinputHandler;
+import game.audio.SoundManager;
 
 public class MenuManager {
 

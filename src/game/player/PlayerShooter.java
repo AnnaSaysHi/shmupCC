@@ -1,4 +1,4 @@
-package game;
+package game.player;
 
 public class PlayerShooter {
 	PlayerShotManager parentManager;

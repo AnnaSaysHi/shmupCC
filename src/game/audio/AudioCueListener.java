@@ -1,4 +1,4 @@
-package game;
+package game.audio;
 
 /**
  * A listener interface for receiving notifications of events

@@ -1,8 +1,10 @@
-package game;
+package game.player;
 
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+
+import game.Game;
 
 public class PlayerShot {
 

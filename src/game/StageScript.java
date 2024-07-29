@@ -1,5 +1,10 @@
 package game;
 
+import game.audio.SoundManager;
+import game.bullet.BulletManager;
+import game.enemy.EnemyManager;
+import game.player.Player;
+
 public class StageScript {
 
 	protected BulletManager mgr;

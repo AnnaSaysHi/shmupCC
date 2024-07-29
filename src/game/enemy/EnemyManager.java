@@ -1,7 +1,14 @@
-package game;
+package game.enemy;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+
+import game.Game;
+import game.Spritesheet;
+import game.audio.SoundManager;
+import game.bullet.BulletManager;
+import game.player.Player;
+import game.sccl.EnemyScript;
 
 public class EnemyManager {
 

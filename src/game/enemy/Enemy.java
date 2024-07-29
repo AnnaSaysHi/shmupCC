@@ -1,4 +1,4 @@
-package game;
+package game.enemy;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -6,6 +6,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
 import java.util.regex.Pattern;
+
+import game.Game;
+import game.audio.SoundManager;
+import game.bullet.BulletManager;
+import game.bullet.BulletSpawner;
+import game.player.Player;
+import game.sccl.EnemyScript;
+import game.sccl.Opcodes;
+import game.sccl.SCCLexception;
 
 public class Enemy {
 	BulletManager bulletMGR;

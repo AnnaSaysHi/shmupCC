@@ -1,4 +1,4 @@
-package game;
+package game.audio;
 
 /**
  * Represents an event in the life cycle of an {@code AudioCue} play

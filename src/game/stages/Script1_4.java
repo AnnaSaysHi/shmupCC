@@ -1,6 +1,10 @@
 package game.stages;
 
 import game.*;
+import game.audio.SoundManager;
+import game.bullet.BulletManager;
+import game.enemy.EnemyManager;
+import game.player.Player;
 
 public class Script1_4 extends StageScript {
 

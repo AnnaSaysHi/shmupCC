@@ -1,4 +1,9 @@
-package game;
+package game.bullet;
+
+import game.Game;
+import game.audio.SoundManager;
+import game.enemy.Enemy;
+import game.player.Player;
 
 public class BulletSpawner {
 	BulletManager parentManager;
