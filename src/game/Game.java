@@ -36,6 +36,7 @@ public class Game extends Canvas implements Runnable{
 	private PlayerShotManager ShotMGR;
 	private EnemyManager EnemyMGR;
 	private SoundManager SoundMGR;
+	private MenuManager MenuMGR;
 	private KBinputHandler kbh;
 	private boolean running = false;
 	public STATE state = STATE.MENU;
@@ -48,7 +49,7 @@ public class Game extends Canvas implements Runnable{
 	private int currentMenu = 0;
 	private MenuGeneral menu;
 	private MenuGeneral[] menuList = new MenuGeneral[2];
-	private MenuPause pauseMenu;
+	private MenuPause pauseMenuOld;
 	private MenuSceneSelect sceneMenu;
 	
 	@SuppressWarnings("unused")
@@ -110,15 +111,7 @@ public class Game extends Canvas implements Runnable{
 
 		SoundMGR = new SoundManager();
 		SoundMGR.init();
-		
-		menu = new MenuGeneral(this, kbh, SoundMGR);
-		sceneMenu = new MenuSceneSelect(this, kbh, SoundMGR);
-		pauseMenu = new MenuPause(this, kbh, SoundMGR);
-		sceneMenu.setMenuLengthAndDirection(SCRIPT_MAX, (byte) 0);
-		pauseMenu.setMenuLengthAndDirection(3, (byte) 0);
-		menuList[0] = menu;
-		menuList[1] = sceneMenu;
-		menuList[0].activate();
+
 		
 		int pdistfromwalls = 12; //how close the player is allowed to get to the edge of the screen
 		playerChar = new Player(kbh, SoundMGR, this,
@@ -126,7 +119,9 @@ public class Game extends Canvas implements Runnable{
 				(PLAYFIELDWIDTH / 2) - pdistfromwalls,
 				pdistfromwalls,
 				PLAYFIELDHEIGHT - pdistfromwalls);
-		
+
+		MenuMGR = new MenuManager(this, kbh, SoundMGR);
+		MenuMGR.initMenusHardCoded();
 		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
 		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
@@ -213,8 +208,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		if(state == STATE.PLAY) {
 			if(kbh.getHeldKeys()[8]) {
-				state = STATE.PAUSE;	
-				pauseMenu.activate();
+				state = STATE.PAUSE;
 			} else {
 				stageList[stage].tick();
 				BulletMGR.updateBullets();
@@ -228,11 +222,9 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		else if (state == STATE.MENU) {
-			menuList[currentMenu].tick();
+				MenuMGR.tick();
 		}
-		else if (state == STATE.PAUSE || state == STATE.GAME_OVER) {
-			pauseMenu.tick();
-		}
+		else if (state == STATE.PAUSE || state == STATE.GAME_OVER) MenuMGR.tickPauseMenu();
 		
 		//System.gc();
 	}
@@ -268,10 +260,8 @@ public class Game extends Canvas implements Runnable{
 				g.drawImage(lifeIcon, 500 + (20 * i), 48, this);
 			}
 		}
-		if(state == STATE.MENU) {
-			menuList[currentMenu].render(g);
-		}
-		if(state == STATE.PAUSE || state == STATE.GAME_OVER) pauseMenu.render(g);
+		if(state == STATE.MENU) MenuMGR.renderCurrentMenu(g);
+		if(state == STATE.PAUSE || state == STATE.GAME_OVER) MenuMGR.renderPauseMenu(g);
 		g.setFont(fpsfont);
 		g.setColor(Color.WHITE);
 		g.drawString(String.format("%.2f", measuredFpS), 10, 10);

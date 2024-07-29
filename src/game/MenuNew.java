@@ -1,12 +1,12 @@
 package game;
 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.util.List;
+import java.util.ArrayList;
 
-public class MenuGeneral {
-
+public class MenuNew {
 	KBinputHandler kbh;
 	int selectedOption = 0;
 	private int[] UDLRCCframesHeld = new int[] {0, 0, 0, 0, 2, 2}; // up, down, left, right, confirm, cancel
@@ -15,44 +15,33 @@ public class MenuGeneral {
 	protected int menuEntries;
 	protected Game parent;
 	protected SoundManager smgr;
-	protected List<MenuEntry> entries;
+	protected MenuManager mmgr;
+	protected ArrayList<MenuEntry> entries;
 	
-	public MenuGeneral(Game g, KBinputHandler kbh, SoundManager smgr) {
+	public MenuNew(Game g, KBinputHandler kbh, SoundManager smgr, MenuManager mmgr) {
 		this.kbh = kbh;
 		parent = g;
 		this.smgr = smgr;
-		menuEntries = 3;
-		menuDirection = 0;
-		//menuEntries = 0;
-		//this.addNewEntry(new MenuSelection("test", 0, -1, 0));
+		this.mmgr = mmgr;
+		menuEntries = 0;
+		entries = new ArrayList<MenuEntry>();
 	}
 	
-	
-	public void setMenuLengthAndDirection(int len, byte direction) {
-		menuEntries = len;
-		menuDirection = direction;
-	}
-	public void activate() {
-		selectedOption = 0;
-		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
-	}
-	public void activate(int newOption) {
-		selectedOption = newOption;
-		for(int i = 0; i < 6; i++) UDLRCCframesHeld[i] = 2;		
-	}
-	public int getCurrOption() {
-		return selectedOption;
-	}
-	public boolean isOnLastEntry() {
-		return (selectedOption == (menuEntries - 1));
-	}
-	public void setLastEntry() {
-		selectedOption = menuEntries - 1;
-	}
-	
-	public void addNewEntry(MenuEntry s) {
-		entries.add(s);
+	public void addNewEntry(MenuEntry e) {
+		entries.add(menuEntries, e);
 		menuEntries++;
+	}
+	public void addNewEntry(String text, int behavior, int behaviorArg1, int behaviorArg2, int xpos, int ypos) {
+		entries.add(menuEntries, new MenuEntry(parent, mmgr, text, behavior, behaviorArg1, behaviorArg2, xpos, ypos));
+		menuEntries++;
+	}
+	//Everything that gets rendered is technically an entry,
+	//so this is for anything that needs to be rendered that shouldn't be an entry.
+	public void addUnselectableEntry(MenuEntry e) {
+		entries.add(e);
+	}
+	public void addUnselectableEntry(String text, int xpos, int ypos) {
+		entries.add(new MenuEntry(parent, text, xpos, ypos));
 	}
 	
 	public void tick() {
@@ -87,43 +76,21 @@ public class MenuGeneral {
 		}
 		if(UDLRCCframesHeld[4] == 1) {
 			smgr.playFromArray(3);
-			doSelectedOption();
+			entries.get(selectedOption).onSelect();
 		}
-		if(UDLRCCframesHeld[5] == 1) {
-			smgr.playFromArray(2);
-			onCancel();
-		}
-	}
-	
-	protected void onCancel() {
-		parent.changeMenus(-1);		
-	}
-	
-	
-	public void doSelectedOption () {
-		switch(selectedOption) {
-		case 0:
-			parent.changeMenus(1);
-			break;
-		case 2:
-			System.exit(1);
-		default:
-			break;
-		}
-		//entries.get(selectedOption).onSelect();
 	}
 	
 	public void render(Graphics g) {
-		g.setColor(Color.WHITE);
-		Font scoreFont = new Font("THBiolinum", Font.PLAIN, 48);
+		Font scoreFont = new Font("THbiolinum", Font.PLAIN, 24);
 		g.setColor(Color.WHITE);
 		g.setFont(scoreFont);
-		g.drawString("ShmupCC showcase build", 50, 50);
-		scoreFont = new Font("THbiolinum", Font.PLAIN, 24);
-		g.setFont(scoreFont);
-		g.drawString("Start", 100, 100);
-		g.drawString("????", 100, 150);
-		g.drawString("Exit", 100, 200);
-		g.drawString(">", 90, 100 + 50 * selectedOption);
+		for(MenuEntry e : entries) {
+			g.drawString(e.getText(), e.getXpos(), e.getYpos());
+		}
+		
+		g.drawString(">", entries.get(selectedOption).getXpos() - 10, entries.get(selectedOption).getYpos());
+				
+		//for (MenuEntry e : entries) e.render(g);
 	}
+
 }
