@@ -206,7 +206,7 @@ public class Game extends Canvas implements Runnable{
 			ticksInLastPeriod = 0;
 			lastTickPeriodMeasurement = System.nanoTime();
 		}
-		if(kbh.getHeldKeys()[10]) {
+		if(kbh.getHeldKeys()[12]) {
 			System.out.println("b");
 		}
 		if(state == STATE.PLAY) {

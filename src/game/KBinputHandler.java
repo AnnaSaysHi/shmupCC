@@ -17,6 +17,8 @@ public class KBinputHandler extends KeyAdapter {
 	boolean cancelHeld;
 	boolean pauseHeld;
 	boolean bombHeld;
+	boolean restartHeld;
+	boolean quitToMenuHeld;
 	byte LRdir; // 0 = neutral; 1 = left; 2 = right
 	byte UDdir; // 0 = neutral; 1 = up; 2 = down
 	
@@ -34,6 +36,8 @@ public class KBinputHandler extends KeyAdapter {
 		cancelHeld = false;
 		pauseHeld = false;
 		bombHeld = false;
+		restartHeld = false;
+		quitToMenuHeld = false;
 		LRdir = 0;
 		UDdir = 0;
 		
@@ -72,9 +76,16 @@ public class KBinputHandler extends KeyAdapter {
 			cancelHeld = true;
 			bombHeld = true;
 			break;
+		case KeyEvent.VK_R:
+			restartHeld = true;
+			break;
+		case KeyEvent.VK_Q:
+			quitToMenuHeld = true;
+			break;
 		case KeyEvent.VK_ESCAPE:
 			pauseHeld = true;
 			break;
+
 		default:
 			break;			
 		}
@@ -114,6 +125,12 @@ public class KBinputHandler extends KeyAdapter {
 			cancelHeld = false;
 			bombHeld = false;
 			break;
+		case KeyEvent.VK_R:
+			restartHeld = false;
+			break;
+		case KeyEvent.VK_Q:
+			quitToMenuHeld = false;
+			break;
 		case KeyEvent.VK_ESCAPE:
 			pauseHeld = false;
 		default:
@@ -123,17 +140,19 @@ public class KBinputHandler extends KeyAdapter {
 	
 	public boolean[] getHeldKeys() {
 		boolean[] keyArray = new boolean[]{
-				upHeld,
-				downHeld,
-				leftHeld,
-				rightHeld,
-				confirmHeld,
-				cancelHeld,
-				slowMovementHeld,
-				shotHeld,
-				pauseHeld,
-				bombHeld,
-				bKeyHeld
+				upHeld,				//0
+				downHeld,			//1
+				leftHeld,			//2
+				rightHeld,			//3
+				confirmHeld,		//4
+				cancelHeld,			//5
+				slowMovementHeld,	//6
+				shotHeld,			//7
+				pauseHeld,			//8
+				bombHeld,			//9
+				restartHeld,		//10
+				quitToMenuHeld,		//11
+				bKeyHeld			//12
 		};
 		return keyArray;
 	}
