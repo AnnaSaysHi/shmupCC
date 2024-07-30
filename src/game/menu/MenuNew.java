@@ -31,19 +31,14 @@ public class MenuNew {
 		entries = new ArrayList<MenuEntry>();
 	}
 	
-	public void addNewEntry(MenuEntry e) {
-		entries.add(menuEntries, e);
-		menuEntries++;
-	}
+	
 	public void addNewEntry(String text, int behavior, int behaviorArg1, int behaviorArg2, int xpos, int ypos) {
 		entries.add(menuEntries, new MenuEntry(parent, mmgr, text, behavior, behaviorArg1, behaviorArg2, xpos, ypos));
 		menuEntries++;
 	}
 	//Everything that gets rendered is technically an entry,
 	//so this is for anything that needs to be rendered that shouldn't be an entry.
-	public void addUnselectableEntry(MenuEntry e) {
-		entries.add(e);
-	}
+
 	public void addUnselectableEntry(String text, int xpos, int ypos) {
 		entries.add(new MenuEntry(parent, text, xpos, ypos));
 	}
@@ -82,6 +77,42 @@ public class MenuNew {
 			smgr.playFromArray(3);
 			entries.get(selectedOption).onSelect();
 		}
+		//cancel routine
+		if(UDLRCCframesHeld[5] == 1) {
+			smgr.playFromArray(3);
+			
+			//Check if we are the pause menu before proceeding; this is done by checking if option 0 is "Unpause"
+			if(entries.get(0).getBehavior() == MenuEntry.BHV_UNPAUSE) {
+				selectedOption = 0;
+				entries.get(selectedOption).onSelect();
+			}//Next, check if we are in a menu that lets us quit the game and we aren't already on the "quit" option
+			else if(entries.get(menuEntries - 1).getBehavior() == MenuEntry.BHV_EXIT_GAME && selectedOption != menuEntries - 1){
+				selectedOption = menuEntries - 1;
+			}//Return to previous menu
+			else mmgr.switchActiveMenu(-1);
+		}
+	}
+	protected void reactivate() {
+		for (int i = 0; i < 6; i++) {
+			UDLRCCframesHeld[i] = 2;
+		}
+	}
+	protected void reactivate(int index) {
+		for (int i = 0; i < 6; i++) {
+			UDLRCCframesHeld[i] = 2;
+		}
+		try {
+			setSelectedEntry(index);			
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//Used by MenuManager to restore or reset the cursor position of a menu that was deactivated.
+	public void setSelectedEntry(int index) throws Exception{
+		if(index >= menuEntries || index < 0) throw new Exception("Attempted out of bounds access");
+		else selectedOption = index;
 	}
 	
 	public void render(Graphics g) {
@@ -93,8 +124,6 @@ public class MenuNew {
 		}
 		
 		g.drawString(">", entries.get(selectedOption).getXpos() - 10, entries.get(selectedOption).getYpos());
-				
-		//for (MenuEntry e : entries) e.render(g);
 	}
 
 }

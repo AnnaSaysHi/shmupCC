@@ -22,7 +22,7 @@ public class MenuManager {
 		this.game = game;
 		this.kbh = kbh;
 		smgr = SoundMGR;
-		menuList = new MenuNew[2];
+		menuStack = new Stack<>();
 	}
 	
 	public void initMenusFromTextFile() {
@@ -30,13 +30,24 @@ public class MenuManager {
 	}
 	
 	public void initMenusHardCoded() {
+		menuList = new MenuNew[2];
 		pauseMenu = new MenuNew(this.game, kbh, smgr, this);
 		pauseMenu.addNewEntry("Unpause", MenuEntry.BHV_UNPAUSE, 0, 0, 100, 100);
 		pauseMenu.addNewEntry("Restart", MenuEntry.BHV_START_OVER, 0, 0, 100, 150);
 		pauseMenu.addNewEntry("Return to Title", MenuEntry.BHV_RETURN_TO_MENU, 0, 0, 100, 200);
 		menuList[0] = new MenuNew(this.game, kbh, smgr, this);
-		menuList[0].addNewEntry("Start", MenuEntry.BHV_START_SCENE, 1, 0, 100, 100);
+		menuList[0].addNewEntry("Level Select", MenuEntry.BHV_CHANGE_MENU, 1, 0, 100, 100);
 		menuList[0].addNewEntry("Exit", MenuEntry.BHV_EXIT_GAME, 0, 0, 100, 200);
+		menuList[1] = new MenuNew(this.game, kbh, smgr, this);
+		menuList[1].addNewEntry("Meek", MenuEntry.BHV_START_SCENE, 0, 0, 100, 100);
+		menuList[1].addNewEntry("BoWaP", MenuEntry.BHV_START_SCENE, 1, 0, 100, 150);
+		menuList[1].addNewEntry("VIV_test", MenuEntry.BHV_START_SCENE, 2, 0, 100, 200);
+		menuList[1].addNewEntry("Enemy Test", MenuEntry.BHV_START_SCENE, 3, 0, 100, 250);
+		menuList[1].addNewEntry("Showcase_1", MenuEntry.BHV_START_SCENE, 4, 0, 100, 300);
+		menuList[1].addNewEntry("Showcase_2", MenuEntry.BHV_START_SCENE, 5, 0, 100, 350);
+		
+		
+		//("text", MenuEntry.BHV_START_SCENE, 1, 0, 100, 100);
 	}
 	
 	public void tick() {
@@ -44,12 +55,26 @@ public class MenuManager {
 	}
 	
 	public void switchActiveMenu(int switchTo) {
+		if(switchTo == -1) {
+			if(menuStack.isEmpty()) System.exit(0);
+			else currentMenu = menuStack.pop();
+		}else if(!menuStack.isEmpty() && switchTo == menuStack.peek()) {
+			currentMenu = menuStack.pop();
+		}
+		else {
+			menuStack.push(currentMenu);
+			currentMenu = switchTo;
+		}
+		menuList[currentMenu].reactivate();
+	}
+	public void switchActiveMenu(int switchTo, int newCursorPos) {
 		//TODO
 	}
 	
 	public void tickPauseMenu() {
-		//pauseMenuOld.tick();
-		pauseMenu.tick();
+		if(kbh.getHeldKeys()[10]) { game.restartStage(); pauseMenu.reactivate();}
+		else if (kbh.getHeldKeys()[11]) game.returnToMenu();
+		else pauseMenu.tick();
 	}
 	public void renderCurrentMenu(Graphics g) {
 		menuList[currentMenu].render(g);

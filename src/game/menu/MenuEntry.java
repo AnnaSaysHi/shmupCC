@@ -12,7 +12,7 @@ public class MenuEntry {
 	MenuManager mmgr;
 	boolean textOrImage; //0 = text, 1 = image
 	String selfText;
-	int behavior; // 0 = go to linked menu, 1 = set some global var
+	int behavior; // See list of behaviors at the bottom
 	int behaviorArg1; // depends on behavior
 	int behaviorArg2; //
 	int xpos;
@@ -36,6 +36,9 @@ public class MenuEntry {
 		this.selfText = text;
 		this.xpos = x;
 		this.ypos = y;
+		
+		//Fail-safe to prevent bad things from happening in case a non-selectable entry is somehow selected
+		this.behavior = BHV_EXIT_GAME;
 	}
 	
 	public int getXpos() {
@@ -46,6 +49,9 @@ public class MenuEntry {
 	}
 	public String getText() {
 		return selfText;
+	}
+	protected int getBehavior() {
+		return this.behavior;
 	}
 	
 	public void onSelect() {
@@ -74,6 +80,7 @@ public class MenuEntry {
 		}
 	}
 	
+	//Currently unused. Maybe I'll find a use for it?
 	public void render(Graphics g) {
 		Font scoreFont = new Font("THbiolinum", Font.PLAIN, 24);
 		g.setColor(Color.WHITE);
