@@ -3,12 +3,12 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewh
 
 
 
-# Features (as of current version 1.0.0)
+# Features (as of current version 1.0.1)
 -Move your placeholder asset ship and shoot placeholder asset enemies!
 
 -Explode on touching a bullet!
 
--Choose from several different test patterns!
+~~-Choose from several different test patterns!~~ sadly not until I bother to re-implement scene selection menus
 
 -Use a hex editor (not included) to adjust your shot's properties!
 
@@ -19,4 +19,4 @@ Feel free to use this however you wish - but I'd prefer that it not be used to m
 Go ahead! If want to work on this project, join the discord server at https://discord.gg/Z6PKKCab2b or message me.
 
 # How can I contact you?
-My discord username is The First Letter of the Alphabet#5160, and I usually do most of my work on this engine while chatting in the ZUNcode server.
+My discord username is anna_says_hi_, and I usually do most of my work on this engine while chatting in the ZUNcode server.
