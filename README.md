@@ -16,7 +16,7 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewh
 Feel free to use this however you wish - but I'd prefer that it not be used to make paid games. Also, some basic features haven't been properly implemented yet. That said, if you want to make scripts for this engine, join the discord server below and @ me - I'll try to explain how to script in this engine.
 
 # Can I help work on this?
-Go ahead! If want to work on this project, join the discord server at https://discord.gg/Z6PKKCab2b or message me.
+Go ahead! If you want to work on this project, join the discord server at https://discord.gg/Z6PKKCab2b or message me.
 
 # How can I contact you?
 My discord username is anna_says_hi_, and I usually do most of my work on this engine while chatting in the ZUNcode server.
