@@ -63,12 +63,8 @@ public class Enemy {
 	BulletSpawner[] spawners = new BulletSpawner[numSpawners];
 	
 
-	public Enemy(BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
-		bulletMGR = bmgr;
-		SoundMGR = smgr;
-		targetPlayer = p;
-		game = g;
-		parentMGR = emgr;
+	public Enemy() {
+
 		interpolator = new EnemyMovementInterpolator(this);
 		intVariables = new int[Enemy.NUM_INT_VARIABLES];
 		doubleVariables = new double[Enemy.NUM_DOUBLE_VARIABLES];
@@ -95,9 +91,6 @@ public class Enemy {
 		
 		renderSize = 24;
 		size = 2 * renderSize;
-		for(int i = 0; i < numSpawners; i++) {
-			spawners[i] = new BulletSpawner(bulletMGR, targetPlayer, game);
-		}		
 		hitboxSize = renderSize;
 		hurtboxSize = size / 2;
 		
@@ -109,7 +102,15 @@ public class Enemy {
 		//To be overridden by custom enemy types.
 	}
 	
-	public void initEnemy(double x, double y, int health) {
+	public void initEnemy(double x, double y, int health, BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
+		bulletMGR = bmgr;
+		SoundMGR = smgr;
+		targetPlayer = p;
+		game = g;
+		parentMGR = emgr;
+		for(int i = 0; i < numSpawners; i++) {
+			spawners[i] = new BulletSpawner(bulletMGR, targetPlayer, game);
+		}		
 		disabled = false;
 		sprite = -1;
 		xpos = x;

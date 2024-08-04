@@ -17,5 +17,18 @@ public class Script1_4 extends StageScript {
 	public void initActions() {
 		
 	}
+	
+	@Override
+	public void tick() {
+		
+	}
+	
+	
+}
+class EnmTest extends game.enemy.Enemy{
 
+	public EnmTest() {
+		super();
+	}
+	
 }

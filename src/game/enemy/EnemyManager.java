@@ -71,7 +71,7 @@ public class EnemyManager {
 	}
 
 	public void addEnemy(Enemy e, double xpos, double ypos, int HP) {
-		e.initEnemy(xpos, ypos, HP);
+		e.initEnemy(xpos, ypos, HP, bmgr, relevantPlayer, game, this, smgr);
 		if(enemies.size() < maxSize) enemies.add(e);
 		
 	}
