@@ -23,15 +23,6 @@ public class StageScript {
 		this.playerChar = playerChar;
 		this.enmMgr = enmMgr;
 	}
-	public StageScript(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr, String scriptFilePath) {
-		this.mgr = mgr;
-		this.smgr = smgr;
-		parentGame = g;
-		stageTimer = 0;
-		this.playerChar = playerChar;
-		this.enmMgr = enmMgr;
-		script = scriptFilePath;
-	}
 	
 	public void init() {
 		mgr.deactivateAll();
