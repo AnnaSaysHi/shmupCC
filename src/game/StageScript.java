@@ -40,10 +40,10 @@ public class StageScript {
 	}
 	
 	public void initActions() {
-		enmMgr.loadStage(script);
+		//To be overridden
 	}
 	
 	public void tick() {
-		
+		//To be overridden
 	}
 }
