@@ -8,10 +8,10 @@ import game.Spritesheet;
 import game.audio.SoundManager;
 import game.bullet.BulletManager;
 import game.player.Player;
+import java.util.ArrayList;
 
 public class EnemyManager {
 
-	Enemy[] enemies;
 	Spritesheet enemySprites;
 	BufferedImage[][] enemySpriteReference;
 	Game game;
@@ -19,6 +19,7 @@ public class EnemyManager {
 	int maxSize;
 	BulletManager bmgr;
 	SoundManager smgr;
+	ArrayList<Enemy> enemies;
 
 	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g, SoundManager smgr) {
 		maxSize = size;
@@ -31,21 +32,14 @@ public class EnemyManager {
 		relevantPlayer = p;
 		game = g;
 		this.smgr = smgr;
-		
-
-		enemies = new Enemy[maxSize];
-		for(int i = 0; i < maxSize; i++) {
-			enemies[i] = new Enemy(mgr, relevantPlayer, game, this, this.smgr);
-		}
+		enemies = new ArrayList<Enemy>();
 		//TODO: initialize enemySpriteReference
 	}
 
 
 	public void updateEnemies() {
-		for (int i = 0; i < maxSize; i++){
-			if (!enemies[i].isDisabled()) {
-				enemies[i].tickEnemy();
-			}
+		for(Enemy e : enemies) {
+			if(!e.isDisabled()) e.tickEnemy();
 		}
 	}
 	
@@ -62,12 +56,12 @@ public class EnemyManager {
 	}
 	public boolean hitEnemies(int x, int y, int hitbox, int damage) {
 		double radSum;
-		for(int i = 0; i < maxSize; i++) {
-			if(!enemies[i].isDisabled()) {
-				if(!(enemies[i].testFlag(0) || enemies[i].testFlag(3))){
-					radSum = hitbox + enemies[i].hurtboxSize;
-					if(Math.pow(enemies[i].xpos - x, 2) + Math.pow(enemies[i].ypos - y, 2) <= Math.pow(radSum, 2)) {
-						enemies[i].addDamage(damage);
+		for(Enemy e : enemies) {
+			if(!e.isDisabled()) {
+				if(!(e.testFlag(0) || e.testFlag(3))){
+					radSum = hitbox + e.hurtboxSize;
+					if(Math.pow(e.xpos - x, 2) + Math.pow(e.ypos - y, 2) <= Math.pow(radSum, 2)) {
+						e.addDamage(damage);
 						return true;
 					}					
 				}
@@ -76,18 +70,13 @@ public class EnemyManager {
 		return false;
 	}
 
-	public void addEnemy(String subName, double xpos, double ypos, int HP) {
-		for(int i = 0; i < maxSize; i++) {
-			if(enemies[i].isDisabled()){
-				enemies[i].initEnemy(xpos, ypos, HP);
-				break;
-			}
-		}
+	public void addEnemy(Enemy e, double xpos, double ypos, int HP) {
+		e.initEnemy(xpos, ypos, HP);
+		if(enemies.size() < maxSize) enemies.add(e);
+		
 	}
 	
 	public void reset() {
-		for(Enemy e : enemies) {
-			e.disable();
-		}
+		enemies.clear();
 	}
 }
