@@ -8,7 +8,6 @@ import game.Spritesheet;
 import game.audio.SoundManager;
 import game.bullet.BulletManager;
 import game.player.Player;
-import game.sccl.EnemyScript;
 
 public class EnemyManager {
 
@@ -20,7 +19,6 @@ public class EnemyManager {
 	int maxSize;
 	BulletManager bmgr;
 	SoundManager smgr;
-	EnemyScript scriptObject;
 
 	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g, SoundManager smgr) {
 		maxSize = size;
@@ -81,7 +79,7 @@ public class EnemyManager {
 	public void addEnemy(String subName, double xpos, double ypos, int HP) {
 		for(int i = 0; i < maxSize; i++) {
 			if(enemies[i].isDisabled()){
-				enemies[i].initEnemy(xpos, ypos, HP, scriptObject, subName);
+				enemies[i].initEnemy(xpos, ypos, HP);
 				break;
 			}
 		}
@@ -94,8 +92,6 @@ public class EnemyManager {
 	}
 	public void loadStage(String scriptPath) {
 		reset();
-		scriptObject = new EnemyScript(scriptPath);
-		addEnemy("main", 0, 0, 100);
 	}
 
 
