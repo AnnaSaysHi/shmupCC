@@ -16,7 +16,6 @@ public class Script1_4 extends StageScript {
 	@Override
 	public void initActions() {
 		
-		enmMgr.loadStage("resources/scripts/scene14.sccl");
 	}
 
 }
