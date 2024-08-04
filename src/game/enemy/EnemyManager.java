@@ -90,9 +90,4 @@ public class EnemyManager {
 			e.disable();
 		}
 	}
-	public void loadStage(String scriptPath) {
-		reset();
-	}
-
-
 }
