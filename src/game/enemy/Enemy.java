@@ -40,7 +40,7 @@ public class Enemy {
 	private static final int NUM_DOUBLE_VARIABLES = 16;
 	
 	final int numSpawners = 16;
-	private static final double DEG_TO_RAD = 0.017453292519943295; 
+	public static final double DEG_TO_RAD = 0.017453292519943295; 
 	int sprite;
 	public double xpos;
 	public double ypos;

@@ -160,5 +160,9 @@ public abstract class Opcodes {
 		}
 	}
 	
+	public static int OpcodeNameToInt(String s) {
+		return -1;
+	}
+	
 	
 }

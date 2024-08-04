@@ -10,7 +10,6 @@ wait(10000)
 ret()
 }
 
-
 sub en1{
 enSetSprite(1)
 wait(10)
