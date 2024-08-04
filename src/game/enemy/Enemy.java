@@ -2,10 +2,7 @@ package game.enemy;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Stack;
-import java.util.regex.Pattern;
 
 import game.Game;
 import game.audio.SoundManager;
@@ -21,10 +18,6 @@ public class Enemy {
 	EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
 	boolean recentEval;
-	ArrayList<Stack<String>> asyncCallStack;
-	ArrayList<Integer> asyncScriptPosition;
-	int asyncSlotNum;
-	ArrayList<Integer> asyncWaitTimer;
 	int[] intVariables;
 	double[] doubleVariables;
 	private static final int NUM_INT_VARIABLES = 16;
@@ -48,29 +41,24 @@ public class Enemy {
 	protected int enemyTimer;
 	protected int HP;
 	protected int maxHP;
-	int damageToTake;
+	protected int damageToTake;
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
 	
 	int flags;
-	/* flag definitions
-	 * 
-	 * 0: Enemy has no hurtbox (shots pass through enemy)
-	 * 1: Enemy has no hitbox (cannot kill player via contact)
-	 * 2: Enemy does not despawn offscreen
-	 * 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
-	 * 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
-	 * 5: Enemy retains its hurtbox, but becomes invincible. (not implemented yet)
-	 * 
-	 * 
-	 * */
+	public static final int FLAG_UNHITTABLE = 1;		// 0: Enemy has no hurtbox (shots pass through enemy)
+	public static final int FLAG_GROUNDED = 2;			// 1: Enemy has no hitbox (cannot kill player via contact)
+	public static final int FLAG_PERSISTENT = 4;		// 2:Enemy does not despawn offscreen
+	public static final int FLAG_CONTROL_ENEMY = 8;		// 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
+	public static final int FLAG_DIALOGUE_IMMUNE = 16;	// 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
+	public static final int FLAG_DAMAGE_IMMUNE = 32;	// 5: Enemy retains its hurtbox, but becomes invincible. (not implemented yet)
 	
 	
 	protected int renderSize; //radius
-	protected int size;
+	protected int size; //I don't even remember if this is radius or diameter
 	protected double hitboxSize; //radius
 	public int hurtboxSize; //radius
-	boolean disabled;
+	boolean disabled; // If this is true, then the enemy will not be processed.
 	BulletSpawner[] spawners = new BulletSpawner[numSpawners];
 	
 
@@ -81,10 +69,6 @@ public class Enemy {
 		game = g;
 		parentMGR = emgr;
 		interpolator = new EnemyMovementInterpolator(this);
-		asyncCallStack = new ArrayList<Stack<String>>();
-		asyncScriptPosition = new ArrayList<Integer>();
-		asyncWaitTimer = new ArrayList<Integer>();
-		asyncSlotNum = 0;
 		intVariables = new int[Enemy.NUM_INT_VARIABLES];
 		doubleVariables = new double[Enemy.NUM_DOUBLE_VARIABLES];
 		recentEval = false;
@@ -118,11 +102,10 @@ public class Enemy {
 		
 
 		movementType = 1;
-		initActions();
 	}
 	
-	public void initActions() {
-		
+	protected void initActions() {
+		//To be overridden by custom enemy types.
 	}
 	
 	public void initEnemy(double x, double y, int health) {
@@ -137,9 +120,6 @@ public class Enemy {
 		}
 		Arrays.fill(intVariables, 0);
 		Arrays.fill(doubleVariables, 0);
-		asyncCallStack.clear();
-		asyncScriptPosition.clear();
-		asyncWaitTimer.clear();
 		recentEval = false;
 		
 		flags = 0x00000000;
@@ -158,6 +138,7 @@ public class Enemy {
 		yaccel = 0;
 		
 		movementType = 1;
+		this.initActions();
 		
 	}
 	public void setEnemySprite(int spr) {
@@ -180,7 +161,7 @@ public class Enemy {
 	}
 	
 	protected void doEnemyActions() {
-		//TODO
+		//To be overridden by custom enemy types.
 	}
 	private void processEnemyMovement() {
 		speed += accel;
@@ -224,7 +205,7 @@ public class Enemy {
 	}
 	
 	private void onDeath() {
-		
+		//To be overridden by custom enemy types.
 	}
 	public boolean isDisabled() {
 		return disabled;
