@@ -124,7 +124,7 @@ public class Game extends Canvas implements Runnable{
 				PLAYFIELDHEIGHT - pdistfromwalls);
 
 		MenuMGR = new MenuManager(this, kbh, SoundMGR);
-		MenuMGR.initMenusHardCoded();
+		MenuMGR.initMenus();
 		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
 		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
@@ -145,9 +145,8 @@ public class Game extends Canvas implements Runnable{
 		stageList[0] = new Script1_1(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-		stageList[3] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene14.sccl");
-		stageList[4] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene15.sccl");
-		stageList[5] = new StageScript(BulletMGR, this, playerChar, EnemyMGR, SoundMGR, "/scripts/scene16.sccl");
+		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[4] = new Script_necropotence(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 
 	}
 	

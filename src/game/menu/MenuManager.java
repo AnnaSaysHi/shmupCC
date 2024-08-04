@@ -25,11 +25,7 @@ public class MenuManager {
 		menuStack = new Stack<>();
 	}
 	
-	public void initMenusFromTextFile() {
-		//TODO
-	}
-	
-	public void initMenusHardCoded() {
+	public void initMenus() {
 		menuList = new MenuNew[2];
 		pauseMenu = new MenuNew(this.game, kbh, smgr, this);
 		pauseMenu.addNewEntry("Unpause", MenuEntry.BHV_UNPAUSE, 0, 0, 100, 100);
@@ -42,12 +38,8 @@ public class MenuManager {
 		menuList[1].addNewEntry("Meek", MenuEntry.BHV_START_SCENE, 0, 0, 100, 100);
 		menuList[1].addNewEntry("BoWaP", MenuEntry.BHV_START_SCENE, 1, 0, 100, 150);
 		menuList[1].addNewEntry("VIV_test", MenuEntry.BHV_START_SCENE, 2, 0, 100, 200);
-		menuList[1].addNewEntry("Enemy Test", MenuEntry.BHV_START_SCENE, 3, 0, 100, 250);
-		menuList[1].addNewEntry("Showcase_1", MenuEntry.BHV_START_SCENE, 4, 0, 100, 300);
-		menuList[1].addNewEntry("Showcase_2", MenuEntry.BHV_START_SCENE, 5, 0, 100, 350);
-		
-		
-		//("text", MenuEntry.BHV_START_SCENE, 1, 0, 100, 100);
+		menuList[1].addNewEntry("test1-4", MenuEntry.BHV_START_SCENE, 3, 0, 100, 250);
+		menuList[1].addNewEntry("Necropotence", MenuEntry.BHV_START_SCENE, 4, 0, 100, 300);
 	}
 	
 	public void tick() {
