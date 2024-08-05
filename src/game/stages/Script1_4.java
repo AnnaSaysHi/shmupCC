@@ -24,7 +24,7 @@ public class Script1_4 extends StageScript {
 	@Override
 	public void tick() {
 		stageTimer++;
-		if(stageTimer % 400 == 1) enmMgr.addEnemy(new EnmTest(), 0, 50, 1000);
+		if(stageTimer % 400 == 1) enmMgr.addEnemy(new EnmTest(), 0, -50, 1000);
 	}
 	
 	
@@ -40,10 +40,13 @@ class EnmTest extends game.enemy.Enemy{
 	protected void initActions() {
 		this.setEnemySprite(1);
 		this.setPosRelTime(120, 3, 0, 100);
+		this.setFlag(FLAG_PERSISTENT);
+		this.setFlag(FLAG_DAMAGE_IMMUNE);
 		this.anglenum = 0;
 		this.angleIncrement = 0;
 		this.spawners[0].setRelativePos(0, 0);
 		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
 		this.spawners[0].setBulletCounts(5, 1);
 		this.spawners[0].setSpeeds(3, 3);
 		this.spawners[0].setAngles(anglenum, anglenum);
@@ -52,6 +55,7 @@ class EnmTest extends game.enemy.Enemy{
 	}
 	@Override
 	protected void doEnemyActions() {
+		if(this.enemyTimer == 100) this.resetFlags();
 		this.angleIncrement += (Math.PI)/2048;
 		this.anglenum += angleIncrement;
 		this.spawners[0].setAngles(anglenum, anglenum);
