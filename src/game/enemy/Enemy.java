@@ -2,7 +2,6 @@ package game.enemy;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 
 import game.Game;
 import game.audio.SoundManager;
@@ -17,14 +16,8 @@ public class Enemy {
 	SoundManager SoundMGR;
 	EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
-	boolean recentEval;
-	int[] intVariables;
-	double[] doubleVariables;
-	private static final int NUM_INT_VARIABLES = 16;
-	private static final int NUM_DOUBLE_VARIABLES = 16;
 	
-	final int numSpawners = 16;
-	public static final double DEG_TO_RAD = 0.017453292519943295; 
+	final int numSpawners = 16; 
 	int sprite;
 	public double xpos;
 	public double ypos;
@@ -60,15 +53,12 @@ public class Enemy {
 	protected double hitboxSize; //radius
 	public int hurtboxSize; //radius
 	boolean disabled; // If this is true, then the enemy will not be processed.
-	BulletSpawner[] spawners = new BulletSpawner[numSpawners];
+	protected BulletSpawner[] spawners = new BulletSpawner[numSpawners];
 	
 
 	public Enemy() {
 
 		interpolator = new EnemyMovementInterpolator(this);
-		intVariables = new int[Enemy.NUM_INT_VARIABLES];
-		doubleVariables = new double[Enemy.NUM_DOUBLE_VARIABLES];
-		recentEval = false;
 		
 		
 		disabled = true;
@@ -119,10 +109,8 @@ public class Enemy {
 		maxHP = health;
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].reInit();
+			spawners[i].setParentEnemy(this);
 		}
-		Arrays.fill(intVariables, 0);
-		Arrays.fill(doubleVariables, 0);
-		recentEval = false;
 		
 		flags = 0x00000000;
 		
@@ -206,7 +194,7 @@ public class Enemy {
 				(int)(ypos - renderSize + Game.PLAYFIELDYOFFSET), game);
 	}
 	
-	private void onDeath() {
+	protected void onDeath() {
 		//To be overridden by custom enemy types.
 	}
 	public boolean isDisabled() {
