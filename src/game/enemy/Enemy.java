@@ -39,13 +39,13 @@ public class Enemy {
 	int movementTimer2 = -1;
 	
 	int flags;
-	public static final int FLAG_UNHITTABLE = 1;		// 0: Enemy has no hurtbox (shots pass through enemy)
-	public static final int FLAG_GROUNDED = 2;			// 1: Enemy has no hitbox (cannot kill player via contact)
-	public static final int FLAG_PERSISTENT = 4;		// 2:Enemy does not despawn offscreen
-	public static final int FLAG_CONTROL_ENEMY = 8;		// 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
-	public static final int FLAG_DIALOGUE_IMMUNE = 16;	// 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
-	public static final int FLAG_DAMAGE_IMMUNE = 32;	// 5: Enemy retains its hurtbox, but becomes does not take damage.
-	public static final int FLAG_MIRROR = 64;			// 6: Enemy's actions are flipped across the Y-axis, including angles. (not implemented yet)
+	public static final int FLAG_UNHITTABLE = 0;		// 0: Enemy has no hurtbox (shots pass through enemy)
+	public static final int FLAG_GROUNDED = 1;			// 1: Enemy has no hitbox (cannot kill player via contact)
+	public static final int FLAG_PERSISTENT = 2;		// 2:Enemy does not despawn offscreen
+	public static final int FLAG_CONTROL_ENEMY = 3;		// 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
+	public static final int FLAG_DIALOGUE_IMMUNE = 4;	// 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
+	public static final int FLAG_DAMAGE_IMMUNE = 5;	// 5: Enemy retains its hurtbox, but becomes does not take damage.
+	public static final int FLAG_MIRROR = 6;			// 6: Enemy's actions are flipped across the Y-axis, including angles. (not implemented yet)
 	
 	
 	protected int renderSize; //radius
@@ -143,7 +143,7 @@ public class Enemy {
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].tickSpawner();
 		}
-		boolean diesOffscreen = !(testFlag(2) || testFlag(3));
+		boolean diesOffscreen = !(testFlag(FLAG_PERSISTENT) || testFlag(FLAG_CONTROL_ENEMY));
 		
 		if(diesOffscreen && game.isOutsidePlayfield(xpos, ypos, size)) {
 			disabled = true;
@@ -186,7 +186,7 @@ public class Enemy {
 		
 	}
 	public void addDamage(int damage) {
-		if(!testFlag(5)) damageToTake += damage;
+		if(!testFlag(FLAG_DAMAGE_IMMUNE)) damageToTake += damage;
 	}
 	
 	public void renderEnemy(Graphics g, BufferedImage b) {
@@ -208,6 +208,17 @@ public class Enemy {
 	public boolean testFlag(int flagNum) {
 		int bitmask = 0x00000001 << flagNum;
 		return (!((flags & bitmask) == 0));
+	}
+	public void setFlag(int flagNum) {
+		int bitmask = 0x00000001 << flagNum;
+		flags |= bitmask;
+	}
+	public void clearFlag(int flagNum) {
+		int bitmask = 0x00000001 << flagNum;
+		flags &= ~bitmask;
+	}
+	public void resetFlags() {
+		flags = 0;
 	}
 		
 	
