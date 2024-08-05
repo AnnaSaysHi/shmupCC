@@ -13,6 +13,12 @@ public class EnemyMovementInterpolator {
 	int duration;
 	int framesSinceStart;
 	int interpMode = -1;
+	
+	public static final int INTERPOLATION_LINEAR = 0;
+	public static final int INTERPOLATION_EASE_OUT2 = 1;
+	public static final int INTERPOLATION_EASE_IN2 = 2;
+	public static final int INTERPOLATION_EASE_OUT_IN_2 = 3;
+	public static final int INTERPOLATION_EASE_IN_OUT_2 = 4;
 
 	public EnemyMovementInterpolator(Enemy p) {
 		parent = p;
