@@ -58,7 +58,7 @@ public class EnemyManager {
 		double radSum;
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
-				if(!(e.testFlag(0) || e.testFlag(3))){
+				if(!(e.testFlag(Enemy.FLAG_UNHITTABLE) || e.testFlag(Enemy.FLAG_CONTROL_ENEMY))){
 					radSum = hitbox + e.hurtboxSize;
 					if(Math.pow(e.xpos - x, 2) + Math.pow(e.ypos - y, 2) <= Math.pow(radSum, 2)) {
 						e.addDamage(damage);
