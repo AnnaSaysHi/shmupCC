@@ -78,6 +78,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage explosionSheet = null;
 	private BufferedImage lifeIcon = null;
 	private BufferedImage option = null;
+	private BufferedImage loadingBG = null;
 	@SuppressWarnings("unused")
 	private BufferedImage bombIcon = null;
 	private Player playerChar;
@@ -160,6 +161,7 @@ public class Game extends Canvas implements Runnable{
 		if(this.getBufferStrategy() == null) {
 			createBufferStrategy(numImageBuffers);
 		}
+		renderLoadingBG();
 		thread.start();
 	}
 	
@@ -311,6 +313,27 @@ public class Game extends Canvas implements Runnable{
 	}
 	public void unpause() {
 		state = STATE.PLAY;
+	}
+	public void renderLoadingBG() {
+		BufferedImageLoader loader = new BufferedImageLoader();
+		try {
+			loadingBG = loader.loadImage("/images/loadingBG.png");
+			BufferStrategy bufferStrat = this.getBufferStrategy();
+			if(bufferStrat == null) {
+				return;
+			}
+			Graphics2D g = (Graphics2D)(bufferStrat.getDrawGraphics());
+			AffineTransform at = new AffineTransform();
+			at.scale(SCALE/ScreenResolutionConstant.res, SCALE/ScreenResolutionConstant.res);
+			g.setTransform(at);
+			g.drawImage(loadingBG, 0, 0, this);
+			g.dispose();
+			bufferStrat.show();
+
+		} catch (IOException e) {
+			e.printStackTrace();			
+		}
+		
 	}
 	
 	public static void main(String[] args) {
