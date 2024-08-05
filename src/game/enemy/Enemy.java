@@ -44,7 +44,7 @@ public class Enemy {
 	public static final int FLAG_PERSISTENT = 4;		// 2:Enemy does not despawn offscreen
 	public static final int FLAG_CONTROL_ENEMY = 8;		// 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
 	public static final int FLAG_DIALOGUE_IMMUNE = 16;	// 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
-	public static final int FLAG_DAMAGE_IMMUNE = 32;	// 5: Enemy retains its hurtbox, but becomes invincible. (not implemented yet)
+	public static final int FLAG_DAMAGE_IMMUNE = 32;	// 5: Enemy retains its hurtbox, but becomes does not take damage.
 	public static final int FLAG_MIRROR = 64;			// 6: Enemy's actions are flipped across the Y-axis, including angles. (not implemented yet)
 	
 	
@@ -186,7 +186,7 @@ public class Enemy {
 		
 	}
 	public void addDamage(int damage) {
-		damageToTake += damage;
+		if(!testFlag(5)) damageToTake += damage;
 	}
 	
 	public void renderEnemy(Graphics g, BufferedImage b) {
