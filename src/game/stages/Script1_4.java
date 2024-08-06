@@ -46,7 +46,7 @@ class EnmTest extends game.enemy.Enemy{
 		accelTransform = new BulletTransformation();
 		accelTransform.queueOffscreenTransform(300);
 		accelTransform.queueWaitTransform(10);
-		accelTransform.queueAccelDirTransform(300, 0.07, Math.PI/2);
+		accelTransform.queueAccelDirTransform(300, 0.05, Math.PI/2);
 		angleRain = 0;
 		//accelTransform.queueAccelAngleVelTransform(160, 0.05, (Math.PI)/160);
 		this.setEnemySprite(1);
@@ -59,7 +59,7 @@ class EnmTest extends game.enemy.Enemy{
 		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
 		this.spawners[0].setBulletCounts(5, 1);
-		this.spawners[0].setSpeeds(3, 3);
+		this.spawners[0].setSpeeds(2.5, 2.5);
 		this.spawners[0].setAngles(anglenum, anglenum);
 		this.spawners[0].setTypeAndColor(BulletType.RICE, BulletColor.PURPLE);
 		this.spawners[0].setTransformList(accelTransform);
@@ -74,7 +74,7 @@ class EnmTest extends game.enemy.Enemy{
 		this.angleIncrement += (Math.PI)/2048;
 		this.anglenum += angleIncrement;
 		this.angleRain = (Math.sin(this.enemyTimer / 90) + (Math.PI/2));
-		accelTransform.insertAccelDirTransform(2, 300, 0.07, this.angleRain);
+		accelTransform.insertAccelDirTransform(2, 300, 0.05, this.angleRain);
 		this.spawners[0].setAngles(anglenum, anglenum);
 	}
 	
