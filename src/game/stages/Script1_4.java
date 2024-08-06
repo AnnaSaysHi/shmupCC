@@ -74,7 +74,7 @@ class EnmTest extends game.enemy.Enemy{
 		this.angleIncrement += (Math.PI)/2048;
 		this.anglenum += angleIncrement;
 		this.angleRain = (Math.sin(this.enemyTimer / 90) + (Math.PI/2));
-		accelTransform.insertAccelDirTransform(2, 300, 0.05, this.angleRain);
+		accelTransform.editTransformationAtIndex(2, BulletTransformation.TRANSFORM_ACCEL_DIR, 300, 0, 0, 0, 0.05, this.angleRain, 0);
 		this.spawners[0].setAngles(anglenum, anglenum);
 	}
 	
