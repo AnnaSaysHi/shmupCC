@@ -5,12 +5,14 @@ import game.audio.SoundManager;
 import game.bullet.BulletColor;
 import game.bullet.BulletManager;
 import game.bullet.BulletSpawner;
+import game.bullet.BulletTransformation;
 import game.bullet.BulletType;
 import game.enemy.EnemyManager;
 import game.player.Player;
 
 public class Script1_4 extends StageScript {
 
+	public static BulletTransformation accelTransform;
 	public Script1_4(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
 		super(mgr, g, playerChar, enmMgr, smgr);
 		// TODO Auto-generated constructor stub
@@ -18,13 +20,17 @@ public class Script1_4 extends StageScript {
 	
 	@Override
 	public void initActions() {
-		
+		accelTransform = new BulletTransformation();
+		accelTransform.queueWaitTransform(10);
+		accelTransform.queueAccelAngleVelTransform(160, 0.05, Math.PI/320);
+
+		enmMgr.addEnemy(new EnmTest(), 0, -50, 10000);
 	}
 	
 	@Override
 	public void tick() {
 		stageTimer++;
-		if(stageTimer % 400 == 1) enmMgr.addEnemy(new EnmTest(), 0, -50, 1000);
+		//if(stageTimer % 400 == 1) enmMgr.addEnemy(new EnmTest(), 0, -50, 1000);
 	}
 	
 	
@@ -51,11 +57,15 @@ class EnmTest extends game.enemy.Enemy{
 		this.spawners[0].setSpeeds(3, 3);
 		this.spawners[0].setAngles(anglenum, anglenum);
 		this.spawners[0].setTypeAndColor(BulletType.RICE, BulletColor.PURPLE);
-		this.spawners[0].setActivationFrequency(4);
+		this.spawners[0].setTransformList(Script1_4.accelTransform);
+		//this.spawners[0].setActivationFrequency(4);
 	}
 	@Override
 	protected void doEnemyActions() {
-		if(this.enemyTimer == 100) this.resetFlags();
+		if(this.enemyTimer == 100) {
+			this.resetFlags();
+			this.spawners[0].setActivationFrequency(4);
+		}
 		this.angleIncrement += (Math.PI)/2048;
 		this.anglenum += angleIncrement;
 		this.spawners[0].setAngles(anglenum, anglenum);
