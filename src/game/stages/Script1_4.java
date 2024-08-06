@@ -21,8 +21,8 @@ public class Script1_4 extends StageScript {
 	@Override
 	public void initActions() {
 		accelTransform = new BulletTransformation();
-		accelTransform.queueWaitTransform(10);
-		accelTransform.queueAccelAngleVelTransform(160, 0.05, Math.PI/320);
+		accelTransform.queueWaitTransform(50);
+		accelTransform.queueAccelAngleVelTransform(2, -1, 0);
 
 		enmMgr.addEnemy(new EnmTest(), 0, -50, 10000);
 	}
