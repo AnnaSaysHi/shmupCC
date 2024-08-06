@@ -50,11 +50,6 @@ public class Game extends Canvas implements Runnable{
 	private Thread thread;
 	private Random RNG;
 	
-	private int menuCurrentDepth = 0;
-	private int[] menuCallStack = new int[MAX_MENU_DEPTH];
-	private int[] storedMenuPositions = new int[MAX_MENU_DEPTH];
-	private int currentMenu = 0;
-	
 	@SuppressWarnings("unused")
 	private long rngInitSeed;
 	
