@@ -28,6 +28,8 @@ public class BulletSpawner {
 	int soundOnActivate;
 	int activationFreq;
 	int protectFrames = 10;
+	BulletTransformation transformsList;
+	int transformsStartingIndex;
 	Player targetPlayer;
 	double[] playercoords;
 	
@@ -61,6 +63,8 @@ public class BulletSpawner {
 		countdown = -1;
 		activationFreq = -1;
 		followEnemy = false;
+		transformsList = null;
+		transformsStartingIndex = 0;
 	}
 	public void setParentEnemy(Enemy e) {
 		parentEnemy = e;
@@ -108,6 +112,13 @@ public class BulletSpawner {
 	public void setActivationFrequency(int frequency) {
 		activationFreq = frequency;
 		countdown = frequency;
+	}
+	
+	public void setTransformList(BulletTransformation transformsList) {
+		this.transformsList = transformsList;
+	}
+	public void setTransformStartingIndex(int index) {
+		transformsStartingIndex = index;
 	}
 	
 	public void setSpawnProtectionFrames(int protectionFramesCount) {
@@ -188,7 +199,7 @@ public class BulletSpawner {
 		if (layers == 1) speedIncrement = 0;
 		else speedIncrement = (speed2 - speed1) / (layers-1);
 		for(int i = 0; i < layers; i++) {
-			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, type, color, protectFrames, spawnDistance);
+			parentManager.addBullet(spawnerX, spawnerY, shotSpeed, angleAim, type, color, protectFrames, spawnDistance, transformsList);
 			shotSpeed += speedIncrement;
 		}
 	}
@@ -208,7 +219,7 @@ public class BulletSpawner {
 	private void shootRingLayer(double angleAim, double ringSpeed) {
 		double angleIncrement = (2 * Math.PI) / ways;
 		for(int i = 0; i < ways; i++) {
-			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, type, color, protectFrames, spawnDistance);
+			parentManager.addBullet(spawnerX, spawnerY, ringSpeed, angleAim, type, color, protectFrames, spawnDistance, transformsList);
 			angleAim += angleIncrement;
 		}
 	}
@@ -237,7 +248,7 @@ public class BulletSpawner {
 		for(int i = 0; i < count; i++) {
 			chosenSpeed = (game.FetchRNG().nextDouble() * (speedMax - speedMin)) + speedMin;
 			chosenAngle = (game.FetchRNG().nextDouble() * (angleMax - angleMin)) + angleMin;
-			parentManager.addBullet(spawnerX, spawnerY, chosenSpeed, chosenAngle, type, color, protectFrames, spawnDistance);
+			parentManager.addBullet(spawnerX, spawnerY, chosenSpeed, chosenAngle, type, color, protectFrames, spawnDistance, transformsList);
 		}
 	}
 	public void reInit() {
@@ -257,6 +268,8 @@ public class BulletSpawner {
 		angle2 = 0;
 		countdown = -1;
 		activationFreq = -1;
+		transformsList = null;
+		transformsStartingIndex = 0;
 	}
 
 }

@@ -21,6 +21,10 @@ public class Bullet {
 	BulletManager parentMGR;
 	Player relevantPlayer;
 	
+	BulletTransformation transformQueue;
+	int transformIndex;
+	int transformTimer;
+	
 	
 	int type;
 	int color;
@@ -53,9 +57,15 @@ public class Bullet {
 		relevantPlayer = p;
 		renderTransform = new AffineTransform();
 		velMode = 0;
+		transformQueue = null;
+		transformIndex = 0;
+		transformTimer = 0;
 	}
 	
-	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int newColor, int offscreenProtectionFramesNum) {
+	public void respawnBullet(double newXpos, double newYpos,
+			double newSpeed, double newAngle,
+			int newType, int newColor,
+			int offscreenProtectionFramesNum, BulletTransformation newTransformQueue) {
 		xpos = newXpos;
 		ypos = newYpos;
 		speed = newSpeed;
@@ -68,6 +78,9 @@ public class Bullet {
 		renderRotationAngle = Math.PI/2;
 		grazed = 0;
 		timer = 0;
+		if(newTransformQueue != null)transformQueue = newTransformQueue;
+		transformIndex = 0;
+		transformTimer = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
 		renderTransform.setToIdentity();
@@ -116,7 +129,7 @@ public class Bullet {
 	}
 	
 	public boolean update() {
-		doBulletTransformations();
+		if(this.transformQueue != null) doBulletTransformations();
 		switch(velMode) {
 		case 0:
 			step(speed);
@@ -173,7 +186,23 @@ public class Bullet {
 	}
 	
 	private void doBulletTransformations() {
-		
+		if(this.transformQueue.getTransformAtIndex(transformIndex) == BulletTransformation.TRANSFORM_NO_TRANSFORM) return;
+		switch(this.transformQueue.getTransformAtIndex(transformIndex)) {
+		case BulletTransformation.TRANSFORM_WAIT:
+			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
+			break;
+			
+		}
+	}
+	
+	private void nextTransform() {
+		this.transformIndex++;
+		this.transformTimer = 0;
+		doBulletTransformations();
+	}
+	private void gotoTransform(int index) {
+		this.transformIndex = index;
+		this.transformTimer = 0;
 	}
 	
 
