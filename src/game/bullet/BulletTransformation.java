@@ -9,8 +9,9 @@ public class BulletTransformation implements Cloneable {
 
 	public static final int TRANSFORM_NO_TRANSFORM = 0;
 	public static final int TRANSFORM_WAIT = 1;
-	public static final int TRANSFORM_ACCEL_ANGVEL = 2;
-	public static final int TRANSFORM_OFFSCREEN = 3;
+	public static final int TRANSFORM_GOTO = 2;
+	public static final int TRANSFORM_ACCEL_ANGVEL = 3;
+	public static final int TRANSFORM_OFFSCREEN = 4;
 	ArrayList<Integer> transformIDs;
 	ArrayList<Integer> transformDurations;
 	ArrayList<Integer> intArgs1;
@@ -62,6 +63,31 @@ public class BulletTransformation implements Cloneable {
 	public void insertWaitTransform(int index, int duration) {
 		this.insertTransformation(index, TRANSFORM_WAIT, duration, 0, 0, 0, 0, 0, 0);
 	}
+
+	/**
+	 * Queues a control flow transformation that changes the bullet's transformation index to destinationIndex, then immediately executes the transformation at that index.
+	 * If the bullet has executed a GOTO transformation numLoops or more times, this transformation will not execute. The number of times a bullet has executed a GOTO is shared across different GOTO transforms in that same queue.
+	 * If numLoops is set to -1, this transformation will always execute. If numLoops is set to 0, this transformation will never execute.
+	 * 
+	 * @param destinationIndex the index of the next transform to be executed
+	 * @param numLoops number of jumps before this transform will stop executing
+	 */
+	public void queueGotoTransform(int destinationIndex, int numLoops) {
+		this.queueTransformation(TRANSFORM_GOTO, 0, destinationIndex, numLoops, 0, 0, 0, 0);
+	}
+	/**
+	 * Queues a control flow transformation that changes the bullet's transformation index to destinationIndex, then immediately executes the transformation at that index.
+	 * If the bullet has executed a GOTO transformation numLoops or more times, this transformation will not execute. The number of times a bullet has executed a GOTO is shared across different GOTO transforms in that same queue.
+	 * If numLoops is set to -1, this transformation will always execute. If numLoops is set to 0, this transformation will never execute.
+	 * 
+	 * @param index index to insert the GOTO transform
+	 * @param destinationIndex the index of the next transform to be executed
+	 * @param numLoops number of jumps before this transform will stop executing
+	 */
+	public void insertGotoTransform(int index, int destinationIndex, int numLoops) {
+		this.insertTransformation(index, TRANSFORM_GOTO, 0, destinationIndex, numLoops, 0, 0, 0, 0);
+	}
+	
 	/**
 	 * Queues a transformation that simultaneously gives the bullet angular velocity, as well as accelerates the bullet in the angle it's traveling.
 	 * The bullet will not execute any further transformations until this transformation has finished executing.

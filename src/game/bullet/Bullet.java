@@ -24,6 +24,7 @@ public class Bullet {
 	BulletTransformation transformQueue;
 	int transformIndex;
 	int transformTimer;
+	int numJumps;
 	
 	
 	int type;
@@ -60,6 +61,7 @@ public class Bullet {
 		transformQueue = null;
 		transformIndex = 0;
 		transformTimer = 0;
+		numJumps = 0;
 	}
 	
 	public void respawnBullet(double newXpos, double newYpos,
@@ -79,8 +81,10 @@ public class Bullet {
 		grazed = 0;
 		timer = 0;
 		if(newTransformQueue != null)transformQueue = newTransformQueue;
+		else newTransformQueue = null;
 		transformIndex = 0;
 		transformTimer = 0;
+		numJumps = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
 		renderTransform.setToIdentity();
@@ -193,6 +197,16 @@ public class Bullet {
 		case BulletTransformation.TRANSFORM_WAIT:
 			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
 			break;
+		case BulletTransformation.TRANSFORM_GOTO:
+			if(transformQueue.getIntArg2AtIndex(transformIndex) == -1
+			|| this.numJumps < transformQueue.getIntArg2AtIndex(transformIndex)) {
+				numJumps++;
+				gotoTransform(transformQueue.getIntArg1AtIndex(transformIndex));
+				break;
+			}else {
+				nextTransform();
+				break;
+			}
 		case BulletTransformation.TRANSFORM_ACCEL_ANGVEL:
 			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) {
 				nextTransform();
