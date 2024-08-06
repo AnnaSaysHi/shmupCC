@@ -191,7 +191,26 @@ public class Bullet {
 		case BulletTransformation.TRANSFORM_WAIT:
 			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
 			break;
+		case BulletTransformation.TRANSFORM_ACCEL_ANGVEL:
+			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
+			if(this.velMode != 0) changeVelMode(0);
+			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
+			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
+			break;
 			
+		}
+		transformTimer++;
+	}
+	
+	private void changeVelMode(int newMode) {
+		if(newMode == 0 && velMode == 1) {
+			angle = Math.atan2(yvel, xvel);
+			speed = Math.hypot(xvel, yvel);
+			velMode = 0;
+		}else if(newMode == 1 && velMode == 0) {
+			xvel += Math.cos(angle) * speed;
+			yvel += Math.sin(angle) * speed;
+			velMode = 1;
 		}
 	}
 	
