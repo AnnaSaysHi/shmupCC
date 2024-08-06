@@ -216,6 +216,15 @@ public class Bullet {
 			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
 			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
 			break;
+		case BulletTransformation.TRANSFORM_ACCEL_DIR:
+			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) {
+				nextTransform();
+				break;
+			}
+			if(this.velMode != 1) changeVelMode(1);
+			this.xvel += transformQueue.getFloatArg1AtIndex(transformIndex);
+			this.yvel += transformQueue.getFloatArg2AtIndex(transformIndex);
+			break;
 		case BulletTransformation.TRANSFORM_OFFSCREEN:
 			this.framesTillDespawnOffscreen = transformQueue.getIntArg1AtIndex(transformIndex);
 			nextTransform();
@@ -230,8 +239,8 @@ public class Bullet {
 			speed = Math.hypot(xvel, yvel);
 			velMode = 0;
 		}else if(newMode == 1 && velMode == 0) {
-			xvel += Math.cos(angle) * speed;
-			yvel += Math.sin(angle) * speed;
+			xvel = Math.cos(angle) * speed;
+			yvel = Math.sin(angle) * speed;
 			velMode = 1;
 		}
 	}

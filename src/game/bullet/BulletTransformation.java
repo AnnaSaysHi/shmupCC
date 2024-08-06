@@ -11,7 +11,8 @@ public class BulletTransformation implements Cloneable {
 	public static final int TRANSFORM_WAIT = 1;
 	public static final int TRANSFORM_GOTO = 2;
 	public static final int TRANSFORM_ACCEL_ANGVEL = 3;
-	public static final int TRANSFORM_OFFSCREEN = 4;
+	public static final int TRANSFORM_ACCEL_DIR = 4;
+	public static final int TRANSFORM_OFFSCREEN = 5;
 	ArrayList<Integer> transformIDs;
 	ArrayList<Integer> transformDurations;
 	ArrayList<Integer> intArgs1;
@@ -111,6 +112,35 @@ public class BulletTransformation implements Cloneable {
 	public void insertAccelAngleVelTransform(int index, int duration, double accel, double angleVel) {
 		this.insertTransformation(index, TRANSFORM_ACCEL_ANGVEL, duration, 0, 0, 0, accel, angleVel, 0);
 	}
+	
+	/**
+	 * Queues a transformation that accelerates the bullet in the given angle.
+	 * The bullet will not execute any further transformations until this transformation has finished executing.
+	 * 
+	 * @param duration the duration, in frames, of this transformation
+	 * @param accel the amount of speed applied to the bullet per frame
+	 * @param angle the direction the speed is applied in
+	 */
+	public void queueAccelDirTransform(int duration, double accel, double angle) {
+		double xaccel = Math.cos(angle) * accel;
+		double yaccel = Math.sin(angle) * accel;
+		this.queueTransformation(TRANSFORM_ACCEL_DIR, duration, 0, 0, 0, xaccel, yaccel, 0);
+	}
+	/**
+	 * Inserts a transformation, at the specified index, that accelerates the bullet in the given angle.
+	 * The bullet will not execute any further transformations until this transformation has finished executing.
+	 * 
+	 * @param index index to insert this transformation
+	 * @param duration the duration, in frames, of this transformation
+	 * @param accel the amount of speed applied to the bullet per frame
+	 * @param angle the direction the speed is applied in
+	 */
+	public void insertAccelDirTransform(int index, int duration, double accel, double angle) {
+		double xaccel = Math.cos(angle) * accel;
+		double yaccel = Math.sin(angle) * accel;
+		this.insertTransformation(index, TRANSFORM_ACCEL_DIR, duration, 0, 0, 0, xaccel, yaccel, 0);
+	}
+	
 	/**
 	 * Queues a transformation that allows the bullet to persist offscreen for a certain number of frames.
 	 * The next transformation in the queue will immediately execute, regardless of the duration of persistence.
