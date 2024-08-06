@@ -202,6 +202,10 @@ public class Bullet {
 			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
 			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
 			break;
+		case BulletTransformation.TRANSFORM_OFFSCREEN:
+			this.framesTillDespawnOffscreen = transformQueue.getIntArg1AtIndex(transformIndex);
+			nextTransform();
+			break;
 			
 		}
 	}

@@ -7,11 +7,10 @@ import java.util.ArrayList;
  */
 public class BulletTransformation implements Cloneable {
 
-	/** If a transform with this ID is reached, there will be no more transforms done on that bullet.*/
 	public static final int TRANSFORM_NO_TRANSFORM = 0;
-	/** Waits for a certain amount of frames until executing the next transformation.*/
 	public static final int TRANSFORM_WAIT = 1;
 	public static final int TRANSFORM_ACCEL_ANGVEL = 2;
+	public static final int TRANSFORM_OFFSCREEN = 3;
 	ArrayList<Integer> transformIDs;
 	ArrayList<Integer> transformDurations;
 	ArrayList<Integer> intArgs1;
@@ -85,6 +84,25 @@ public class BulletTransformation implements Cloneable {
 	 */
 	public void insertAccelAngleVelTransform(int index, int duration, double accel, double angleVel) {
 		this.insertTransformation(index, TRANSFORM_ACCEL_ANGVEL, duration, 0, 0, 0, accel, angleVel, 0);
+	}
+	/**
+	 * Queues a transformation that allows the bullet to persist offscreen for a certain number of frames.
+	 * The next transformation in the queue will immediately execute, regardless of the duration of persistence.
+	 * 
+	 * @param time amount of time, in frames, the bullet should persist offscreen
+	 */
+	public void queueOffscreenTransform(int time) {
+		this.queueTransformation(TRANSFORM_OFFSCREEN, 0, time, 0, 0, 0, 0, 0);
+	}
+	/**
+	 * Inserts a transformation, at the specified index, that allows the bullet to persist offscreen for a certain number of frames.
+	 * The next transformation in the queue will immediately execute, regardless of the duration of persistence.
+	 * 
+	 * @param index index to insert this transform
+	 * @param time amount of time, in frames, the bullet should persist offscreen
+	 */
+	public void insertOffscreenTransform(int index, int time) {
+		this.insertTransformation(index, TRANSFORM_OFFSCREEN, 0, time, 0, 0, 0, 0, 0);
 	}
 	
 	
