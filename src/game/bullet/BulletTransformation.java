@@ -11,6 +11,7 @@ public class BulletTransformation implements Cloneable {
 	public static final int TRANSFORM_NO_TRANSFORM = 0;
 	/** Waits for a certain amount of frames until executing the next transformation.*/
 	public static final int TRANSFORM_WAIT = 1;
+	public static final int TRANSFORM_ACCEL_ANGVEL = 2;
 	ArrayList<Integer> transformIDs;
 	ArrayList<Integer> transformDurations;
 	ArrayList<Integer> intArgs1;
@@ -61,6 +62,29 @@ public class BulletTransformation implements Cloneable {
 	 */
 	public void insertWaitTransform(int index, int duration) {
 		this.insertTransformation(index, TRANSFORM_WAIT, duration, 0, 0, 0, 0, 0, 0);
+	}
+	/**
+	 * Queues a transformation that simultaneously gives the bullet angular velocity, as well as accelerates the bullet in the angle it's traveling.
+	 * The bullet will not execute any further transformations until this transformation has finished executing.
+	 * 
+	 * @param duration the duration, in frames, of this transformation
+	 * @param accel the amount of speed this bullet should gain per frame
+	 * @param angleVel the change in angle applied to this bullet every frame
+	 */
+	public void queueAccelAngleVelTransform(int duration, double accel, double angleVel) {
+		this.queueTransformation(TRANSFORM_ACCEL_ANGVEL, duration, 0, 0, 0, accel, angleVel, 0);
+	}
+	/**
+	 * Inserts a transformation, at the specified index, that simultaneously gives the bullet angular velocity, as well as accelerates the bullet in the angle it's traveling.
+	 * The bullet will not execute any further transformations until this transformation has finished executing.
+	 * 
+	 * @param index index to insert this transform
+	 * @param duration the duration, in frames, of this transformation
+	 * @param accel the amount of speed this bullet should gain per frame
+	 * @param angleVel the change in angle applied to this bullet every frame
+	 */
+	public void insertAccelAngleVelTransform(int index, int duration, double accel, double angleVel) {
+		this.insertTransformation(index, TRANSFORM_ACCEL_ANGVEL, duration, 0, 0, 0, accel, angleVel, 0);
 	}
 	
 	
@@ -217,7 +241,7 @@ public class BulletTransformation implements Cloneable {
 	 * =							=
 	 * ==============================
 	 */
-	protected BulletTransformation() {
+	public BulletTransformation() {
 		transformIDs = new ArrayList<Integer>();
 		transformDurations = new ArrayList<Integer>();
 		intArgs1 = new ArrayList<Integer>();
@@ -226,9 +250,6 @@ public class BulletTransformation implements Cloneable {
 		floatArgs1 = new ArrayList<Double>();
 		floatArgs2 = new ArrayList<Double>();
 		floatArgs3 = new ArrayList<Double>();
-	}
-	public BulletTransformation getNewTransform() {
-		return new BulletTransformation();
 	}
 	protected BulletTransformation(ArrayList<Integer> transforms, ArrayList<Integer> durs,
 			ArrayList<Integer> iarg1, ArrayList<Integer> iarg2, ArrayList<Integer> iarg3,
