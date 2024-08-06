@@ -33,13 +33,6 @@ public class Bullet {
 	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
-	
-	
-	final int numTransforms = 1;
-	
-	int transformsEnabled;
-	double[] transformArg1 = new double[numTransforms];
-	double[] transformArg2 = new double[numTransforms];
 
 	
 	
@@ -60,8 +53,6 @@ public class Bullet {
 		relevantPlayer = p;
 		renderTransform = new AffineTransform();
 		velMode = 0;
-		transformsEnabled = 0x00000000;
-		transformArg1[0] = .03;
 	}
 	
 	public void respawnBullet(double newXpos, double newYpos, double newSpeed, double newAngle, int newType, int newColor, int offscreenProtectionFramesNum) {
@@ -182,9 +173,7 @@ public class Bullet {
 	}
 	
 	private void doBulletTransformations() {
-		if((transformsEnabled & 0x00000001) == 1) {
-			yvel += transformArg1[0];
-		}
+		
 	}
 	
 
