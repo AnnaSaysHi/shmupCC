@@ -187,22 +187,23 @@ public class Bullet {
 	
 	private void doBulletTransformations() {
 		if(this.transformQueue.getTransformAtIndex(transformIndex) == BulletTransformation.TRANSFORM_NO_TRANSFORM) return;
+
+		transformTimer++;
 		switch(this.transformQueue.getTransformAtIndex(transformIndex)) {
 		case BulletTransformation.TRANSFORM_WAIT:
-			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
+			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
 			break;
 		case BulletTransformation.TRANSFORM_ACCEL_ANGVEL:
-			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) {
+			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) {
 				nextTransform();
 				break;
 			}
 			if(this.velMode != 0) changeVelMode(0);
-			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
 			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
+			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
 			break;
 			
 		}
-		transformTimer++;
 	}
 	
 	private void changeVelMode(int newMode) {
