@@ -192,7 +192,10 @@ public class Bullet {
 			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
 			break;
 		case BulletTransformation.TRANSFORM_ACCEL_ANGVEL:
-			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
+			if(transformTimer >= transformQueue.getDurationAtIndex(transformIndex)) {
+				nextTransform();
+				break;
+			}
 			if(this.velMode != 0) changeVelMode(0);
 			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
 			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
