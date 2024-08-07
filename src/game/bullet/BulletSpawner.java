@@ -77,8 +77,13 @@ public class BulletSpawner {
 	
 	//Mutator methods
 	public void setAngles(double newAngle1, double newAngle2) {
-		angle1 = newAngle1;
-		angle2 = newAngle2;
+		if(followEnemy && parentEnemy.testFlag(6)) {
+			angle1 = Math.PI - newAngle1;
+			angle2 = Math.PI - newAngle2;
+		}else {
+			angle1 = newAngle1;
+			angle2 = newAngle2;			
+		}
 	}
 	public void setSpeeds(double newSpeed1, double newSpeed2) {
 		speed1 = newSpeed1;
@@ -128,8 +133,8 @@ public class BulletSpawner {
 	
 	public void tickSpawner() {
 		if(followEnemy) {
-			spawnerX = parentEnemy.xpos + relativeX;
-			spawnerY = parentEnemy.ypos + relativeY;
+			spawnerX = parentEnemy.getXpos() + relativeX;
+			spawnerY = parentEnemy.getYpos() + relativeY;
 		}
 		playercoords = targetPlayer.getPosAndHitbox();
 		countdown--;
@@ -148,8 +153,8 @@ public class BulletSpawner {
 	
 	public void activate() {
 		if(followEnemy) {
-			spawnerX = parentEnemy.xpos + relativeX;
-			spawnerY = parentEnemy.ypos + relativeY;
+			spawnerX = parentEnemy.getXpos() + relativeX;
+			spawnerY = parentEnemy.getYpos() + relativeY;
 		}
 		double angleAim = angle1;
 		parentManager.SoundMGR.playFromArray(soundOnActivate);

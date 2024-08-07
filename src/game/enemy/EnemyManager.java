@@ -60,7 +60,7 @@ public class EnemyManager {
 			if(!e.isDisabled()) {
 				if(!(e.testFlag(Enemy.FLAG_UNHITTABLE) || e.testFlag(Enemy.FLAG_CONTROL_ENEMY))){
 					radSum = hitbox + e.hurtboxSize;
-					if(Math.pow(e.xpos - x, 2) + Math.pow(e.ypos - y, 2) <= Math.pow(radSum, 2)) {
+					if(Math.pow(e.getXpos() - x, 2) + Math.pow(e.getYpos() - y, 2) <= Math.pow(radSum, 2)) {
 						e.addDamage(damage);
 						return true;
 					}					
@@ -70,8 +70,8 @@ public class EnemyManager {
 		return false;
 	}
 
-	public void addEnemy(Enemy e, double xpos, double ypos, int HP) {
-		e.initEnemy(xpos, ypos, HP, bmgr, relevantPlayer, game, this, smgr);
+	public void addEnemy(Enemy e, double xpos, double ypos, int HP, boolean mirrored) {
+		e.initEnemy(xpos, ypos, HP, mirrored, bmgr, relevantPlayer, game, this, smgr);
 		if(enemies.size() < maxSize) enemies.add(e);
 		
 	}

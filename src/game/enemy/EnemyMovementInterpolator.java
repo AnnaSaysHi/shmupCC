@@ -25,8 +25,8 @@ public class EnemyMovementInterpolator {
 	}
 	
 	public void moveOverTime(double goalX, double goalY, int time, int mode) {
-		this.initialX = parent.xpos;
-		this.initialY = parent.ypos;
+		this.initialX = parent.getXpos();
+		this.initialY = parent.getYpos();
 		this.currentX = initialX;
 		this.currentY = initialY;
 		this.goalX = goalX;
@@ -47,8 +47,8 @@ public class EnemyMovementInterpolator {
 				double mult = getValue(timeconst, interpMode);
 				currentX = (mult * diffX) + initialX;
 				currentY = (mult * diffY) + initialY;
-				parent.xpos = currentX;
-				parent.ypos = currentY;
+				parent.setXpos(currentX);
+				parent.setYpos(currentY);
 				
 			}
 		}

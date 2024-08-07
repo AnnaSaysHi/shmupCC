@@ -19,10 +19,10 @@ public class Enemy {
 	
 	final int numSpawners = 16; 
 	int sprite;
-	public double xpos;
-	public double ypos;
+	protected double xpos;
+	protected double ypos;
 	
-	public double angle;
+	protected double angle;
 	public double speed;
 	public double accel;
 	
@@ -45,7 +45,7 @@ public class Enemy {
 	public static final int FLAG_CONTROL_ENEMY = 3;		// 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
 	public static final int FLAG_DIALOGUE_IMMUNE = 4;	// 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
 	public static final int FLAG_DAMAGE_IMMUNE = 5;	// 5: Enemy retains its hurtbox, but becomes does not take damage.
-	public static final int FLAG_MIRROR = 6;			// 6: Enemy's actions are flipped across the Y-axis, including angles. (not implemented yet)
+	public static final int FLAG_MIRROR = 6;			// 6: Enemy's actions are flipped across the Y-axis, including angles.
 	
 	
 	protected int renderSize; //radius
@@ -92,7 +92,7 @@ public class Enemy {
 		//To be overridden by custom enemy types.
 	}
 	
-	public void initEnemy(double x, double y, int health, BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
+	public void initEnemy(double x, double y, int health, boolean mirrored, BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
 		bulletMGR = bmgr;
 		SoundMGR = smgr;
 		targetPlayer = p;
@@ -113,6 +113,7 @@ public class Enemy {
 		}
 		
 		flags = 0x00000000;
+		if(mirrored) this.setFlag(6);
 		
 		enemyTimer = 0;
 		movementTimer1 = -1;
@@ -190,7 +191,7 @@ public class Enemy {
 	}
 	
 	public void renderEnemy(Graphics g, BufferedImage b) {
-		g.drawImage(b, (int)(xpos - renderSize + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2)),
+		g.drawImage(b, (int)(this.getXpos() - renderSize + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2)),
 				(int)(ypos - renderSize + Game.PLAYFIELDYOFFSET), game);
 	}
 	
@@ -222,7 +223,18 @@ public class Enemy {
 	}
 		
 	
-	
+	public double getXpos() {
+		return this.testFlag(6) ? (this.xpos * -1.0) : this.xpos;
+	}
+	public void setXpos(double newX) {
+		this.xpos = newX;
+	}
+	public double getYpos() {
+		return this.ypos;
+	}
+	public void setYpos(double newY) {
+		this.ypos = newY;
+	}
 	public void setPosAbs(double x, double y) {
 		xpos = x;
 		ypos = y;
