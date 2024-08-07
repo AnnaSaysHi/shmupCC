@@ -1,12 +1,10 @@
 package game.bullet;
-
+/**
+ * This class is only used for making enemy scripts more human-readable.
+ * If you want to use a non-default bullet spritesheet, please change the
+ * definitions in this class to match with your new bullet spritesheet.
+ */
 public abstract class BulletType {
-	
-	/*
-	 * This class is only used for making enemy scripts more human-readable.
-	 * If you want to use a non-default bullet spritesheet, please change the
-	 * definitions in this class to match with your new bullet spritesheet.
-	 */
 	
 	public static final int NUM_BULLET_TYPES = 11;
 	
