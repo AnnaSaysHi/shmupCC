@@ -40,6 +40,7 @@ public class MenuManager {
 		menuList[1].addNewEntry("VIV_test", MenuEntry.BHV_START_SCENE, 2, 0, 100, 200);
 		menuList[1].addNewEntry("test1-4", MenuEntry.BHV_START_SCENE, 3, 0, 100, 250);
 		menuList[1].addNewEntry("Necropotence", MenuEntry.BHV_START_SCENE, 4, 0, 100, 300);
+		menuList[1].addNewEntry("bha8 test", MenuEntry.BHV_START_SCENE, 5, 0, 100, 350);
 	}
 	
 	public void tick() {
