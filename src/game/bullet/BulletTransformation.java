@@ -215,6 +215,12 @@ public class BulletTransformation implements Cloneable {
 	 */
 	public void editTransformationAtIndex(int index, int transformType, int transformDur, int int1, int int2, int int3, double double1, double double2, double double3) {
 		if(index >= transformIDs.size()) return;
+		if(transformType == TRANSFORM_ACCEL_DIR) {
+			double xaccel = Math.cos(double2) * double1;
+			double2 = Math.sin(double2) * double1;
+			double1 = xaccel;
+		}
+		
 		transformIDs.set(index, transformType);
 		transformDurations.set(index, transformDur);
 		intArgs1.set(index, int1);
