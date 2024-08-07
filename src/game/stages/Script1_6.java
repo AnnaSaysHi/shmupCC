@@ -14,4 +14,17 @@ public class Script1_6 extends StageScript {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public void initActions() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
 }

@@ -5,7 +5,7 @@ import game.bullet.BulletManager;
 import game.enemy.EnemyManager;
 import game.player.Player;
 
-public class StageScript {
+public abstract class StageScript {
 
 	protected BulletManager mgr;
 	protected Game parentGame;
@@ -30,11 +30,7 @@ public class StageScript {
 		initActions();
 	}
 	
-	public void initActions() {
-		//To be overridden
-	}
+	public abstract void initActions();
 	
-	public void tick() {
-		//To be overridden
-	}
+	public abstract void tick();
 }
