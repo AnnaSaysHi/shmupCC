@@ -7,7 +7,11 @@ import java.awt.image.BufferedImage;
 import game.Game;
 import game.audio.SoundManager;
 import game.player.Player;
-
+/**
+ * A class to store all of a bullet's information, and do calculations on that information.
+ * This class should not be instantiated on its own.
+ * If you want to spawn in a Bullet, use the BulletSpawner class and its various methods.
+ */
 public class Bullet {
 	int velMode; //0 = angle / speed, 1 = xspeed/yspeed
 	
@@ -29,18 +33,37 @@ public class Bullet {
 	
 	int type;
 	int color;
-	public int grazed; //Amount of frames until this bullet becomes grazeable.
+	/**
+	 * Amount of frames until this Bullet becomes grazeable.
+	 */
+	public int grazed;
 	int timer;
-	double size; // Diameter, not radius
-	double hitboxSize; // Radius, not diameter
-	int framesTillDespawnOffscreen = 0; // Amount of protection this bullet gets from immediately despawning due to being offscreen after it spawns
-	byte renderRotationMode; // 0 = rendered in the direction it's traveling, 1 = no rotation, 2 = CW rotation, 3 = CCW rotation
+	/**
+	 * Refers to the Bullet's rendering size. Represents diameter, not radius.
+	 */
+	double size;
+	double hitboxRadius;
+	int framesTillDespawnOffscreen = 0;
+	/**
+	 * Rotates the Bullet's graphic during rendering.
+	 * Modes
+	 * 0: Rotates to match direction it's traveling
+	 * 1: No rotation
+	 * 2: Gradual clockwise rotation over time
+	 * 3: Gradual counterclockwise rotation over time
+	 */
+	byte renderRotationMode;
 	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
 
 	
-	
+	/**
+	 * This constructor should only ever be called by a BulletManager, during initialization of the manager.
+	 * 
+	 * @param mgr
+	 * @param p
+	 */
 	public Bullet(BulletManager mgr, Player p) {
 		xpos = -1;
 		ypos = -1;
@@ -50,7 +73,7 @@ public class Bullet {
 		yvel = -1;
 		type = -1;
 		size = 1;
-		hitboxSize = 1;
+		hitboxRadius = 1;
 		timer = 0;
 		grazed = 0;
 		disabled = true;
@@ -63,7 +86,20 @@ public class Bullet {
 		transformTimer = 0;
 		numJumps = 0;
 	}
-	
+	/**
+	 * This method should only ever be invoked by the BulletManager's addBullet method,
+	 * which in turn should only ever be invoked by a BulletSpawner's private shootOneWay, shootRingLayer, or shootPR_Bullet methods.
+	 * The proper way to respawn a Bullet is via a BulletSpawner's activate method.
+	 * 
+	 * @param newXpos
+	 * @param newYpos
+	 * @param newSpeed
+	 * @param newAngle
+	 * @param newType
+	 * @param newColor
+	 * @param offscreenProtectionFramesNum
+	 * @param newTransformQueue
+	 */
 	public void respawnBullet(double newXpos, double newYpos,
 			double newSpeed, double newAngle,
 			int newType, int newColor,
@@ -75,7 +111,7 @@ public class Bullet {
 		type = newType;	
 		color = newColor;
 		size = BulletType.BULLET_RENDER_SIZE[type];
-		hitboxSize = BulletType.BULLET_HITBOX_SIZE[type];
+		hitboxRadius = BulletType.BULLET_HITBOX_SIZE[type];
 		renderRotationMode = BulletType.BULLET_ROTATION_MODE[type];
 		renderRotationAngle = Math.PI/2;
 		grazed = 0;
@@ -93,7 +129,15 @@ public class Bullet {
 			yvel = Math.sin(angle) * speed;
 		}
 	}
-	
+
+	/**
+	 * All code related to rendering a Bullet.
+	 * This method should only ever be invoked via a BulletManager's drawBullets method.
+	 * 
+	 * @param g
+	 * @param b
+	 * @param m
+	 */
 	public void draw(Graphics2D g, BufferedImage b, Game m) {
 		
 		switch(renderRotationMode) {
@@ -119,19 +163,41 @@ public class Bullet {
 		g.drawImage(b, renderTransform, m);
 	}
 	
+	/**
+	 * An accessor method, used by BulletManager
+	 * @return this Bullet's disabled field
+	 */
 	public boolean isDisabled() {
 		return disabled;
 	}
+	/**
+	 * A mutator method, used by BulletManager.
+	 * Sets this Bullet's disabled field to true.
+	 */
 	public void disable() {
 		disabled = true;
 	}
+	/**
+	 * An accessor method, used by BulletManager.
+	 * @return this Bullet's type field
+	 */
 	public int getType() {
 		return type;
 	}
+	/**
+	 * An accessor method, used by BulletManager.
+	 * @return this Bullet's color field
+	 */
 	public int getColor() {
 		return color;
 	}
 	
+	/**
+	 * This method should only ever be invoked by the BulletManager's updateBullets method.
+	 * Does all calculations relating to updating a Bullet's new position.
+	 * 
+	 * @return whether this Bullet is both offscreen and is vulnerable to despawning offscreen
+	 */
 	public boolean update() {
 		if(this.transformQueue != null) doBulletTransformations();
 		switch(velMode) {
@@ -150,18 +216,31 @@ public class Bullet {
 		framesTillDespawnOffscreen--;
 		return ((framesTillDespawnOffscreen <= timer) && isOffscreen());
 	}
+	
+	/**
+	 * A utility function that moves the Bullet forward in its current angle.
+	 * Has undefined behavior if velMode is not 0.
+	 * @param dist the distance to move this Bullet by
+	 */
 	public void step(double dist) {
 		xpos += Math.cos(angle) * dist;
 		ypos += Math.sin(angle) * dist;
 		
 	}
-	
+	/**
+	 * Checks if this Bullet has collided with a given circle.
+	 * 
+	 * @param xCompare the X-value of the circle's center
+	 * @param yCompare the Y-value of the circle's center
+	 * @param radCompare the radius of the circle
+	 * @return whether the given circle and the circle representing this Bullet's position and hitbox intersect
+	 */
 	public boolean checkCollision(double xCompare, double yCompare, double radCompare) {
 		
 		/*if(((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)))) {
 			this.color = BulletColor.LIGHT_GREY;
 		}*/
-		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxSize, 2)));
+		return ((Math.pow(xCompare - xpos, 2) + Math.pow(yCompare - ypos, 2) < Math.pow(radCompare + hitboxRadius, 2)));
 	}
 	public void collideWithPlayer() {
 		relevantPlayer.collideWithBullet();
@@ -173,14 +252,21 @@ public class Bullet {
 	}
 	public void eraseSelf() {
 		disabled = true;
-		//TODO: implement this
 	}
 	
+	/**
+	 * A utility method, used during rendering of Bullets with velMode 1 and renderRotationMode 0.
+	 * @return the angle this Bullet is traveling in
+	 */
 	double getAngleFromVelocity() {
 		if (xvel == 0 && yvel == 0) return angle;
 		else return Math.atan2(yvel, xvel);
 	}
 	
+	/**
+	 * A utility method used for determining whether this Bullet is entirely offscreen.
+	 * @return true if this Bullet is offscreen, and false otherwise
+	 */
 	private boolean isOffscreen() {
 		if (xpos > size + (Game.PLAYFIELDWIDTH / 2)) return true;
 		if (xpos < -(Game.PLAYFIELDWIDTH / 2) - size) return true;
@@ -188,7 +274,11 @@ public class Bullet {
 		if (ypos > size + Game.PLAYFIELDHEIGHT) return true;
 		return false;
 	}
-	
+	/**
+	 * A function that does all calculations relating to a Bullet's transformations.
+	 * If one wishes to add a new type of transformation, then this method should be edited.
+	 * Refer to BulletTransformation's documentation for an explanation of what each transformation type does.
+	 */
 	private void doBulletTransformations() {
 		if(this.transformQueue.getTransformAtIndex(transformIndex) == BulletTransformation.TRANSFORM_NO_TRANSFORM) return;
 
@@ -233,6 +323,10 @@ public class Bullet {
 		}
 	}
 	
+	/**
+	 * A utility method for changing between velModes without causing unwanted side-effects.
+	 * @param newMode
+	 */
 	private void changeVelMode(int newMode) {
 		if(newMode == 0 && velMode == 1) {
 			angle = Math.atan2(yvel, xvel);
@@ -244,7 +338,9 @@ public class Bullet {
 			velMode = 1;
 		}
 	}
-	
+	/**
+	 * A utility method that is called when a BulletTransformation has finished executing.
+	 */
 	private void nextTransform() {
 		this.transformIndex++;
 		this.transformTimer = 0;
