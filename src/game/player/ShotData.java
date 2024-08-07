@@ -101,135 +101,60 @@ public class ShotData {
 	
 	
 	public void getShotInfoFromFile(String fileName){
-		try {
-			InputStream shtFile = null;
-			try {			
-				shtFile = this.getClass().getResourceAsStream(fileName);
-				readHeader(shtFile);
-				int a = (int)(num_power_levels) * ((int)(num_power_levels) + 1) * 2;
-				int b = (num_static_options & 127);
-				numMaxOptions = (num_static_options == 0) ? (num_power_levels - 1) : b;
-				b *= 4;
-				numOptionOffsets = (num_static_options == 0) ? a : b;
-				optionPos = new double[numOptionOffsets];
-				readOptionPositions(shtFile);	
-				readOffsetTable(shtFile);
-				readAllShooters(shtFile);
-			}catch(IOException e) {
-				e.printStackTrace();
-			}finally {
-				shtFile.close();
-			}
-		}catch(IOException e){
-			e.printStackTrace();
-		}
+		
+		initHeaderHardCoded();
+		int a = (int)(num_power_levels) * ((int)(num_power_levels) + 1) * 2;
+		int b = (num_static_options & 127);
+		numMaxOptions = (num_static_options == 0) ? (num_power_levels - 1) : b;
+		b *= 4;
+		numOptionOffsets = (num_static_options == 0) ? a : b;
+		optionPos = new double[numOptionOffsets];
+		initOptionPositionsHardCoded();
+		initAllShootersHardCoded();
 	}
-	private void readHeader(InputStream shtFile) throws IOException {
-		byte[] byteBuf8 = new byte[8];
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		ByteBuffer bb8 = ByteBuffer.wrap(byteBuf8);
-		version_num = bb8.getShort(0);
-		if(version_num != shot_reader_version) throw new IOException (".sht file version does not match reader version " + shot_reader_version);
-		numOffsets = bb8.getShort(2);
-		dmg_cap_type = bb8.getShort(4);
-		dmg_cap_val = bb8.getShort(6);
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		hitboxSize = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		grazeboxSize = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		itemboxSize = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		move_UF = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		move_F = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		option_behavior = bb8.getShort(0);
-		num_power_levels = bb8.get(2);
-		deathbomb_window = bb8.get(3);
-		optionMoveTime = bb8.get(4);
-		num_static_options = bb8.get(5);
-		unused1 = bb8.get(6);
-		unused2 = bb8.get(7);
+
+	private void initHeaderHardCoded() {
+		version_num = 1;
+		numOffsets = 2;
+		dmg_cap_type = 1;
+		dmg_cap_val = 80;
+		hitboxSize = 3;
+		grazeboxSize = 15;
+		itemboxSize = 28;
+		move_UF = 4.5;
+		move_F = 2;
+		option_behavior = 0;
+		num_power_levels = 1;
+		deathbomb_window = 8;
+		optionMoveTime = 10;
+		num_static_options = -126;
+		unused1 = 0;
+		unused2 = 0;
 	}
-	private void readOptionPositions(InputStream shtFile) throws IOException{
-		byte[] byteBuf8 = new byte[8];
-		ByteBuffer bb8;
-		for(int i = 0; i < numOptionOffsets; i++) {
-			shtFile.readNBytes(byteBuf8, 0, 8);
-			bb8 = ByteBuffer.wrap(byteBuf8);
-			optionPos[i] = bb8.getDouble();
-		}
+
+	private void initOptionPositionsHardCoded() {
+		optionPos = new double[]{
+			-32, 0,			
+			32, 0,
+			-16, -20,
+			16, -20
+		};
 	}
-	private void readOffsetTable(InputStream shtFile) throws IOException{
-		byte[] byteBuf2 = new byte[2];
-		ByteBuffer bb2;
-		shootersetOffsetList = new short[numOffsets];
-		for(int i = 0; i < numOffsets; i++) {
-			shtFile.readNBytes(byteBuf2, 0, 2);
-			bb2 = ByteBuffer.wrap(byteBuf2);
-			shootersetOffsetList[i] = bb2.getShort();
-		}
+
+
+	private void initAllShootersHardCoded() {
+		shooterSetArray = new PlayerShooter[2][5];
+		shooterSetArray[0][0] = new PlayerShooter((short)5, (short)0, 16, 0, 0, 16, Math.toRadians(-90), 10, 8, (byte)0, (byte)0);
+		shooterSetArray[0][1] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-85), 10, 8, (byte)0, (byte)0);
+		shooterSetArray[0][2] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-95), 10, 8, (byte)0, (byte)0);
+		shooterSetArray[0][3] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-100), 10, 8, (byte)1, (byte)0);
+		shooterSetArray[0][4] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-80), 10, 8, (byte)2, (byte)0);
+		shooterSetArray[1][0] = new PlayerShooter((short)5, (short)0, 16, 0, 0, 16, Math.toRadians(-90), 10, 8, (byte)0, (byte)0);
+		shooterSetArray[1][1] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-85), 10, 8, (byte)0, (byte)0);
+		shooterSetArray[1][2] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-95), 10, 8, (byte)0, (byte)0);
+		shooterSetArray[1][3] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-90), 10, 8, (byte)1, (byte)0);
+		shooterSetArray[1][4] = new PlayerShooter((short)5, (short)0, 8, 0, 0, 16, Math.toRadians(-90), 10, 8, (byte)2, (byte)0);
+		
 	}
-	private void readAllShooters(InputStream shtFile) throws IOException{
-		shooterSetArray = new PlayerShooter[numOffsets][];
-		for(int i = 0; i < numOffsets; i++) {
-			int numShootersInSet = shootersetOffsetList[i];
-			PlayerShooter[] toRet = new PlayerShooter[numShootersInSet];
-			for(int j = 0; j < numShootersInSet; j++) {
-				toRet[j] = readShooter(shtFile);
-			}
-			shooterSetArray[i] = toRet;
-		}
-		int a = 0;
-	}
-	private PlayerShooter readShooter(InputStream shtFile) throws IOException{
-		byte[] byteBuf8 = new byte[8];
-		ByteBuffer bb8;
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		short fireRate = bb8.getShort(0);
-		short startDelay = bb8.getShort(2);
-		int damage = bb8.getInt(4);
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		double off_x = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		double off_y = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		double hitbox = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		double angle = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		double speed = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		double size = bb8.getDouble();
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		byte option = bb8.get(0);
-		byte anim = bb8.get(1);
-		byte animHit = bb8.get(2);
-		byte sfx = bb8.get(3);
-		int func_init = bb8.getInt(4);
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		int func_tick = bb8.getInt(0);
-		int func_draw = bb8.getInt(4);
-		shtFile.readNBytes(byteBuf8, 0, 8);
-		bb8 = ByteBuffer.wrap(byteBuf8);
-		int func_hit = bb8.getInt(0);
-		int unusedSht = bb8.getInt(4);
-		return new PlayerShooter(fireRate, startDelay, damage, off_x, off_y, hitbox, angle, speed, size, option, anim);
-	}
+
 }
