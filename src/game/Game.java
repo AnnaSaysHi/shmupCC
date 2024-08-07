@@ -236,7 +236,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		Graphics2D g = (Graphics2D)(bufferStrat.getDrawGraphics());
 		AffineTransform at = new AffineTransform();
-		at.scale(SCALE/ScreenResolutionConstant.res, SCALE/ScreenResolutionConstant.res);
+		at.scale(SCALE/2.0, SCALE/2.0);
 		g.setTransform(at);
 		g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
 		Font fpsfont = g.getFont();
@@ -319,7 +319,7 @@ public class Game extends Canvas implements Runnable{
 			}
 			Graphics2D g = (Graphics2D)(bufferStrat.getDrawGraphics());
 			AffineTransform at = new AffineTransform();
-			at.scale(SCALE/ScreenResolutionConstant.res, SCALE/ScreenResolutionConstant.res);
+			at.scale(SCALE/2.0, SCALE/2.0);
 			g.setTransform(at);
 			g.drawImage(loadingBG, 0, 0, this);
 			g.dispose();
