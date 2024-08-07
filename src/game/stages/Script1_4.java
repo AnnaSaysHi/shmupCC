@@ -21,7 +21,7 @@ public class Script1_4 extends StageScript {
 	public void initActions() {
 		
 
-		enmMgr.addEnemy(new EnmTest(), 0, -50, 10000);
+		enmMgr.addEnemy(new EnmTest(), 0, -50, 10000, false);
 	}
 	
 	@Override
