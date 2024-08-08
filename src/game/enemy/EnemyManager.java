@@ -41,6 +41,7 @@ public class EnemyManager {
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) e.tickEnemy();
 		}
+		enemies.removeIf(e -> e.isDisabled());
 	}
 	
 	public void drawEnemies(Graphics2D g) {
