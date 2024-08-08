@@ -76,14 +76,9 @@ public class BulletSpawner {
 	}
 	
 	//Mutator methods
-	public void setAngles(double newAngle1, double newAngle2) {
-		if(followEnemy && parentEnemy.testFlag(6)) {
-			angle1 = Math.PI - newAngle1;
-			angle2 = Math.PI - newAngle2;
-		}else {
-			angle1 = newAngle1;
-			angle2 = newAngle2;			
-		}
+	public void setAngles(double newAngle1, double newAngle2) {		
+		angle1 = newAngle1;
+		angle2 = newAngle2;					
 	}
 	public void setSpeeds(double newSpeed1, double newSpeed2) {
 		speed1 = newSpeed1;
@@ -156,7 +151,10 @@ public class BulletSpawner {
 			spawnerX = parentEnemy.getXpos() + relativeX;
 			spawnerY = parentEnemy.getYpos() + relativeY;
 		}
-		double angleAim = angle1;
+		boolean mirrored = followEnemy && parentEnemy.testFlag(6);
+		double angleAim;
+		if(mirrored) angleAim = Math.PI - angle1;
+		else angleAim = angle1;
 		parentManager.SoundMGR.playFromArray(soundOnActivate);
 		switch(modeNum) {
 		case Mode_Fan_Aimed:
@@ -190,10 +188,12 @@ public class BulletSpawner {
 	}
 	
 	private void shootFan(double angleAim) {
-		angleAim = angleAim - ((double)(ways - 1)*angle2)/2.0;
+		boolean mirrored = followEnemy && parentEnemy.testFlag(6);
+		double angleMod = mirrored ? -angle2 : angle2;
+		angleAim = angleAim - ((double)(ways - 1)*angleMod)/2.0;
 		for(int i = 0; i < ways; i++) {
 			shootOneWay(angleAim);
-			angleAim += angle2;
+			angleAim += angleMod;
 		}
 		
 	}
@@ -212,12 +212,13 @@ public class BulletSpawner {
 	private void shootRing(double angleAim) {
 		double ringSpeed = speed1;
 		double speedIncrement;
+		boolean mirrored = followEnemy && parentEnemy.testFlag(6);
 		if (layers == 1) speedIncrement = 0;
 		else speedIncrement = (speed2 - speed1) / (layers-1);
 		for(int i = 0; i < layers; i++) {
 			shootRingLayer(angleAim, ringSpeed);
 			ringSpeed += speedIncrement;
-			angleAim += angle2;
+			angleAim += mirrored ? -angle2 : angle2;
 		}
 		
 	}
