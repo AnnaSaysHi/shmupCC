@@ -4,7 +4,12 @@ import game.Game;
 import game.audio.SoundManager;
 import game.enemy.Enemy;
 import game.player.Player;
-
+/**
+ * A class that is used to automate the process of shooting Bullets.
+ * Each BulletManager stores all the information required to shoot a Bullet, and does all the calculations required for shooting Bullets.
+ * Instantiated Enemy subclasses will come equipped with 16 BulletSpawners that will automatically update;
+ * manually instantiated BulletSpawners will have to be updated manually as well.
+ */
 public class BulletSpawner {
 	BulletManager parentManager;
 	Game game;
@@ -12,7 +17,7 @@ public class BulletSpawner {
 	int modeNum;
 	int layers;
 	int ways;
-	boolean followEnemy;
+	private boolean followEnemy;
 	double spawnerX;
 	double spawnerY;
 	double relativeX;
@@ -43,11 +48,18 @@ public class BulletSpawner {
 	public static final int Mode_Ring_Random_Speed = 7;
 	public static final int Mode_Meek = 8;
 	//constructors
+	/**
+	 * Constructs and initializes a BulletSpawner. The initialized BulletSpawner, if activated without
+	 * further modifying its attributes, will shoot a single aimed pellet directly at the player's position with speed 1.
+	 * @param parent
+	 * @param player
+	 * @param game
+	 */
 	public BulletSpawner(BulletManager parent, Player player, Game game) {
 		parentManager = parent;
 		targetPlayer = player;
 		this.game = game;
-		modeNum = Mode_Fan;
+		modeNum = Mode_Fan_Aimed;
 		spawnerX = 0;
 		spawnerY = 0;
 		relativeX = 0;
@@ -66,29 +78,60 @@ public class BulletSpawner {
 		transformsList = null;
 		transformsStartingIndex = 0;
 	}
+	/**
+	 * Tells this BulletSpawner which Enemy it should take its position from.
+	 * @param e
+	 */
 	public void setParentEnemy(Enemy e) {
 		parentEnemy = e;
 		followEnemy = true;
 	}
-	
+	/**
+	 * There is currently nothing that calls this method.
+	 * @return the absolute coordinates this BulletSpawner will shoot from.
+	 */
 	public double[] getSpawnerPos(){
 		return new double[] {spawnerX, spawnerY};
 	}
 	
-	//Mutator methods
+	/**
+	 * Sets the angle1 and angle2 fields. These fields mean different things in different shooting modes.
+	 * @param newAngle1
+	 * @param newAngle2
+	 */
 	public void setAngles(double newAngle1, double newAngle2) {		
 		angle1 = newAngle1;
 		angle2 = newAngle2;					
 	}
+	/**
+	 * Sets the speed1 and speed2 fields. While the two fields are interchangeable, convention is for the speed1 field to be
+	 * the lower-bound of the speed of shot Bullets and for speed2 to be the upper bound.
+	 * @param newSpeed1
+	 * @param newSpeed2
+	 */
 	public void setSpeeds(double newSpeed1, double newSpeed2) {
 		speed1 = newSpeed1;
 		speed2 = newSpeed2;
 	}
+	/**
+	 * Sets this spawner's position to the given absolute position. Following invocation of this method, the spawner will also stop
+	 * tracking its parent Enemy's movement.
+	 * @param xPos
+	 * @param yPos
+	 */
 	public void setSpawnerPos(double xPos, double yPos) {
+		followEnemy = false;
 		spawnerX = xPos;
 		spawnerY = yPos;
 	}
+	/**
+	 * Sets this spawner's relative position. Every tickSpawner call, it will move to this position summed with parentEnemy's position.
+	 * If this BulletSpawner has no parentEnemy, nothing will happen.
+	 * @param xPos
+	 * @param yPos
+	 */
 	public void setRelativePos(double xPos, double yPos) {
+		if(parentEnemy != null) followEnemy = true;
 		relativeX = xPos;
 		relativeY = yPos;
 	}
@@ -258,7 +301,7 @@ public class BulletSpawner {
 		}
 	}
 	public void reInit() {
-		modeNum = Mode_Fan;
+		modeNum = Mode_Fan_Aimed;
 		followEnemy = false;
 		spawnerX = 0;
 		spawnerY = 0;
