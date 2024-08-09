@@ -69,6 +69,7 @@ class EnmTest extends game.enemy.Enemy{
 	protected void doEnemyActions() {
 		if(this.enemyTimer == 100) {
 			this.resetFlags();
+			this.setFlag(FLAG_BOSS);
 			this.spawners[0].setActivationFrequency(4);
 		}
 		this.angleIncrement += (Math.PI)/2048;
