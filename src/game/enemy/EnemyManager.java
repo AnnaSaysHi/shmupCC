@@ -55,6 +55,17 @@ public class EnemyManager {
 			}
 		}		
 	}
+	public void drawHPbars(Graphics2D g) {
+		int numSlot = 0;
+		for(Enemy e : enemies) {
+			if(!e.isDisabled()) {
+				if(e.testFlag(Enemy.FLAG_BOSS)) {
+					numSlot++;
+					e.renderHPbar(g, numSlot);
+				}
+			}
+		}
+	}
 	public boolean hitEnemies(int x, int y, int hitbox, int damage) {
 		double radSum;
 		for(Enemy e : enemies) {

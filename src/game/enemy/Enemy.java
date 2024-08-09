@@ -1,5 +1,6 @@
 package game.enemy;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -210,6 +211,13 @@ public class Enemy {
 	public void renderEnemy(Graphics g, BufferedImage b) {
 		g.drawImage(b, (int)(this.getXpos() - renderSize + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2)),
 				(int)(ypos - renderSize + Game.PLAYFIELDYOFFSET), game);
+	}
+	public void renderHPbar(Graphics g, int slot) {
+		int hpbarMaxWidth = 312;
+		double hpbarFrac = (double)this.HP / (double)this.maxHP;
+		int hpbarWidth = (int)(hpbarFrac * hpbarMaxWidth);
+		g.setColor(new Color(255,160,160));
+		g.fill3DRect(Game.PLAYFIELDXOFFSET + 48, Game.PLAYFIELDYOFFSET + 16 * slot, hpbarWidth, 4, true);
 	}
 	
 	protected void onDeath() {
