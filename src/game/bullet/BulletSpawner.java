@@ -135,13 +135,27 @@ public class BulletSpawner {
 		relativeX = xPos;
 		relativeY = yPos;
 	}
+	/**
+	 * Sets this spawner's bullet count attributes. "Layers" refers to how many layers thick a spawned pattern will be, while "ways"
+	 * refers to how many bullets are in each layer.
+	 * @param numWays
+	 * @param numLayers
+	 */
 	public void setBulletCounts(int numWays, int numLayers) {
 		layers = numLayers;
 		ways = numWays;
 	}
+	/**
+	 * Sets the spawn distance attribute. This determines how far bullets will move along their trajectory as soon as they are spawned.
+	 * @param distance
+	 */
 	public void setSpawnDistance(double distance) {
 		spawnDistance = distance;
 	}
+	/**
+	 * Sets the shooting mode. Each mode works differently.
+	 * @param mode
+	 */
 	public void setMode(int mode) {
 		modeNum = mode;
 	}
