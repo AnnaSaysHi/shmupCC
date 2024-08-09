@@ -35,6 +35,8 @@ public class Enemy {
 	protected int HP;
 	protected int maxHP;
 	protected int damageToTake;
+	protected int numHealthbars;
+	protected int hpCallbackThreshold;
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
 	
@@ -44,8 +46,9 @@ public class Enemy {
 	public static final int FLAG_PERSISTENT = 2;		// 2:Enemy does not despawn offscreen
 	public static final int FLAG_CONTROL_ENEMY = 3;		// 3: Enemy becomes a control enemy. Combines the effects of flags 0, 1, 2, and 4.
 	public static final int FLAG_DIALOGUE_IMMUNE = 4;	// 4: Enemy cannot be deleted by dialogue or EnmKillAll. (not implemented yet)
-	public static final int FLAG_DAMAGE_IMMUNE = 5;	// 5: Enemy retains its hurtbox, but becomes does not take damage.
+	public static final int FLAG_DAMAGE_IMMUNE = 5;		// 5: Enemy retains its hurtbox, but becomes does not take damage.
 	public static final int FLAG_MIRROR = 6;			// 6: Enemy's actions are flipped across the Y-axis, including angles.
+	public static final int FLAG_BOSS = 7;				// 7: Enemy becomes a boss, complete with visible healthbar.
 	
 	
 	protected int renderSize; //radius
@@ -83,6 +86,8 @@ public class Enemy {
 		size = 2 * renderSize;
 		hitboxSize = renderSize;
 		hurtboxSize = size / 2;
+		numHealthbars = 0;
+		hpCallbackThreshold = -1;
 		
 
 		movementType = 1;
@@ -107,6 +112,8 @@ public class Enemy {
 		ypos = y;
 		HP = health;
 		maxHP = health;
+		numHealthbars = 0;
+		hpCallbackThreshold = -1;
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].reInit();
 			spawners[i].setParentEnemy(this);
@@ -180,12 +187,22 @@ public class Enemy {
 	private void takeDamage() {
 		HP -= damageToTake;
 		damageToTake = 0;
+		if(hpCallbackThreshold != -1 && HP <= hpCallbackThreshold) doHPCallback();
 		if(HP <= 0) {
-			onDeath();
-			disabled = true;
+			if(numHealthbars == 0) {
+				onDeath();
+				disabled = true;				
+			}else {
+				numHealthbars -= 1;
+			}
 		}
 		
 	}
+	protected void doHPCallback() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	public void addDamage(int damage) {
 		if(!testFlag(FLAG_DAMAGE_IMMUNE)) damageToTake += damage;
 	}
