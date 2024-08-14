@@ -127,10 +127,10 @@ public class BulletManager {
 	 * @param distance
 	 * @param transformationQueue
 	 */
-	public void addBullet(double xPos, double yPos, double speed, double angle, int type, int color, int offscreenProtectionFramesNum, double distance, BulletTransformation transformationQueue) {
+	public void addBullet(double xPos, double yPos, double speed, double angle, int type, int color, int offscreenProtectionFramesNum, double distance, BulletTransformation transformationQueue, int transformationStartingIndex) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled()) {
-				bullets[i].respawnBullet(xPos, yPos, speed, angle, type, color, offscreenProtectionFramesNum, transformationQueue);
+				bullets[i].respawnBullet(xPos, yPos, speed, angle, type, color, offscreenProtectionFramesNum, transformationQueue, transformationStartingIndex);
 				bullets[i].step(distance);
 				break;
 			}

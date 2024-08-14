@@ -24,6 +24,7 @@ public class Bullet {
 	
 	BulletManager parentMGR;
 	Player relevantPlayer;
+	BulletSpawner transformSpawner;
 	
 	BulletTransformation transformQueue;
 	int transformIndex;
@@ -85,6 +86,7 @@ public class Bullet {
 		transformIndex = 0;
 		transformTimer = 0;
 		numJumps = 0;
+		transformSpawner = null;
 	}
 	/**
 	 * This method should only ever be invoked by the BulletManager's addBullet method,
@@ -103,7 +105,8 @@ public class Bullet {
 	public void respawnBullet(double newXpos, double newYpos,
 			double newSpeed, double newAngle,
 			int newType, int newColor,
-			int offscreenProtectionFramesNum, BulletTransformation newTransformQueue) {
+			int offscreenProtectionFramesNum,
+			BulletTransformation newTransformQueue, int startingTransformIndex) {
 		xpos = newXpos;
 		ypos = newYpos;
 		speed = newSpeed;
@@ -118,7 +121,7 @@ public class Bullet {
 		timer = 0;
 		if(newTransformQueue != null)transformQueue = newTransformQueue;
 		else newTransformQueue = null;
-		transformIndex = 0;
+		transformIndex = startingTransformIndex;
 		transformTimer = 0;
 		numJumps = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
@@ -128,6 +131,7 @@ public class Bullet {
 			xvel = Math.cos(angle) * speed;
 			yvel = Math.sin(angle) * speed;
 		}
+		transformSpawner = null;
 	}
 
 	/**
@@ -175,6 +179,7 @@ public class Bullet {
 	 * Sets this Bullet's disabled field to true.
 	 */
 	public void disable() {
+		transformSpawner = null;
 		disabled = true;
 	}
 	/**
@@ -285,10 +290,10 @@ public class Bullet {
 		transformTimer++;
 		switch(this.transformQueue.getTransformAtIndex(transformIndex)) {
 		case BulletTransformation.TRANSFORM_WAIT:
-			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) nextTransform();
+			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) nextTransform();
 			break;
 		case BulletTransformation.TRANSFORM_GOTO:
-			if(transformQueue.getIntArg2AtIndex(transformIndex) == -1
+			if(transformQueue.getIntArg3AtIndex(transformIndex) == -1
 			|| this.numJumps < transformQueue.getIntArg2AtIndex(transformIndex)) {
 				numJumps++;
 				gotoTransform(transformQueue.getIntArg1AtIndex(transformIndex));
@@ -298,7 +303,7 @@ public class Bullet {
 				break;
 			}
 		case BulletTransformation.TRANSFORM_ACCEL_ANGVEL:
-			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) {
+			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) {
 				nextTransform();
 				break;
 			}
@@ -307,7 +312,7 @@ public class Bullet {
 			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
 			break;
 		case BulletTransformation.TRANSFORM_ACCEL_DIR:
-			if(transformTimer > transformQueue.getDurationAtIndex(transformIndex)) {
+			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) {
 				nextTransform();
 				break;
 			}
@@ -319,7 +324,35 @@ public class Bullet {
 			this.framesTillDespawnOffscreen = transformQueue.getIntArg1AtIndex(transformIndex);
 			nextTransform();
 			break;
-			
+		case BulletTransformation.TRANSFORM_DELETE:
+			this.disable();
+			break;	
+		case BulletTransformation.TRANSFORM_SOUND:
+			parentMGR.SoundMGR.playFromArray(transformQueue.getIntArg1AtIndex(transformIndex));
+			nextTransform();
+			break;
+		case BulletTransformation.TRANSFORM_SHOOT_PREPARE:
+			transformSpawner = new BulletSpawner(parentMGR, relevantPlayer, parentMGR.game);
+			transformSpawner.setTransformStartingIndex(transformQueue.getIntArg1AtIndex(transformIndex));
+			transformSpawner.setMode(transformQueue.getIntArg2AtIndex(transformIndex));
+			transformSpawner.setBulletCounts(transformQueue.getIntArg3AtIndex(transformIndex), transformQueue.getIntArg4AtIndex(transformIndex));
+			transformSpawner.setAngles(transformQueue.getFloatArg1AtIndex(transformIndex),transformQueue.getFloatArg2AtIndex(transformIndex));
+			transformSpawner.setSpeeds(transformQueue.getFloatArg3AtIndex(transformIndex), transformQueue.getFloatArg4AtIndex(transformIndex));
+			transformSpawner.setTransformList(transformQueue);
+			nextTransform();
+			break;
+		case BulletTransformation.TRANSFORM_SHOOT_ACTIVATE:
+			if(transformSpawner == null) break;
+			transformSpawner.setTypeAndColor(transformQueue.getIntArg1AtIndex(transformIndex), transformQueue.getIntArg2AtIndex(transformIndex));
+			transformSpawner.setSpawnerPos(xpos, ypos);
+			transformSpawner.activate();
+			if(transformQueue.getIntArg3AtIndex(transformIndex) != 0) {
+				this.disable();
+				break;
+			} else {
+				nextTransform();
+				break;
+			}
 		}
 	}
 	
