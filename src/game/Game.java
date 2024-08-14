@@ -247,10 +247,10 @@ public class Game extends Canvas implements Runnable{
 			playerChar.drawPlayer(g);
 			playerChar.drawPlayerOptions(g);
 			EnemyMGR.drawEnemies(g);
+			EnemyMGR.drawHPbars(g);
 			BulletMGR.drawBullets(g, this);
 			playerChar.drawHitbox(g);
 			playerChar.drawPlayerDeathAnim(g);
-			EnemyMGR.drawHPbars(g);
 			g.drawImage(HUD, 0, 0, this);
 			Font scoreFont = new Font("THBiolinum", Font.PLAIN, 24);
 			g.setColor(new Color(0x4f4f4f));
