@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.awt.geom.Arc2D;
 
@@ -43,6 +44,8 @@ public class Enemy {
 	protected int hpCallbackThreshold;
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
+	
+	protected int subtype;
 	
 	int flags;
 	public static final int FLAG_UNHITTABLE = 0;		// 0: Enemy has no hurtbox (shots pass through enemy)
@@ -95,6 +98,7 @@ public class Enemy {
 		
 
 		movementType = 1;
+		subtype = -1;
 	}
 	
 	protected void initActions() {
@@ -142,6 +146,10 @@ public class Enemy {
 		movementType = 1;
 		this.initActions();
 		
+	}
+	public void initEnemyWithSubtype(double x, double y, int health, boolean mirrored, int subtype, BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
+		this.initEnemy(x, y, health, mirrored, bmgr, p, g, emgr, smgr);
+		this.subtype = subtype;
 	}
 	public void setEnemySprite(int spr) {
 		sprite = spr;
@@ -216,11 +224,13 @@ public class Enemy {
 				(int)(ypos - renderSize + Game.PLAYFIELDYOFFSET), game);
 	}
 	public void renderHPbar(Graphics2D g) {
+		Stroke previousStroke = g.getStroke();
 		double hpbarFrac = (double)this.HP / (double)this.maxHP;
 		Arc2D hpArc = new Arc2D.Double(this.getXpos() - (renderSize * 2) + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH/2), this.getYpos()- (renderSize * 2) + Game.PLAYFIELDYOFFSET, renderSize * 4, renderSize * 4, 90, hpbarFrac * 360.0, Arc2D.OPEN);
 		g.setColor(new Color(255,144,144));
 		g.setStroke(new BasicStroke(3));
 		g.draw(hpArc);
+		g.setStroke(previousStroke);
 	}
 	
 	protected void onDeath() {

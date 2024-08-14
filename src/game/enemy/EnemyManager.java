@@ -85,6 +85,10 @@ public class EnemyManager {
 		if(enemies.size() < maxSize) enemies.add(e);
 		
 	}
+	public void addEnemy(Enemy e, double xpos, double ypos, int HP, boolean mirrored, int subtype) {
+		e.initEnemyWithSubtype(xpos, ypos, HP, mirrored, subtype, bmgr, relevantPlayer, game, this, smgr);
+		if(enemies.size() < maxSize) enemies.add(e);
+	}
 	
 	public void reset() {
 		enemies.clear();
