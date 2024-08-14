@@ -201,7 +201,7 @@ public class Enemy {
 		damageToTake = 0;
 		if(hpCallbackThreshold != -1 && HP <= hpCallbackThreshold) doHPCallback();
 		if(HP <= 0) {
-			if(numHealthbars == 0) {
+			if(numHealthbars <= 0) {
 				onDeath();
 				disabled = true;				
 			}else {
