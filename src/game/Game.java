@@ -121,7 +121,7 @@ public class Game extends Canvas implements Runnable{
 
 		MenuMGR = new MenuManager(this, kbh, SoundMGR);
 		MenuMGR.initMenus();
-		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar);
+		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar, this);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
 		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
 		playerChar.playerSetShotMGR(ShotMGR);
@@ -248,7 +248,7 @@ public class Game extends Canvas implements Runnable{
 			playerChar.drawPlayerOptions(g);
 			EnemyMGR.drawEnemies(g);
 			EnemyMGR.drawHPbars(g);
-			BulletMGR.drawBullets(g, this);
+			BulletMGR.drawBullets(g);
 			playerChar.drawHitbox(g);
 			playerChar.drawPlayerDeathAnim(g);
 			g.drawImage(HUD, 0, 0, this);

@@ -19,6 +19,7 @@ public class BulletManager {
 	public SoundManager SoundMGR;
 	Player relevantPlayer;
 	BufferedImage[][] bulletSpriteReference;
+	Game game;
 
 	/**
 	 * The BulletManager's constructor function.
@@ -27,12 +28,13 @@ public class BulletManager {
 	 * @param smgr 
 	 * @param player the Player that these Bullets will interact with
 	 */
-	public BulletManager(int size, Spritesheet ss, SoundManager smgr, Player player) {
+	public BulletManager(int size, Spritesheet ss, SoundManager smgr, Player player, Game game) {
 		bullets = new Bullet[size];
 		SoundMGR = smgr;
 		relevantPlayer = player;
 		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this, relevantPlayer);
 		bulletSprites = ss;
+		this.game = game;
 		bulletSpriteReference = new BufferedImage[BulletColor.NUM_BULLET_COLORS][BulletType.NUM_BULLET_TYPES];
 		for(int i = 0; i < BulletColor.NUM_BULLET_COLORS; i++) {
 			for(int j = 0; j < BulletType.NUM_BULLET_TYPES; j++) {
@@ -59,10 +61,10 @@ public class BulletManager {
 	 * @param g 
 	 * @param m
 	 */
-	public void drawBullets(Graphics2D g, Game m) {
+	public void drawBullets(Graphics2D g) {
 		for(int i = 0; i < bullets.length; i++) {
 			if (bullets[i].isDisabled() == false) {
-				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [bullets[i].getType()], m);
+				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [bullets[i].getType()], game);
 			}
 		}
 		
