@@ -215,15 +215,12 @@ public class Enemy {
 		g.drawImage(b, (int)(this.getXpos() - renderSize + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2)),
 				(int)(ypos - renderSize + Game.PLAYFIELDYOFFSET), game);
 	}
-	public void renderHPbar(Graphics2D g, int slot) {
-		//int hpbarMaxWidth = 312;
+	public void renderHPbar(Graphics2D g) {
 		double hpbarFrac = (double)this.HP / (double)this.maxHP;
 		Arc2D hpArc = new Arc2D.Double(this.getXpos() - (renderSize * 2) + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH/2), this.getYpos()- (renderSize * 2) + Game.PLAYFIELDYOFFSET, renderSize * 4, renderSize * 4, 90, hpbarFrac * 360.0, Arc2D.OPEN);
-		//int hpbarWidth = (int)(hpbarFrac * hpbarMaxWidth);
 		g.setColor(new Color(255,144,144));
 		g.setStroke(new BasicStroke(3));
 		g.draw(hpArc);
-		//g.fill3DRect(Game.PLAYFIELDXOFFSET + 48, Game.PLAYFIELDYOFFSET + 16 * slot, hpbarWidth, 4, true);
 	}
 	
 	protected void onDeath() {

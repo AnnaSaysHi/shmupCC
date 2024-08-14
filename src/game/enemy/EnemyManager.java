@@ -56,12 +56,10 @@ public class EnemyManager {
 		}		
 	}
 	public void drawHPbars(Graphics2D g) {
-		int numSlot = 0;
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
 				if(e.testFlag(Enemy.FLAG_BOSS)) {
-					numSlot++;
-					e.renderHPbar(g, numSlot);
+					e.renderHPbar(g);
 				}
 			}
 		}
