@@ -219,7 +219,7 @@ public class Bullet {
 		}
 		timer++;
 		framesTillDespawnOffscreen--;
-		return ((framesTillDespawnOffscreen <= timer) && isOffscreen());
+		return ((framesTillDespawnOffscreen <= 1) && isOffscreen());
 	}
 	
 	/**
