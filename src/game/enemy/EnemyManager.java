@@ -45,17 +45,19 @@ public class EnemyManager {
 	}
 	
 	public void drawEnemies(Graphics2D g) {
+		boolean shouldDrawHP = false;
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
 				int s = e.returnEnemySprite();
 				if(s != -1) {
 					e.renderEnemy(g, enemySpriteReference[s][0]);
-					
+					if(e.testFlag(Enemy.FLAG_BOSS)) shouldDrawHP = true;
 				}
 			}
-		}		
+		}
+		if(shouldDrawHP) drawHPbars(g);
 	}
-	public void drawHPbars(Graphics2D g) {
+	private void drawHPbars(Graphics2D g) {
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
 				if(e.testFlag(Enemy.FLAG_BOSS)) {
