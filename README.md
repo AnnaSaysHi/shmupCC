@@ -12,6 +12,9 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewh
 
 -Alter Script1_4 to make funny patterns!
 
+# Help! My input breaks randomly!
+If this happens and you're running on Macbook, it may be because your keyboard is attempting to open the accent menu. Try opening up terminal and running ``defaults write -g ApplePressAndHoldEnabled -bool false``. If the problem persists, I can't help there.
+
 # Can I use this engine to make my own STGs?
 Feel free to use this however you wish - but I'd prefer that it not be used to make paid games. Also, some basic features haven't been properly implemented yet. That said, if you want to make scripts or otherwise contribute to this engine's development, join the discord server below and @ me - I'll try to explain how to work with this engine.
 
