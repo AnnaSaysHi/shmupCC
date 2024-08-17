@@ -15,7 +15,7 @@ import game.bullet.BulletSpawner;
 import game.player.Player;
 
 public class Enemy {
-	BulletManager bulletMGR;
+	protected BulletManager bulletMGR;
 	Player targetPlayer;
 	protected Game game;
 	SoundManager SoundMGR;
