@@ -278,6 +278,9 @@ public class Game extends Canvas implements Runnable{
 	public Random FetchRNG() {
 		return RNG;
 	}
+	public double randRad() {
+		return RNG.nextDouble(0, Math.PI * 2);
+	}
 	public boolean isOutsidePlayfield(double xpos, double ypos, double size) {
 		if (xpos > size + (Game.PLAYFIELDWIDTH / 2)) return true;
 		if (xpos < (-size - (Game.PLAYFIELDWIDTH / 2))) return true;
