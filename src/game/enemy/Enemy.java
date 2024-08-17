@@ -17,7 +17,7 @@ import game.player.Player;
 public class Enemy {
 	BulletManager bulletMGR;
 	Player targetPlayer;
-	Game game;
+	protected Game game;
 	SoundManager SoundMGR;
 	EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
