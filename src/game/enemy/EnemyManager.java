@@ -44,7 +44,7 @@ public class EnemyManager {
 		enemies.removeIf(e -> e.isDisabled());
 	}
 	
-	public void drawEnemies(Graphics2D g) {
+	public boolean drawEnemies(Graphics2D g) {
 		boolean shouldDrawHP = false;
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
@@ -55,9 +55,9 @@ public class EnemyManager {
 				}
 			}
 		}
-		if(shouldDrawHP) drawHPbars(g);
+		return shouldDrawHP;
 	}
-	private void drawHPbars(Graphics2D g) {
+	public void drawHPbars(Graphics2D g) {
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {
 				if(e.testFlag(Enemy.FLAG_BOSS)) {
