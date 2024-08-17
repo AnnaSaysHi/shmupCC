@@ -186,7 +186,7 @@ class EnmBoss extends game.enemy.Enemy{
 		starExplodeTransformCW = new BulletTransformation();
 		starExplodeTransformCW.queueOffscreenTransform(35);
 		starExplodeTransformCW.queueWaitTransform(35);
-		starExplodeTransformCW.queueShootPrepareTransform(4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, 0, 0, s1, -s1 * (c1 - 1));
+		starExplodeTransformCW.queueShootPrepareTransform(4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, 0, 0, s1, -s1 * (1.0/c1));
 		starExplodeTransformCW.queueShootActivateTransform(BulletType.OUTLINE, BulletColor.BRIGHT_RED, 1);
 		starExplodeTransformCW.queueOffscreenTransform(230);
 		starExplodeTransformCW.queueWaitTransform(10);
