@@ -19,8 +19,26 @@ public abstract class BulletType {
 	public static final int BULLET = 8;
 	public static final int BACTERIA = 9;
 	public static final int STAR_CW = 10;
+	public static final int STAR_CCW = 11;
+	
+	
+	public static final int[] BULLET_SPRITESHEET_INDEX = new int[] {
+			0,
+			1,
+			2,
+			3,
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			10,
+			10
+	};
 	
 	public static final double[] BULLET_RENDER_SIZE = new double[] {
+			16,
 			16,
 			16,
 			16,
@@ -44,6 +62,7 @@ public abstract class BulletType {
 			3,
 			2.5,
 			2.5,
+			2,
 			2
 	};
 	public static final byte[] BULLET_ROTATION_MODE = new byte[] {
@@ -57,7 +76,8 @@ public abstract class BulletType {
 			0,
 			0,
 			0,
-			2
+			2,
+			3
 	};
 	
 }
