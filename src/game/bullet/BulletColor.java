@@ -10,7 +10,7 @@ public abstract class BulletColor {
 	public static final int NUM_BULLET_COLORS = 16;
 
 	public static final int DARK_GREY = 0;
-	public static final int DULL_RED = 1;
+	public static final int DARK_RED = 1;
 	public static final int BRIGHT_RED = 2;
 	public static final int PURPLE = 3;
 	public static final int PINK = 4;
@@ -25,4 +25,13 @@ public abstract class BulletColor {
 	public static final int BRIGHT_YELLOW = 13;
 	public static final int ORANGE = 14;
 	public static final int LIGHT_GREY = 15;
+	
+	public static final int COLOR8_GREY = 0;
+	public static final int COLOR8_RED = 1;
+	public static final int COLOR8_PINK = 2;
+	public static final int COLOR8_INDIGO = 3;
+	public static final int COLOR8_LIGHT_BLUE = 4;
+	public static final int COLOR8_GREEN = 5;
+	public static final int COLOR8_YELLOW = 6;
+	public static final int COLOR8_ORANGE = 7;
 }
