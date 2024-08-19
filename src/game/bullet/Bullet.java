@@ -119,8 +119,8 @@ public class Bullet {
 		renderRotationAngle = Math.PI/2;
 		grazed = 0;
 		timer = 0;
+		transformQueue = null;
 		if(newTransformQueue != null)transformQueue = newTransformQueue;
-		else newTransformQueue = null;
 		transformIndex = startingTransformIndex;
 		transformTimer = 0;
 		numJumps = 0;
