@@ -94,10 +94,17 @@ class EnmBoss extends game.enemy.Enemy{
 	int patternNum;
 	static final int c1 = 5;
 	static final double s1 = 0.5;
+	final int RING_BULLET_CNT = 12;
+	int aimedRingInterval;
+	int starSwirlInterval;
+	double ang;
+	int starCurrentColor;
 	double starAngle;
 	BulletTransformation starExplodeTransformCW;
 	BulletTransformation starExplodeTransformCCW;
 	BulletTransformation accelTransform;
+	BulletTransformation swirlTransformCW;
+	BulletTransformation swirlTransformCCW;
 	double moveBoundsX;
 	double moveUpperY;
 	double moveLowerY;
@@ -123,24 +130,86 @@ class EnmBoss extends game.enemy.Enemy{
 		this.anglenum = 0;
 		this.angleIncrement = 0;
 		this.patternNum = 0;
-		this.attackStarSetup();
+		attackSwirlSetup();
 	}
 	@Override
 	protected void doEnemyActions() {
-		if(this.enemyTimer == 100) {
-			this.clearFlag(FLAG_PERSISTENT);
-			this.setFlag(FLAG_BOSS);
-		}
 		switch(this.patternNum) {
 		case 0:
-			attackStarTick();
+			if(this.enemyTimer == 100) {
+				this.clearFlag(FLAG_PERSISTENT);
+				this.setFlag(FLAG_BOSS);
+				this.enemyTimer = 0;
+				this.patternNum++;
+			}
 			break;
 		case 1:
+			attackSwirlTick();
+			break;
+		case 2:
+			attackStarTick();
+			break;
+		case 3:
 			attackChaseTick();
 			break;
 		default:
 			break;
 		}
+	}
+	protected void attackSwirlTick() {
+		if(this.enemyTimer % aimedRingInterval == 0) {
+			double ang_ex = 0.0 + ang;
+			double ang_player = game.getAngleToPlayer(this.getXpos(), this.getYpos());
+			this.spawners[0].setAngles(ang_player, 0);
+			for(int i = 0; i < RING_BULLET_CNT; i++) {
+				this.spawners[0].setRelativePos(Math.cos(ang_ex) * 24.0, Math.sin(ang_ex) * 24.0);
+				//this.spawners[0].activate();
+				ang_ex += (2.0 * Math.PI) / RING_BULLET_CNT;
+			}
+		}
+		if(this.enemyTimer % (2 * starSwirlInterval) == 0) {
+			this.spawners[1].setAngles(game.randRad(), 0);
+			starCurrentColor = (starCurrentColor > 13 ? 1 : starCurrentColor + 1);
+			this.spawners[1].setTypeAndColor(BulletType.STAR_CW, starCurrentColor);
+			this.spawners[1].activate();
+		}else if (this.enemyTimer % starSwirlInterval == 0) {
+			this.spawners[2].setAngles(game.randRad(), 0);
+			starCurrentColor = (starCurrentColor > 13 ? 1 : starCurrentColor + 1);
+			this.spawners[2].setTypeAndColor(BulletType.STAR_CCW, starCurrentColor);
+			this.spawners[2].activate();
+		}
+		if(this.enemyTimer == 180) this.clearFlag(FLAG_DAMAGE_IMMUNE);
+	}
+	protected void attackSwirlSetup() {
+		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 150);
+		ang = 0;
+		aimedRingInterval = 35;
+		starSwirlInterval = 15;
+		starCurrentColor = 1;
+		this.spawners[0].reInit();
+		this.spawners[0].setTypeAndColor(BulletType.OUTLINE, BulletColor.DARK_GREY);
+		this.spawners[0].setBulletCounts(13, 1);
+		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[0].setSpeeds(3, 3);
+		this.spawners[1].reInit();
+		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[1].setTypeAndColor(BulletType.STAR_CW, BulletColor.PINK);
+		this.spawners[1].setBulletCounts(20, 1);
+		this.spawners[1].setSpeeds(0.2, 0.2);
+		this.spawners[1].setRelativePos(0, 0);
+		this.spawners[2].reInit();
+		this.spawners[2].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[2].setTypeAndColor(BulletType.STAR_CW, BulletColor.PINK);
+		this.spawners[2].setBulletCounts(20, 1);
+		this.spawners[2].setSpeeds(0.2, 0.2);
+		this.spawners[2].setRelativePos(0, 0);
+		swirlTransformCW = new BulletTransformation();
+		swirlTransformCCW = new BulletTransformation();
+		double b = 0.0075;
+		swirlTransformCW.queueAccelAngleVelTransform(400, 0.01, b);
+		swirlTransformCCW.queueAccelAngleVelTransform(400, 0.01, -b);
+		this.spawners[1].setTransformList(swirlTransformCW);
+		this.spawners[2].setTransformList(swirlTransformCCW);
 	}
 	protected void attackStarTick() {
 		if(this.enemyTimer % 120 == 0) {
@@ -166,8 +235,9 @@ class EnmBoss extends game.enemy.Enemy{
 	}
 	
 	protected void attackStarSetup() {
+		this.enemyTimer = 0;
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
-		this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 150);
+		this.setPosAbsTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 100);
 		starAngle = Math.PI / 5;
 		this.spawners[0].reInit();
 		this.spawners[0].setRelativePos(0, 0);
@@ -178,7 +248,7 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[0].setSpeeds(2, 1);
 		this.spawners[1].reInit();
 		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setTypeAndColor(BulletType.STAR_CW, BulletColor.BRIGHT_RED);
+		this.spawners[1].setTypeAndColor(BulletType.STAR_CCW, BulletColor.BRIGHT_RED);
 		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[1].setBulletCounts(5, 2);
 		this.spawners[1].setAngles(Math.PI/2, 0);
@@ -187,10 +257,12 @@ class EnmBoss extends game.enemy.Enemy{
 		starExplodeTransformCW.queueOffscreenTransform(35);
 		starExplodeTransformCW.queueWaitTransform(35);
 		starExplodeTransformCW.queueShootPrepareTransform(4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, 0, 0, s1, -s1 * (1.0/c1));
-		starExplodeTransformCW.queueShootActivateTransform(BulletType.OUTLINE, BulletColor.BRIGHT_RED, 1);
+		starExplodeTransformCW.queueShootActivateTransform(BulletType.STAR_CW, BulletColor.BRIGHT_RED, 1);
 		starExplodeTransformCW.queueOffscreenTransform(230);
 		starExplodeTransformCW.queueWaitTransform(10);
 		starExplodeTransformCCW = starExplodeTransformCW.clone();
+		starExplodeTransformCCW.removeTransformationAtIndex(3);
+		starExplodeTransformCCW.insertShootActivateTransform(3, BulletType.STAR_CCW, BulletColor.DARK_RED, 1);
 		starExplodeTransformCW.queueAccelAngleVelTransform(180, 0.02, 0.05);
 		starExplodeTransformCCW.queueAccelAngleVelTransform(180, 0.02, -0.05);
 		this.spawners[0].setTransformList(starExplodeTransformCW);
@@ -228,7 +300,15 @@ class EnmBoss extends game.enemy.Enemy{
 	@Override
 	protected void doHPCallback() {
 		switch(patternNum) {
-		case 0:
+		case 1:
+			patternNum++;
+			this.maxHP = 7500;
+			this.HP = 7500;
+			attackStarSetup();
+			this.hpCallbackThreshold = 0;
+			bulletMGR.deactivateAll();
+			break;
+		case 2:
 			patternNum++;
 			this.maxHP = 6000;
 			this.HP = 6000;
