@@ -94,7 +94,7 @@ class EnmBoss extends game.enemy.Enemy{
 	int patternNum;
 	static final int c1 = 5;
 	static final double s1 = 0.5;
-	final int RING_BULLET_CNT = 12;
+	final int RING_BULLET_CNT = 9;
 	int aimedRingInterval;
 	int starSwirlInterval;
 	double ang;
@@ -163,7 +163,7 @@ class EnmBoss extends game.enemy.Enemy{
 			this.spawners[0].setAngles(ang_player, 0);
 			for(int i = 0; i < RING_BULLET_CNT; i++) {
 				this.spawners[0].setRelativePos(Math.cos(ang_ex) * 24.0, Math.sin(ang_ex) * 24.0);
-				//this.spawners[0].activate();
+				this.spawners[0].activate();
 				ang_ex += (2.0 * Math.PI) / RING_BULLET_CNT;
 			}
 		}
@@ -183,26 +183,29 @@ class EnmBoss extends game.enemy.Enemy{
 	protected void attackSwirlSetup() {
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 150);
 		ang = 0;
-		aimedRingInterval = 35;
+		aimedRingInterval = 27;
 		starSwirlInterval = 15;
 		starCurrentColor = 1;
 		this.spawners[0].reInit();
 		this.spawners[0].setTypeAndColor(BulletType.OUTLINE, BulletColor.DARK_GREY);
-		this.spawners[0].setBulletCounts(13, 1);
+		this.spawners[0].setBulletCounts(7, 1);
 		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[0].setSpeeds(3, 3);
+		this.spawners[0].setSpeeds(2, 2);
+		this.spawners[0].setSound(SoundManager.EnemyShootLoud);
 		this.spawners[1].reInit();
 		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[1].setTypeAndColor(BulletType.STAR_CW, BulletColor.PINK);
-		this.spawners[1].setBulletCounts(20, 1);
+		this.spawners[1].setBulletCounts(17, 1);
 		this.spawners[1].setSpeeds(0.2, 0.2);
 		this.spawners[1].setRelativePos(0, 0);
+		this.spawners[1].setSound(SoundManager.EnemyShootMuted);
 		this.spawners[2].reInit();
 		this.spawners[2].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[2].setTypeAndColor(BulletType.STAR_CW, BulletColor.PINK);
-		this.spawners[2].setBulletCounts(20, 1);
+		this.spawners[2].setBulletCounts(17, 1);
 		this.spawners[2].setSpeeds(0.2, 0.2);
 		this.spawners[2].setRelativePos(0, 0);
+		this.spawners[2].setSound(SoundManager.EnemyShootMuted);
 		swirlTransformCW = new BulletTransformation();
 		swirlTransformCCW = new BulletTransformation();
 		double b = 0.0075;
