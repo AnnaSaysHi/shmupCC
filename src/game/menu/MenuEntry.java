@@ -15,19 +15,25 @@ public class MenuEntry {
 	int behavior; // See list of behaviors at the bottom
 	int behaviorArg1; // depends on behavior
 	int behaviorArg2; //
+	int behaviorArg3;
+	int behaviorArg4;
 	int xpos;
 	int ypos;
 	
 	
-	public MenuEntry(Game parent, MenuManager mmgr, String text, int behavior, int behaviorArg1, int behaviorArg2, int x, int y) {
+	public MenuEntry(Game parent, MenuManager mmgr, String text, int behavior, int behaviorArg1, int x, int y) {
 		this.parent = parent;
 		this.mmgr = mmgr;
 		this.selfText = text;
 		this.behavior = behavior;
 		this.behaviorArg1 = behaviorArg1;
-		this.behaviorArg2 = behaviorArg2;
 		this.xpos = x;
 		this.ypos = y;
+	}
+	public void setExtendedArguments(int behaviorArg2, int behaviorArg3, int behaviorArg4) {
+		this.behaviorArg2 = behaviorArg2;
+		this.behaviorArg3 = behaviorArg3;
+		this.behaviorArg4 = behaviorArg4;
 	}
 	
 	//For non-selectable entries only (to help with rendering).
@@ -49,6 +55,9 @@ public class MenuEntry {
 	}
 	public String getText() {
 		return selfText;
+	}
+	public void setText(String newText) {
+		selfText = newText;
 	}
 	protected int getBehavior() {
 		return this.behavior;
@@ -74,6 +83,11 @@ public class MenuEntry {
 			break;
 		case BHV_RETURN_TO_MENU:
 			parent.returnToMenu();
+			break;
+		case BHV_SET_GVAR:
+			switch(this.behaviorArg2) {
+			
+			}
 			break;
 		default:
 			
@@ -101,5 +115,14 @@ public class MenuEntry {
 	public static final int BHV_UNPAUSE = 4;
 	public static final int BHV_START_OVER = 5;
 	public static final int BHV_RETURN_TO_MENU = 6;
+	public static final int BHV_SUBMENU = 7;
+	
+	/*
+	 ******************************** 
+	 *    ~~GVAR INDICES BELOW~~    *
+	 ********************************
+	 */
+	public static final int GVAR_DIFFICULTY = 1;
+	public static final int GVAR_INFINITE_LIVES = 2;
 
 }

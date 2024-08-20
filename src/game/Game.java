@@ -38,7 +38,7 @@ public class Game extends Canvas implements Runnable{
 		PAUSE,
 		GAME_OVER		
 	}
-	
+	int[] gvars;
 	private BulletManager BulletMGR;
 	private PlayerShotManager ShotMGR;
 	private EnemyManager EnemyMGR;
@@ -99,6 +99,11 @@ public class Game extends Canvas implements Runnable{
 		
 		
 		RNG = new Random();
+		gvars = new int[] {
+				0,	// UNUSED
+				1,	// DIFFICULTY
+				0	// INFINITE LIVES
+		};
 		rngInitSeed = RNG.nextInt();
 		Spritesheet bullets = new Spritesheet(bulletSprites);
 		Spritesheet enemies = new Spritesheet(enemySprites);
@@ -282,6 +287,12 @@ public class Game extends Canvas implements Runnable{
 		double angle = RNG.nextDouble();
 		angle = angle * Math.PI * 2;
 		return angle;		
+	}
+	public int getGvar(int index) {
+		return gvars[index];
+	}
+	public void setGvar(int index, int value) {
+		gvars[index] = value;
 	}
 	public boolean isOutsidePlayfield(double xpos, double ypos, double size) {
 		if (xpos > size + (Game.PLAYFIELDWIDTH / 2)) return true;
