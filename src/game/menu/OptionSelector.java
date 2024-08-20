@@ -61,6 +61,8 @@ public class OptionSelector {
 		if(UDLRCCframesHeld[2] == 1) {
 			smgr.playFromArray(3);
 			game.setGvar(gvarIndex, selectedOption);
+			parentMenu.reactivate();
+			active = false;
 		}
 		if(UDLRCCframesHeld[3] == 1) {
 			smgr.playFromArray(3);
