@@ -1,10 +1,9 @@
 package game.stages;
 import game.*;
 import game.audio.SoundManager;
-import game.bullet.BulletColor;
+import game.bullet.Bullet;
 import game.bullet.BulletManager;
 import game.bullet.BulletSpawner;
-import game.bullet.BulletType;
 import game.enemy.EnemyManager;
 import game.player.Player;
 
@@ -28,7 +27,7 @@ public class Script1_3 extends StageScript{
 	public void initActions() {
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
 		//parentGame.FetchRNG().nextDouble();
-		testSpawner.setTypeAndColor(BulletType.RICE, BulletColor.BRIGHT_RED);
+		testSpawner.setTypeAndColor(Bullet.RICE, Bullet.COLOR16_BRIGHT_RED);
 		testSpawner.setBulletCounts(8, 1);
 		testSpawner.setSpeeds(3.0, 0.0);
 		testSpawner.setMode(BulletSpawner.Mode_Ring_Nonaimed);

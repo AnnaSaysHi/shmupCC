@@ -57,7 +57,23 @@ public class Bullet {
 	double renderRotationAngle;
 	AffineTransform renderTransform;
 	boolean disabled;
-
+	
+	
+	
+	
+	public static final int LASER_PIECE = 0;
+	public static final int ARROWHEAD = 1;
+	public static final int OUTLINE = 2;
+	public static final int BALL = 3;
+	public static final int RICE = 4;
+	public static final int KUNAI = 5;
+	public static final int SHARD = 6;
+	public static final int AMULET = 7;
+	public static final int BULLET = 8;
+	public static final int BACTERIA = 9;
+	public static final int STAR_CW = 10;
+	public static final int STAR_CCW = 11;
+	
 	public static final int COLOR8_GREY = 0;
 	public static final int COLOR8_RED = 1;
 	public static final int COLOR8_PINK = 2;
@@ -138,9 +154,9 @@ public class Bullet {
 		angle = newAngle;
 		type = newType;	
 		color = newColor;
-		size = BulletType.BULLET_RENDER_SIZE[type];
-		hitboxRadius = BulletType.BULLET_HITBOX_SIZE[type];
-		renderRotationMode = BulletType.BULLET_ROTATION_MODE[type];
+		size = BulletDefs.BULLET_RENDER_SIZE[type];
+		hitboxRadius = BulletDefs.BULLET_HITBOX_SIZE[type];
+		renderRotationMode = BulletDefs.BULLET_ROTATION_MODE[type];
 		renderRotationAngle = Math.PI/2;
 		grazed = 0;
 		timer = 0;

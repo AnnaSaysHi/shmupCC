@@ -2,10 +2,9 @@ package game.stages;
 
 import game.*;
 import game.audio.SoundManager;
-import game.bullet.BulletColor;
+import game.bullet.Bullet;
 import game.bullet.BulletManager;
 import game.bullet.BulletSpawner;
-import game.bullet.BulletType;
 import game.enemy.EnemyManager;
 import game.player.Player;
 
@@ -30,7 +29,7 @@ public class Script_necropotence extends StageScript {
 		testSpawner.setBulletCounts(6, 1);
 		testSpawner.setSpeeds(2, 2);
 		testSpawner.setAngles(anglenum, anglenum);
-		testSpawner.setTypeAndColor(BulletType.RICE, BulletColor.PURPLE);
+		testSpawner.setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
 		testSpawner.setActivationFrequency(6);
 		testSpawner.setSpawnDistance(-380);
 		testSpawner.setSpawnProtectionFrames(400);
@@ -40,7 +39,7 @@ public class Script_necropotence extends StageScript {
 		testSpawner2.setBulletCounts(6, 1);
 		testSpawner2.setSpeeds(2, 2);
 		testSpawner2.setAngles(anglenum, anglenum);
-		testSpawner2.setTypeAndColor(BulletType.RICE, BulletColor.PURPLE);
+		testSpawner2.setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
 		testSpawner2.setActivationFrequency(6);
 		testSpawner2.setSpawnDistance(-380);
 		testSpawner2.setSpawnProtectionFrames(400);

@@ -2,10 +2,9 @@ package game.stages;
 
 import game.*;
 import game.audio.SoundManager;
-import game.bullet.BulletColor;
+import game.bullet.Bullet;
 import game.bullet.BulletManager;
 import game.bullet.BulletSpawner;
-import game.bullet.BulletType;
 import game.enemy.EnemyManager;
 import game.player.Player;
 
@@ -25,7 +24,7 @@ public class Script1_1 extends StageScript {
 		testSpawner.setBulletCounts(3, 1);
 		testSpawner.setSpeeds(5, 1);
 		testSpawner.setAngles(0, 2 * Math.PI);
-		testSpawner.setTypeAndColor(BulletType.BALL, BulletColor.BLUE);
+		testSpawner.setTypeAndColor(Bullet.BALL, Bullet.COLOR16_BLUE);
 		testSpawner.setActivationFrequency(1);
 	}
 	@Override

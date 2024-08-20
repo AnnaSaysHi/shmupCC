@@ -2,11 +2,10 @@ package game.stages;
 
 import game.*;
 import game.audio.SoundManager;
-import game.bullet.BulletColor;
+import game.bullet.Bullet;
 import game.bullet.BulletManager;
 import game.bullet.BulletSpawner;
 import game.bullet.BulletTransformation;
-import game.bullet.BulletType;
 import game.enemy.EnemyManager;
 import game.player.Player;
 
@@ -61,7 +60,7 @@ class EnmTest extends game.enemy.Enemy{
 		this.spawners[0].setBulletCounts(5, 1);
 		this.spawners[0].setSpeeds(2.5, 2.5);
 		this.spawners[0].setAngles(anglenum, anglenum);
-		this.spawners[0].setTypeAndColor(BulletType.RICE, BulletColor.PURPLE);
+		this.spawners[0].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
 		this.spawners[0].setTransformList(accelTransform);
 		//this.spawners[0].setActivationFrequency(4);
 	}

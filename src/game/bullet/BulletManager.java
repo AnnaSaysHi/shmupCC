@@ -35,9 +35,9 @@ public class BulletManager {
 		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this, relevantPlayer);
 		bulletSprites = ss;
 		this.game = game;
-		bulletSpriteReference = new BufferedImage[16][BulletType.NUM_BULLET_TYPES];
+		bulletSpriteReference = new BufferedImage[16][BulletDefs.NUM_BULLET_TYPES];
 		for(int i = 0; i < 16; i++) {
-			for(int j = 0; j < BulletType.NUM_BULLET_TYPES; j++) {
+			for(int j = 0; j < BulletDefs.NUM_BULLET_TYPES; j++) {
 				bulletSpriteReference[i][j] = ss.getSprite(i, j, 16, 16);
 			}
 		}
@@ -64,7 +64,7 @@ public class BulletManager {
 	public void drawBullets(Graphics2D g) {
 		for(int i = bullets.length - 1; i >= 0; i--) {
 			if (bullets[i].isDisabled() == false) {
-				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [BulletType.BULLET_SPRITESHEET_INDEX[bullets[i].getType()]], game);
+				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [BulletDefs.BULLET_SPRITESHEET_INDEX[bullets[i].getType()]], game);
 			}
 		}
 		
