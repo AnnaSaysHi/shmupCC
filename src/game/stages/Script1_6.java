@@ -138,6 +138,8 @@ class EnmBoss extends game.enemy.Enemy{
 			if(this.enemyTimer == 100) {
 				this.clearFlag(FLAG_PERSISTENT);
 				this.setFlag(FLAG_BOSS);
+				this.HP = 5500;
+				this.maxHP = 5500;
 				this.enemyTimer = 0;
 				this.patternNum++;
 			}
@@ -214,14 +216,14 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[2].setTransformList(swirlTransformCCW);
 	}
 	protected void attackStarTick() {
-		if(this.enemyTimer % 120 == 0) {
+		if(this.enemyTimer % 120 == 40) {
 			double randang1 = game.randRad();
 			double randang2;
 			randang2 = (game.FetchRNG().nextDouble() / 10) + 0.9;
 			//randang2 = game.FetchRNG().nextDouble() / 5;
 			//randang2 = game.randRad();
 			double randang3 = game.randRad();
-			if(this.enemyTimer % 240 == 0) {
+			if(this.enemyTimer % 240 == 40) {
 				starExplodeTransformCW.removeTransformationAtIndex(2);
 				starExplodeTransformCW.insertShootPrepareTransform(2, 4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, -randang2, s1, -s1 * (c1 - 1));
 				this.spawners[0].setAngles(randang3, starAngle);
@@ -243,14 +245,14 @@ class EnmBoss extends game.enemy.Enemy{
 		starAngle = Math.PI / 5;
 		this.spawners[0].reInit();
 		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setTypeAndColor(Bullet.STAR_CW, Bullet.COLOR16_BRIGHT_RED);
+		this.spawners[0].setTypeAndColor(Bullet.STAR_BIG_CW, Bullet.COLOR8_RED);
 		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[0].setBulletCounts(5, 2);
 		this.spawners[0].setAngles(Math.PI/2, 0);
 		this.spawners[0].setSpeeds(2, 1);
 		this.spawners[1].reInit();
 		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setTypeAndColor(Bullet.STAR_CCW, Bullet.COLOR16_BRIGHT_RED);
+		this.spawners[1].setTypeAndColor(Bullet.STAR_BIG_CCW, Bullet.COLOR8_RED);
 		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[1].setBulletCounts(5, 2);
 		this.spawners[1].setAngles(Math.PI/2, 0);
@@ -264,7 +266,7 @@ class EnmBoss extends game.enemy.Enemy{
 		starExplodeTransformCW.queueWaitTransform(10);
 		starExplodeTransformCCW = starExplodeTransformCW.clone();
 		starExplodeTransformCCW.removeTransformationAtIndex(3);
-		starExplodeTransformCCW.insertShootActivateTransform(3, Bullet.STAR_CCW, Bullet.COLOR16_DARK_RED, 1);
+		starExplodeTransformCCW.insertShootActivateTransform(3, Bullet.STAR_CCW, Bullet.COLOR16_YELLOW, 1);
 		starExplodeTransformCW.queueAccelAngleVelTransform(180, 0.02, 0.05);
 		starExplodeTransformCCW.queueAccelAngleVelTransform(180, 0.02, -0.05);
 		this.spawners[0].setTransformList(starExplodeTransformCW);
