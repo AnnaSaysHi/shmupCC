@@ -3,12 +3,12 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewh
 
 
 
-# Features (as of current version 1.0.4)
+# Features (as of current version 1.0.5)
 -Move your placeholder asset ship and shoot placeholder asset enemies!
 
 -Explode on touching a bullet!
 
--Choose from several different test patterns!
+-Play with several wonderful settings in the options menu!
 
 -Alter Script1_4 to make funny patterns!
 
