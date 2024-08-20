@@ -85,6 +85,8 @@ class Enm1 extends game.enemy.Enemy{
 		}
 	}
 }
+
+
 class EnmBoss extends game.enemy.Enemy{
 
 	double anglenum;

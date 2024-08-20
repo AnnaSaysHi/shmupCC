@@ -26,8 +26,6 @@ public abstract class BulletDefs {
 			256, 128, 32	//JELLYBEAN
 	};
 	
-	
-	
 	public static final int[] BULLET_SPRITESHEET_INDEX = new int[] {
 			0,
 			1,
@@ -71,6 +69,7 @@ public abstract class BulletDefs {
 			32,
 			32
 	};
+	
 	public static final double[] BULLET_HITBOX_SIZE = new double[] {
 			1.5,
 			1.5,
@@ -92,6 +91,7 @@ public abstract class BulletDefs {
 			5,
 			4.5
 	};
+	
 	public static final byte[] BULLET_ROTATION_MODE = new byte[] {
 			1,
 			0,
