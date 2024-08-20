@@ -58,7 +58,32 @@ public class Bullet {
 	AffineTransform renderTransform;
 	boolean disabled;
 
-	
+	public static final int COLOR8_GREY = 0;
+	public static final int COLOR8_RED = 1;
+	public static final int COLOR8_PINK = 2;
+	public static final int COLOR8_INDIGO = 3;
+	public static final int COLOR8_LIGHT_BLUE = 4;
+	public static final int COLOR8_GREEN = 5;
+	public static final int COLOR8_YELLOW = 6;
+	public static final int COLOR8_ORANGE = 7;
+
+	public static final int COLOR16_DARK_GREY = 0;
+	public static final int COLOR16_DARK_RED = 1;
+	public static final int COLOR16_BRIGHT_RED = 2;
+	public static final int COLOR16_PURPLE = 3;
+	public static final int COLOR16_PINK = 4;
+	public static final int COLOR16_INDIGO = 5;
+	public static final int COLOR16_BLUE = 6;
+	public static final int COLOR16_CYAN = 7;
+	public static final int COLOR16_LIGHT_BLUE = 8;
+	public static final int COLOR16_GREEN = 9;
+	public static final int COLOR16_LIGHT_GREEN = 10;
+	public static final int COLOR16_LIME_GREEN = 11;
+	public static final int COLOR16_YELLOW = 12;
+	public static final int COLOR16_BRIGHT_YELLOW = 13;
+	public static final int COLOR16_ORANGE = 14;
+	public static final int COLOR16_LIGHT_GREY = 15;
+
 	/**
 	 * This constructor should only ever be called by a BulletManager, during initialization of the manager.
 	 * 

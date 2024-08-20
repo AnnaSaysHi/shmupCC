@@ -35,8 +35,8 @@ public class BulletManager {
 		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this, relevantPlayer);
 		bulletSprites = ss;
 		this.game = game;
-		bulletSpriteReference = new BufferedImage[BulletColor.NUM_BULLET_COLORS][BulletType.NUM_BULLET_TYPES];
-		for(int i = 0; i < BulletColor.NUM_BULLET_COLORS; i++) {
+		bulletSpriteReference = new BufferedImage[16][BulletType.NUM_BULLET_TYPES];
+		for(int i = 0; i < 16; i++) {
 			for(int j = 0; j < BulletType.NUM_BULLET_TYPES; j++) {
 				bulletSpriteReference[i][j] = ss.getSprite(i, j, 16, 16);
 			}
