@@ -72,6 +72,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage shot = null;
 	private BufferedImage explosionSheet = null;
 	private BufferedImage lifeIcon = null;
+	private BufferedImage skullIcon = null;
 	private BufferedImage option = null;
 	private BufferedImage loadingBG = null;
 	@SuppressWarnings("unused")
@@ -92,6 +93,7 @@ public class Game extends Canvas implements Runnable{
 			HUD = loader.loadImage("/images/HUD.png");
 			explosionSheet = loader.loadImage("/images/ExplosionSheet.png");
 			lifeIcon = loader.loadImage("/images/LifeIcon.png");
+			skullIcon = loader.loadImage("/images/skull.png");
 			option = loader.loadImage("/images/optionTypeA.png");
 		}catch (IOException e){
 			e.printStackTrace();
@@ -261,9 +263,14 @@ public class Game extends Canvas implements Runnable{
 			g.setColor(new Color(0x4f4f4f));
 			g.setFont(scoreFont);
 			//g.drawString("Score: ", 440, 60);
-			g.drawString("Lives: ", 440, 60);
-			for(int i = 0; i < playerChar.lives; i++) {
-				g.drawImage(lifeIcon, 500 + (20 * i), 48, this);
+			if(gvars[2] == 0) {
+				g.drawString("Lives: ", 440, 60);
+				for(int i = 0; i < playerChar.lives; i++) {
+					g.drawImage(lifeIcon, 500 + (20 * i), 48, this);
+				}
+			}else {
+				g.drawImage(skullIcon, 440, 48, this);
+				g.drawString(":   " + playerChar.lives, 475, 70);
 			}
 		}
 		if(state == STATE.MENU) MenuMGR.renderCurrentMenu(g);
@@ -307,6 +314,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	public void setStage (int i) {
 		stage = i;
+		playerChar.playerReInitialize();
 		stageList[stage].init();
 	}
 	public void restartStage() {

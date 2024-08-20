@@ -80,7 +80,7 @@ public class Player {
 		stateTimer = 0;
 		x = 0;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
-		lives = 2;
+		lives = (game.getGvar(2) == 1 ? 0 : 2);
 		bombs = 3;
 		score = 0;
 		iframes = 20;
@@ -138,7 +138,7 @@ public class Player {
 		stateTimer = 0;
 		bombHeldPrevFrame = true;
 		iframes = 20;
-		lives = 2;
+		lives = (game.getGvar(2) == 1 ? 0 : 2);
 		bombs = 3;
 		score = 0;
 	}
@@ -195,9 +195,13 @@ public class Player {
 				x = 0;
 				y = Game.PLAYFIELDHEIGHT + playerAnimHeight;
 				stateTimer = 0;
-				if(lives == 0){
-					game.state = Game.STATE.GAME_OVER;
-				}else lives--;
+				if(game.getGvar(2) == 0) {
+					if(lives == 0){
+						game.state = Game.STATE.GAME_OVER;
+					}else lives--;
+				}else {
+					lives++;
+				}
 				break;
 			}
 			stateTimer++;
