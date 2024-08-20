@@ -58,10 +58,7 @@ public class Bullet {
 	AffineTransform renderTransform;
 	boolean disabled;
 	
-	
-	
-	
-	public static final int LASER_PIECE = 0;
+	public static final int PELLET = 0;
 	public static final int ARROWHEAD = 1;
 	public static final int OUTLINE = 2;
 	public static final int BALL = 3;
@@ -73,6 +70,13 @@ public class Bullet {
 	public static final int BACTERIA = 9;
 	public static final int STAR_CW = 10;
 	public static final int STAR_CCW = 11;
+	public static final int DROPLET = 12;
+	public static final int POPCORN_CW = 13;
+	public static final int POPCORN_CCW = 14;
+	public static final int MENTOS = 15;
+	public static final int STAR_BIG_CW = 16;
+	public static final int STAR_BIG_CCW = 17;
+	public static final int JELLYBEAN = 18;
 	
 	public static final int COLOR8_GREY = 0;
 	public static final int COLOR8_RED = 1;
