@@ -1,6 +1,6 @@
 package game.bullet;
 /**
- * This class is only used for making enemy scripts more human-readable.
+ * This class is used to define the properties of bullets.
  * If you want to use a non-default bullet spritesheet, please change the
  * definitions in this class to match with your new bullet spritesheet.
  */
