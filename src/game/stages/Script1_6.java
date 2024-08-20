@@ -163,7 +163,7 @@ class EnmBoss extends game.enemy.Enemy{
 		if(this.enemyTimer % aimedRingInterval == 0) {
 			double ang_ex = 0.0 + ang;
 			double ang_player = game.getAngleToPlayer(this.getXpos(), this.getYpos());
-			this.spawners[0].setAngles(ang_player, 0);
+			this.spawners[0].setAngles(ang_player, Math.PI * 2 / 7);
 			for(int i = 0; i < RING_BULLET_CNT; i++) {
 				this.spawners[0].setRelativePos(Math.cos(ang_ex) * 24.0, Math.sin(ang_ex) * 24.0);
 				this.spawners[0].activate();
@@ -191,8 +191,8 @@ class EnmBoss extends game.enemy.Enemy{
 		starCurrentColor = 1;
 		this.spawners[0].reInit();
 		this.spawners[0].setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_DARK_GREY);
-		this.spawners[0].setBulletCounts(7, 1);
-		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[0].setBulletCounts(3, 1);
+		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
 		this.spawners[0].setSpeeds(2, 2);
 		this.spawners[0].setSound(SoundManager.EnemyShootLoud);
 		this.spawners[1].reInit();
