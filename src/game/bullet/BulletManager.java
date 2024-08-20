@@ -2,6 +2,7 @@ package game.bullet;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.awt.image.RasterFormatException;
 
 import game.Game;
 import game.Spritesheet;
@@ -15,7 +16,6 @@ import game.player.Player;
  */
 public class BulletManager {
 	Bullet [] bullets;
-	Spritesheet bulletSprites;
 	public SoundManager SoundMGR;
 	Player relevantPlayer;
 	BufferedImage[][] bulletSpriteReference;
@@ -33,13 +33,70 @@ public class BulletManager {
 		SoundMGR = smgr;
 		relevantPlayer = player;
 		for(int i = 0; i < size; i++) bullets[i] = new Bullet(this, relevantPlayer);
-		bulletSprites = ss;
+		try {
+			fillSpriteReference(ss);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(2);
+		}
 		this.game = game;
-		bulletSpriteReference = new BufferedImage[16][BulletDefs.NUM_BULLET_TYPES];
-		for(int i = 0; i < 16; i++) {
-			for(int j = 0; j < BulletDefs.NUM_BULLET_TYPES; j++) {
-				bulletSpriteReference[i][j] = ss.getSprite(i, j, 16, 16);
+
+	}
+	
+	protected void fillSpriteReference(Spritesheet ss) throws Exception{
+		bulletSpriteReference = new BufferedImage[BulletDefs.NUM_BULLET_SPRITES][];
+		
+		try {
+			for(int i = 0; i < BulletDefs.NUM_BULLET_SPRITES; i++) {
+				int bulletSize = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 2];
+				int xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
+				int yStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 1];
+				switch(bulletSize) {
+				case 8:
+					bulletSpriteReference[i] = new BufferedImage[16];
+					for(int j = 0; j < 8; j++) {
+						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+						xStart += bulletSize;
+					}
+					xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
+					yStart += bulletSize;
+					for(int j = 8; j < 16; j++) {
+						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+						xStart += bulletSize;
+					}
+					break;
+				case 16:
+					bulletSpriteReference[i] = new BufferedImage[16];
+					for(int j = 0; j < 16; j++) {
+						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+						xStart += bulletSize;
+					}
+					break;
+				case 32:
+					bulletSpriteReference[i] = new BufferedImage[8];
+					for(int j = 0; j < 8; j++) {
+						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+						xStart += bulletSize;
+					}
+					break;
+				case 64:
+					bulletSpriteReference[i] = new BufferedImage[4];
+					for(int j = 0; j < 4; j++) {
+						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+						xStart += bulletSize;
+					}
+					break;
+				default:
+					throw new Exception("Invalid bullet size in BulletDefs.java");
+				}
 			}
+		} catch (RasterFormatException e) {
+			// TODO Auto-generated catch block
+			throw e;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw e;
 		}
 	}
 	/**
