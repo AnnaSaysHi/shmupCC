@@ -121,7 +121,7 @@ public class BulletManager {
 	public void drawBullets(Graphics2D g) {
 		for(int i = bullets.length - 1; i >= 0; i--) {
 			if (bullets[i].isDisabled() == false) {
-				bullets[i].draw(g, bulletSpriteReference[bullets[i].getColor()] [BulletDefs.BULLET_SPRITESHEET_INDEX[bullets[i].getType()]], game);
+				bullets[i].draw(g, bulletSpriteReference[BulletDefs.BULLET_SPRITESHEET_INDEX[bullets[i].getType()]][bullets[i].getColor()], game);
 			}
 		}
 		
