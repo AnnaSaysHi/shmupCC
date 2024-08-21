@@ -9,6 +9,7 @@ import game.audio.SoundManager;
 import game.bullet.BulletManager;
 import game.player.Player;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class EnemyManager {
 
@@ -20,10 +21,14 @@ public class EnemyManager {
 	BulletManager bmgr;
 	SoundManager smgr;
 	ArrayList<Enemy> enemies;
+	int[] intVars;
+	double[] floatVars;
 
 	public EnemyManager(int size, Spritesheet ss, BulletManager mgr, Player p, Game g, SoundManager smgr) {
 		maxSize = size;
 		enemySprites = ss;
+		intVars = new int[16];
+		floatVars = new double[16];
 		enemySpriteReference = new BufferedImage[3][1];
 		for(int i = 0; i < 3; i++) {
 			enemySpriteReference[i][0] = ss.getSprite(i, 0, 48, 48);
@@ -91,8 +96,21 @@ public class EnemyManager {
 		e.initEnemyWithSubtype(xpos, ypos, HP, mirrored, subtype, bmgr, relevantPlayer, game, this, smgr);
 		if(enemies.size() < maxSize) enemies.add(e);
 	}
-	
+	public int getIntVar(int index) {
+		return intVars[index];
+	}
+	public void setIntVar(int index, int value) {
+		intVars[index] = value;
+	}
+	public double getFloatVar(int index) {
+		return floatVars[index];
+	}
+	public void setFloatVar(int index, double value) {
+		floatVars[index] = value;
+	}
 	public void reset() {
 		enemies.clear();
+		Arrays.fill(intVars, 0);
+		Arrays.fill(floatVars, 0);
 	}
 }
