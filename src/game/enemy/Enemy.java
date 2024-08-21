@@ -18,8 +18,8 @@ public class Enemy {
 	protected BulletManager bulletMGR;
 	Player targetPlayer;
 	protected Game game;
-	SoundManager SoundMGR;
-	EnemyManager parentMGR;
+	protected SoundManager SoundMGR;
+	protected EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
 	
 	final int numSpawners = 16; 
