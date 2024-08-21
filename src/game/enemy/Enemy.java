@@ -45,6 +45,11 @@ public class Enemy {
 	int movementTimer1 = -1;
 	int movementTimer2 = -1;
 	
+	protected double leftMovementBound;
+	protected double rightMovementBound;
+	protected double topMovementBound;
+	protected double bottomMovementBound;
+	
 	protected int subtype;
 	
 	int flags;
@@ -142,6 +147,10 @@ public class Enemy {
 		yvel = 0;
 		xaccel = 0;
 		yaccel = 0;
+		this.leftMovementBound = -1;
+		this.rightMovementBound = -1;
+		this.topMovementBound = -1;
+		this.bottomMovementBound = -1;
 		
 		movementType = 1;
 		this.subtype = -1;
@@ -286,5 +295,16 @@ public class Enemy {
 	}
 	public void setPosRelTime(int t, int mode, double x, double y) {
 		interpolator.moveOverTime(x + xpos, y + ypos, t, mode);
+	}
+	public void setMovementBounds(double leftBound, double rightBound, double topBound, double bottomBound) {
+		this.leftMovementBound = leftBound;
+		this.rightMovementBound = rightBound;
+		this.topMovementBound = topBound;
+		this.bottomMovementBound = bottomBound;
+	}
+	public void moveRandomWithinBounds(int t, int mode) {
+		double targetX = ((game.FetchRNG().nextDouble()) * (this.rightMovementBound - this.leftMovementBound)) + this.leftMovementBound;
+		double targetY = ((game.FetchRNG().nextDouble()) * (this.bottomMovementBound - this.topMovementBound)) + this.topMovementBound;
+		interpolator.moveOverTime(targetX, targetY, t, mode);
 	}
 }
