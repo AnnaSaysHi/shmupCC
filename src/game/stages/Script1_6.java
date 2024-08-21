@@ -21,8 +21,7 @@ public class Script1_6 extends StageScript {
 	@Override
 	public void initActions() {
 		stageTimer = 0;
-		chapter = 1;
-		
+		chapter = 0;
 	}
 
 	@Override
@@ -30,18 +29,12 @@ public class Script1_6 extends StageScript {
 		stageTimer++;
 		switch(chapter) {
 		case 0:
-			if(stageTimer % 60 == 0) {
-				boolean toMirror = (stageTimer % 120 == 0);
-				double xSpawn = (parentGame.FetchRNG()).nextDouble();
-				xSpawn = xSpawn * 120;
-				enmMgr.addEnemy(new Enm1(), xSpawn - 60, -32, 300, toMirror);
-			}
-			if(stageTimer == 60 * 12) {
-				stageTimer = 0;
-				chapter++;
-			}
+			chapter1actions();
 			break;
 		case 1:
+			chapter2actions();
+			break;
+		case 2:
 			if(stageTimer == 60 * 1) {
 				enmMgr.addEnemy(new EnmBoss(), 0, -50, 7500, false);
 			}
@@ -52,8 +45,124 @@ public class Script1_6 extends StageScript {
 
 		
 	}
+	void chapter1actions() {
+		if(stageTimer % 10 == 0) {
+			boolean toMirror = (stageTimer % 20 == 0);
+			double xSpawn = (parentGame.FetchRNG()).nextDouble();
+			xSpawn = xSpawn * 240;
+			enmMgr.addEnemy(new Enm2(), xSpawn - 120, -32, 100, toMirror);
+		}
+		if(stageTimer == 60 * 12) {
+			stageTimer = 0;
+			chapter++;
+			chapter2init();
+		}
+	}
+	void chapter2actions() {
+		if(stageTimer < 300) {
+			if(stageTimer > 119 && stageTimer % 60 < 2) {
+				boolean toMirror = stageTimer % 2 == 0;
+				double xSpawn = (parentGame.FetchRNG()).nextDouble();
+				xSpawn = xSpawn * 90 + 15;
+				enmMgr.addEnemy(new Enm3(), xSpawn, -32, 400, toMirror);
+			}
+		}else if (stageTimer <= 900){
+			if(stageTimer % 15 == 0) {
+				boolean toMirror = (stageTimer % 30 == 0);
+				double xSpawn = (parentGame.FetchRNG()).nextDouble();
+				xSpawn = xSpawn * 240;
+				enmMgr.addEnemy(new Enm2(), xSpawn - 120, -32, 100, toMirror);
+			}
+			if(stageTimer % 40 == 39) {
+				double xSpawn = (parentGame.FetchRNG()).nextDouble();
+				xSpawn = xSpawn * 240;
+				enmMgr.addEnemy(new Enm3(), xSpawn - 120, -32, 400, false);
+			}
+		}
+		if (stageTimer == 1020) {
+			stageTimer = 0;
+			chapter++;
+		}
+	}
+	void chapter2init() {
+		this.stageTimer = 0;
+	}
 	
 
+}
+class Enm3 extends game.enemy.Enemy{
+	BulletTransformation explodeTransform;
+	public Enm3() {
+		super();
+	}
+	
+	@Override
+	protected void initActions() {
+		this.setEnemySprite(0);
+		this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 100);
+		this.setFlag(FLAG_PERSISTENT);
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
+		this.spawners[0].setSound(SoundManager.Sparkle);
+		this.spawners[0].setAngles(Math.PI / 2, 0);
+		this.spawners[0].setTypeAndColor(Bullet.STAR_BIG_CW, Bullet.COLOR8_LIGHT_BLUE);
+		this.spawners[0].setSpeeds(1.5, 1);
+		explodeTransform = new BulletTransformation();
+		explodeTransform.queueWaitTransform(40);
+		explodeTransform.queueSoundTransform(SoundManager.EnemyShootLoud);
+		explodeTransform.queueShootPrepareTransform(4, BulletSpawner.Mode_Ring_Nonaimed, 5, 2, BulletTransformation.RAND_ANGLE, (Math.PI / 5.0), 1.5, 0.75);
+		explodeTransform.queueShootActivateTransform(Bullet.STAR_CW, Bullet.COLOR16_CYAN, 1);
+		this.spawners[0].setTransformList(explodeTransform);
+	}
+	@Override
+	protected void doEnemyActions() {
+		if(this.enemyTimer == 60) {
+			this.clearFlag(FLAG_PERSISTENT);
+		}
+		if(this.enemyTimer == 75) this.spawners[0].activate();
+		if(this.enemyTimer == 90) this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 0, -100);
+	}
+}
+
+
+class Enm2 extends game.enemy.Enemy{
+	int fireStart;
+	BulletTransformation AccelTransform;
+	public Enm2() {
+		super();
+	}
+	@Override
+	protected void initActions() {
+		this.setEnemySprite(1);
+		this.setPosAbsTime(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 350, 500);
+		this.setFlag(FLAG_PERSISTENT);
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
+		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
+		this.spawners[0].setSpeeds(0, 0);
+		this.spawners[0].setTypeAndColor(Bullet.BALL, Bullet.COLOR16_ORANGE);
+		this.fireStart = game.FetchRNG().nextInt(20) + 25;
+		AccelTransform = new BulletTransformation();
+		AccelTransform.queueWaitTransform(24);
+		AccelTransform.queueAccelAngleVelTransform(100, 0.07, 0);
+		this.spawners[0].setTransformList(AccelTransform);
+	}
+	@Override
+	protected void doEnemyActions() {
+		if(this.enemyTimer == 30) {
+			this.clearFlag(FLAG_PERSISTENT);
+		}
+		if(this.enemyTimer > this.fireStart) {
+			if((this.enemyTimer - this.fireStart) % 20 == 0) Enm2attack();
+			if((this.enemyTimer - this.fireStart) % 20 == 4) this.spawners[0].setActivationFrequency(-1);
+		}
+	}
+	protected void Enm2attack() {
+		double angAim = game.getAngleToPlayer(this.getXpos(), this.getYpos());
+		if(this.testFlag(FLAG_MIRROR)) angAim = Math.PI - angAim;
+		this.spawners[0].setAngles(angAim, 0);
+		this.spawners[0].setActivationFrequency(1);
+	}
 }
 class Enm1 extends game.enemy.Enemy{
 
@@ -114,6 +223,7 @@ class EnmBoss extends game.enemy.Enemy{
 	}
 	@Override
 	protected void initActions() {
+		bulletMGR.deactivateAll();
 		moveBoundsX = 120.0;
 		moveUpperY = 50;
 		moveLowerY = 120;
