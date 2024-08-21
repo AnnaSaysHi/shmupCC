@@ -88,13 +88,19 @@ public class EnemyManager {
 	}
 
 	public void addEnemy(Enemy e, double xpos, double ypos, int HP, boolean mirrored) {
-		e.initEnemy(xpos, ypos, HP, mirrored, bmgr, relevantPlayer, game, this, smgr);
-		if(enemies.size() < maxSize) enemies.add(e);
+		if(enemies.size() < maxSize) {
+			enemies.add(e);
+			e.initEnemy(xpos, ypos, HP, mirrored, bmgr, relevantPlayer, game, this, smgr);
+			e.initActions();
+		}
 		
 	}
 	public void addEnemy(Enemy e, double xpos, double ypos, int HP, boolean mirrored, int subtype) {
-		e.initEnemyWithSubtype(xpos, ypos, HP, mirrored, subtype, bmgr, relevantPlayer, game, this, smgr);
-		if(enemies.size() < maxSize) enemies.add(e);
+		if(enemies.size() < maxSize) {
+			enemies.add(e);
+			e.initEnemyWithSubtype(xpos, ypos, HP, mirrored, subtype, bmgr, relevantPlayer, game, this, smgr);
+			e.initActions();
+		}
 	}
 	public int getIntVar(int index) {
 		return intVars[index];

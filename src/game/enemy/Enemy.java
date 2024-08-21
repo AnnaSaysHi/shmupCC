@@ -144,7 +144,7 @@ public class Enemy {
 		yaccel = 0;
 		
 		movementType = 1;
-		this.initActions();
+		this.subtype = -1;
 		
 	}
 	public void initEnemyWithSubtype(double x, double y, int health, boolean mirrored, int subtype, BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
