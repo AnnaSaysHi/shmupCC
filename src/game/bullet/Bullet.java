@@ -381,7 +381,9 @@ public class Bullet {
 			transformSpawner.setTransformStartingIndex(transformQueue.getIntArg1AtIndex(transformIndex));
 			transformSpawner.setMode(transformQueue.getIntArg2AtIndex(transformIndex));
 			transformSpawner.setBulletCounts(transformQueue.getIntArg3AtIndex(transformIndex), transformQueue.getIntArg4AtIndex(transformIndex));
-			transformSpawner.setAngles(transformQueue.getFloatArg1AtIndex(transformIndex),transformQueue.getFloatArg2AtIndex(transformIndex));
+			double ang1 = getRealSpawnerAngle(transformQueue.getFloatArg1AtIndex(transformIndex));
+			double ang2 = getRealSpawnerAngle(transformQueue.getFloatArg2AtIndex(transformIndex));
+			transformSpawner.setAngles(ang1, ang2);
 			transformSpawner.setSpeeds(transformQueue.getFloatArg3AtIndex(transformIndex), transformQueue.getFloatArg4AtIndex(transformIndex));
 			transformSpawner.setTransformList(transformQueue);
 			nextTransform();
@@ -399,6 +401,12 @@ public class Bullet {
 				break;
 			}
 		}
+	}
+	
+	private double getRealSpawnerAngle(double rawAngle) {
+		if(rawAngle == BulletTransformation.RAND_ANGLE) return parentMGR.game.randRad();
+		else if(rawAngle == BulletTransformation.ANGLE_SELF) return (velMode == 0 ? this.angle : this.getAngleFromVelocity());
+		else return rawAngle;
 	}
 	
 	/**
