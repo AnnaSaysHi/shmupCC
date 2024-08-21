@@ -9,6 +9,7 @@ import game.bullet.BulletSpawner;
 import game.bullet.BulletTransformation;
 import game.enemy.EnemyManager;
 import game.enemy.EnemyMovementInterpolator;
+import game.menu.MenuEntry;
 import game.player.Player;
 
 public class Script1_6 extends StageScript {
@@ -35,6 +36,17 @@ public class Script1_6 extends StageScript {
 			chapter2actions();
 			break;
 		case 2:
+			if(stageTimer == 60 * 1) {
+				enmMgr.addEnemy(new EnmMboss(), -100, -50, 4500, false, 0);
+				enmMgr.addEnemy(new EnmMboss(), 100, -50, 4500, false, 1);
+			}
+			if(enmMgr.getIntVar(0) == 2) {
+				chapter++;
+				stageTimer = 0;
+				mgr.deactivateAll();
+			}
+			break;
+		case 3:
 			if(stageTimer == 60 * 1) {
 				enmMgr.addEnemy(new EnmBoss(), 0, -50, 7500, false);
 			}
@@ -81,6 +93,7 @@ public class Script1_6 extends StageScript {
 		}
 		if (stageTimer == 1020) {
 			stageTimer = 0;
+			mgr.deactivateAll();
 			chapter++;
 		}
 	}
@@ -90,6 +103,205 @@ public class Script1_6 extends StageScript {
 	
 
 }
+class EnmMboss extends game.enemy.Enemy{
+	int pattern;
+	double angleRain;
+	BulletTransformation boomTransform;
+	BulletTransformation AccelTransform;
+	BulletTransformation chaseTransform;
+	public EnmMboss() {
+		super();
+	}
+	@Override
+	protected void initActions() {
+		this.pattern = 0;
+		this.setFlag(FLAG_DAMAGE_IMMUNE);
+		this.setFlag(FLAG_PERSISTENT);
+		this.setEnemySprite(2);
+		switch(this.subtype) {
+		case 0:
+			this.setMovementBounds(-150, -75, 60, 180);
+			this.setPosAbsTime(90, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, -150, 120);
+			break;
+		case 1:
+			this.setMovementBounds(75, 150, 60, 180);
+			this.setPosAbsTime(90, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 150, 120);
+			break;
+		default:
+			break;
+		}
+	}
+	@Override
+	protected void doEnemyActions() {
+		switch(this.pattern) {
+		case 0:
+			if(this.enemyTimer == 75) {
+				this.clearFlag(FLAG_PERSISTENT);
+				this.setFlag(FLAG_BOSS);
+				pattern++;
+				attackBoomSetup();
+			}
+			break;
+		case 1:
+			if(parentMGR.getIntVar(0) == 1) {
+				attackChaseSetup();
+			}else attackBoomTick();
+			break;
+		case 2:
+			attackChaseTick();
+			break;
+		}
+	}
+	@Override
+	protected void doHPCallback() {
+		switch(this.pattern) {
+		case 1:
+			if(parentMGR.getIntVar(0) == 1) {
+				attackChaseSetup();
+			}else {
+				parentMGR.setIntVar(0, 1);
+				this.disable();
+			}
+			break;
+		case 2:
+			bulletMGR.deactivateAll();
+			SoundMGR.playFromArray(SoundManager.Explosion);
+			parentMGR.setIntVar(0, 2);
+			this.disable();
+		}
+	}
+	protected void attackChaseSetup() {
+		this.spawners[0].reInit();
+		this.spawners[1].reInit();
+		this.pattern++;
+		bulletMGR.deactivateAll();
+		this.HP = 3500;
+		this.maxHP = 3500;
+		this.hpCallbackThreshold = 0;
+		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 120);
+		this.spawners[0].reInit();
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setMode(BulletSpawner.Mode_Meek);
+		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
+		this.spawners[0].setBulletCounts(5, 1);
+		this.spawners[0].setSpeeds(2.5, 1.0);
+		this.spawners[0].setAngles(Math.PI /4, -Math.PI * 5.0/4.0);
+		this.spawners[0].setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_BLUE);
+		chaseTransform = new BulletTransformation();
+		chaseTransform.queueOffscreenTransform(300);
+		chaseTransform.queueWaitTransform(10);
+		chaseTransform.queueAccelDirTransform(300, 0.05, Math.PI/2);
+		this.spawners[0].setTransformList(chaseTransform);
+		this.setMovementBounds(-120, 120, 50, 120);
+		this.enemyTimer = 0;
+		this.setFlag(FLAG_DAMAGE_IMMUNE);
+	}
+	protected void attackChaseTick() {
+		if(this.enemyTimer == 30) {
+			this.clearFlag(FLAG_DAMAGE_IMMUNE);
+			this.spawners[0].setActivationFrequency(4);
+		}
+		this.angleRain = (Math.sin(this.enemyTimer / 90) + (Math.PI/2));
+		chaseTransform.removeTransformationAtIndex(2);
+		chaseTransform.insertAccelDirTransform(2, 300, 0.05, this.angleRain);
+		if(this.enemyTimer % 120 == 119) {
+			this.moveRandomWithinBounds(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT_IN_2);
+		}
+	}
+	void attackBoomTick() {
+		if(this.enemyTimer % 120 == 1) {
+			this.moveRandomWithinBounds(60, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2);
+		}
+		if(this.enemyTimer % 120 == 61 || this.enemyTimer % 120 == 62) {
+			this.setupShot();
+		}
+		if(this.enemyTimer % 120 == 63) {
+			this.moveRandomWithinBounds(55, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2);
+		}
+		if(this.enemyTimer % 120 < 63 && this.enemyTimer % 20 == 4) {
+			streamingAttack();
+		}
+		if(this.enemyTimer % 120 < 63 && this.enemyTimer % 20 == 8) this.spawners[1].setActivationFrequency(-1);
+	}
+	void streamingAttack() {
+		this.spawners[1].setAngles(game.getAngleToPlayer(this.getXpos(), this.getYpos()), Math.PI / 60);
+		this.spawners[1].setActivationFrequency(1);
+		SoundMGR.playFromArray(SoundManager.EnemyShootMed);
+	}
+	void setupShot() {
+		if (this.enemyTimer % 120 == 61) {
+			if (this.subtype == 0) {
+				parentMGR.setFloatVar(0, this.xpos);
+				parentMGR.setFloatVar(1, this.ypos);
+			}
+			if (this.subtype == 1) {
+				double partnerX = parentMGR.getFloatVar(0);
+				double partnerY = parentMGR.getFloatVar(1);
+				parentMGR.setFloatVar(0, (this.xpos + partnerX) / 2);
+				parentMGR.setFloatVar(1, (this.ypos + partnerY) / 2);
+			} 
+		}else {
+			double targetX = parentMGR.getFloatVar(0);
+			double targetY = parentMGR.getFloatVar(1);
+			double angleTarget = Math.atan2(targetY - this.ypos, targetX - this.xpos);
+			double distTarget = Math.pow(Math.pow((targetY - this.ypos), 2) + Math.pow((targetX - this.xpos), 2), 0.5);
+
+			int boomBulletCount = 11;
+			this.spawners[0].setAngles(angleTarget, 0);
+			this.spawners[0].setSpeeds(distTarget / 75, distTarget / 75);
+			this.boomTransform.removeTransformationAtIndex(2);
+			this.boomTransform.insertShootPrepareTransform(2, 5, BulletSpawner.Mode_Fan, boomBulletCount, 4, Math.PI + angleTarget, Math.PI / boomBulletCount, 1, 3);
+			this.spawners[0].activate();
+		}
+	}
+	void attackBoomSetup() {
+		this.clearFlag(FLAG_DAMAGE_IMMUNE);
+		parentMGR.setIntVar(0, 0);
+		int boomhealth = 3000;
+		this.maxHP = boomhealth;
+		this.HP = boomhealth;
+		this.enemyTimer = 0;
+		this.hpCallbackThreshold = 0;
+		this.spawners[0].reInit();
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
+		this.spawners[0].setBulletCounts(1, 1);
+		this.spawners[0].setAngles(Math.PI/2, 0);
+		this.spawners[0].setSpeeds(2, 2);
+		this.spawners[1].reInit();
+		this.spawners[1].setRelativePos(0, 0);
+		this.spawners[1].setMode(BulletSpawner.Mode_Fan);
+		this.spawners[1].setBulletCounts((game.getGvar(MenuEntry.GVAR_DIFFICULTY) == 0 ? 1 : 4), 1);
+		this.spawners[1].setAngles(0, 0);
+		this.spawners[1].setSpeeds(0.5, 0.5);
+		this.spawners[1].setTypeAndColor(Bullet.BALL, Bullet.COLOR16_LIGHT_GREY);
+		this.boomTransform = new BulletTransformation();
+		this.boomTransform.queueWaitTransform(75);
+		this.boomTransform.queueSoundTransform(SoundManager.Explosion);
+		int boomBulletCount = 11;
+		switch(this.subtype) {
+		case 0:
+			this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_YELLOW);
+			this.spawners[0].setAngles(0, 0);
+			this.boomTransform.queueShootPrepareTransform(5, BulletSpawner.Mode_Fan, boomBulletCount, 4, Math.PI, Math.PI / boomBulletCount, 1, 3);
+			this.boomTransform.queueShootActivateTransform(Bullet.STAR_CCW, Bullet.COLOR16_PINK, 1);
+			break;
+		case 1:
+			this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_PINK);
+			this.spawners[0].setAngles(Math.PI, 0);
+			this.boomTransform.queueShootPrepareTransform(5, BulletSpawner.Mode_Fan, boomBulletCount, 4, 0, Math.PI / boomBulletCount, 1, 3);
+			this.boomTransform.queueShootActivateTransform(Bullet.STAR_CCW, Bullet.COLOR16_YELLOW, 1);
+			break;
+		}
+		this.spawners[0].setTransformList(this.boomTransform);
+		this.AccelTransform = new BulletTransformation();
+		this.AccelTransform.queueWaitTransform(24);
+		this.AccelTransform.queueAccelAngleVelTransform(35, 0.2, 0);
+		this.spawners[1].setTransformList(AccelTransform);
+	}
+}
+
+
 class Enm3 extends game.enemy.Enemy{
 	BulletTransformation explodeTransform;
 	public Enm3() {
@@ -138,7 +350,6 @@ class Enm2 extends game.enemy.Enemy{
 		this.setFlag(FLAG_PERSISTENT);
 		this.spawners[0].setRelativePos(0, 0);
 		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
 		this.spawners[0].setSpeeds(0, 0);
 		this.spawners[0].setTypeAndColor(Bullet.BALL, Bullet.COLOR16_ORANGE);
 		this.fireStart = game.FetchRNG().nextInt(20) + 25;
@@ -162,6 +373,7 @@ class Enm2 extends game.enemy.Enemy{
 		if(this.testFlag(FLAG_MIRROR)) angAim = Math.PI - angAim;
 		this.spawners[0].setAngles(angAim, 0);
 		this.spawners[0].setActivationFrequency(1);
+		SoundMGR.playFromArray(SoundManager.EnemyShootMuted);
 	}
 }
 class Enm1 extends game.enemy.Enemy{
@@ -263,7 +475,6 @@ class EnmBoss extends game.enemy.Enemy{
 			attackStarTick();
 			break;
 		case 3:
-			attackChaseTick();
 			break;
 		default:
 			break;
@@ -385,34 +596,7 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[1].setTransformList(starExplodeTransformCCW);
 	}
 	
-	protected void attackChaseTick() {
-		if(this.enemyTimer == 30) {
-			this.clearFlag(FLAG_DAMAGE_IMMUNE);
-			this.spawners[0].setActivationFrequency(4);
-		}
-		this.angleRain = (Math.sin(this.enemyTimer / 90) + (Math.PI/2));
-		accelTransform.removeTransformationAtIndex(2);
-		accelTransform.insertAccelDirTransform(2, 300, 0.05, this.angleRain);
-		if(this.enemyTimer % 120 == 119) {
-			double newX = (game.FetchRNG().nextDouble() * 2 * this.moveBoundsX) - this.moveBoundsX;
-			double newY = (game.FetchRNG().nextDouble() * (this.moveLowerY - this.moveUpperY)) + this.moveUpperY;
-			this.setPosAbsTime(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT_IN_2, newX, newY);
-		}
-	}
-	protected void attackChaseSetup() {
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Meek);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(5, 1);
-		this.spawners[0].setSpeeds(2.5, 1.0);
-		this.spawners[0].setAngles(Math.PI /4, -Math.PI * 5.0/4.0);
-		this.spawners[0].setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_BLUE);
-		this.spawners[0].setTransformList(accelTransform);
-		this.setPosRelTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, -50);
-		this.enemyTimer = 0;
-		this.setFlag(FLAG_DAMAGE_IMMUNE);
-	}
+
 	@Override
 	protected void doHPCallback() {
 		switch(patternNum) {
@@ -428,7 +612,6 @@ class EnmBoss extends game.enemy.Enemy{
 			patternNum++;
 			this.maxHP = 6000;
 			this.HP = 6000;
-			attackChaseSetup();
 			this.hpCallbackThreshold = -1;
 			this.numHealthbars = 0;
 			bulletMGR.deactivateAll();
