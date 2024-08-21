@@ -93,7 +93,6 @@ public class Script1_6 extends StageScript {
 		}
 		if (stageTimer == 1020) {
 			stageTimer = 0;
-			mgr.deactivateAll();
 			chapter++;
 		}
 	}
@@ -281,6 +280,7 @@ class EnmMboss extends game.enemy.Enemy{
 		int boomBulletCount = 11;
 		switch(this.subtype) {
 		case 0:
+			bulletMGR.deactivateAll();
 			this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_YELLOW);
 			this.spawners[0].setAngles(0, 0);
 			this.boomTransform.queueShootPrepareTransform(5, BulletSpawner.Mode_Fan, boomBulletCount, 4, Math.PI, Math.PI / boomBulletCount, 1, 3);
