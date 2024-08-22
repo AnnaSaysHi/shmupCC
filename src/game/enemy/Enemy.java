@@ -133,7 +133,8 @@ public class Enemy {
 		}
 		
 		flags = 0x00000000;
-		if(mirrored) this.setFlag(6);
+		if(mirrored) this.setFlag(FLAG_MIRROR);
+		else this.clearFlag(FLAG_MIRROR);
 		
 		enemyTimer = 0;
 		movementTimer1 = -1;
