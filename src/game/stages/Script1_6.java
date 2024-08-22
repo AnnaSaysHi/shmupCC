@@ -91,7 +91,7 @@ public class Script1_6 extends StageScript {
 				enmMgr.addEnemy(new Enm3(), xSpawn - 120, -32, 400, false);
 			}
 		}
-		if (stageTimer == 1020) {
+		if (stageTimer == 17 * 60) {
 			stageTimer = 0;
 			chapter++;
 		}
@@ -549,13 +549,13 @@ class EnmBoss extends game.enemy.Enemy{
 			//randang2 = game.randRad();
 			double randang3 = game.randRad();
 			if(this.enemyTimer % 240 == 40) {
-				starExplodeTransformCW.removeTransformationAtIndex(2);
-				starExplodeTransformCW.insertShootPrepareTransform(2, 4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, -randang2, s1, -s1 * (c1 - 1));
+				starExplodeTransformCW.removeTransformationAtIndex(3);
+				starExplodeTransformCW.insertShootPrepareTransform(3, 5, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, -randang2, s1, -s1 * (c1 - 1));
 				this.spawners[0].setAngles(randang3, starAngle);
 				this.spawners[0].activate();
 			}else {
-				starExplodeTransformCCW.removeTransformationAtIndex(2);
-				starExplodeTransformCCW.insertShootPrepareTransform(2, 4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, randang2, s1, -s1 * (c1 - 1));
+				starExplodeTransformCCW.removeTransformationAtIndex(3);
+				starExplodeTransformCCW.insertShootPrepareTransform(3, 5, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, randang2, s1, -s1 * (c1 - 1));
 				this.spawners[1].setAngles(randang3, starAngle);
 				this.spawners[1].activate();
 			}
@@ -574,23 +574,26 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[0].setBulletCounts(5, 2);
 		this.spawners[0].setAngles(Math.PI/2, 0);
 		this.spawners[0].setSpeeds(2, 1);
+		this.spawners[0].setSound(SoundManager.Sparkle);
 		this.spawners[1].reInit();
 		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setTypeAndColor(Bullet.STAR_BIG_CCW, Bullet.COLOR8_RED);
+		this.spawners[1].setTypeAndColor(Bullet.STAR_BIG_CCW, Bullet.COLOR8_YELLOW);
 		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[1].setBulletCounts(5, 2);
 		this.spawners[1].setAngles(Math.PI/2, 0);
 		this.spawners[1].setSpeeds(2, 1);
+		this.spawners[1].setSound(SoundManager.Sparkle);
 		starExplodeTransformCW = new BulletTransformation();
 		starExplodeTransformCW.queueOffscreenTransform(35);
 		starExplodeTransformCW.queueWaitTransform(35);
-		starExplodeTransformCW.queueShootPrepareTransform(4, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, 0, 0, s1, -s1 * (1.0/c1));
+		starExplodeTransformCW.queueSoundTransform(SoundManager.EnemyShootLoud);
+		starExplodeTransformCW.queueShootPrepareTransform(5, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, 0, 0, s1, -s1 * (1.0/c1));
 		starExplodeTransformCW.queueShootActivateTransform(Bullet.STAR_CW, Bullet.COLOR16_BRIGHT_RED, 1);
 		starExplodeTransformCW.queueOffscreenTransform(230);
 		starExplodeTransformCW.queueWaitTransform(10);
 		starExplodeTransformCCW = starExplodeTransformCW.clone();
-		starExplodeTransformCCW.removeTransformationAtIndex(3);
-		starExplodeTransformCCW.insertShootActivateTransform(3, Bullet.STAR_CCW, Bullet.COLOR16_YELLOW, 1);
+		starExplodeTransformCCW.removeTransformationAtIndex(4);
+		starExplodeTransformCCW.insertShootActivateTransform(4, Bullet.STAR_CCW, Bullet.COLOR16_YELLOW, 1);
 		starExplodeTransformCW.queueAccelAngleVelTransform(180, 0.02, 0.05);
 		starExplodeTransformCCW.queueAccelAngleVelTransform(180, 0.02, -0.05);
 		this.spawners[0].setTransformList(starExplodeTransformCW);
