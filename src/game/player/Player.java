@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import game.Game;
 import game.KBinputHandler;
 import game.Spritesheet;
-import game.Game.STATE;
 import game.audio.SoundManager;
 
 public class Player {
