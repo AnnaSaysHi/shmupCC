@@ -22,7 +22,7 @@ public class Script1_6 extends StageScript {
 	@Override
 	public void initActions() {
 		stageTimer = 0;
-		chapter = 0;
+		chapter = 3;
 	}
 
 	@Override
@@ -416,9 +416,13 @@ class Enm1 extends game.enemy.Enemy{
 
 class EnmBoss extends game.enemy.Enemy{
 
-	double anglenum;
-	double angleIncrement;
+	double anglenum1;
+	double anglenum2;
+	double angleIncrement1;
+	double angleIncrement2;
 	double angleRain;
+	double shotSpeed;
+	int attackTimer;
 	int patternNum;
 	static final int c1 = 5;
 	static final double s1 = 0.5;
@@ -432,6 +436,7 @@ class EnmBoss extends game.enemy.Enemy{
 	BulletTransformation starExplodeTransformCCW;
 	BulletTransformation swirlTransformCW;
 	BulletTransformation swirlTransformCCW;
+	BulletTransformation accelTransform;
 	double moveBoundsX;
 	double moveUpperY;
 	double moveLowerY;
@@ -450,8 +455,8 @@ class EnmBoss extends game.enemy.Enemy{
 		this.setPosRelTime(120, 3, 0, 100);
 		this.setFlag(FLAG_PERSISTENT);
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
-		this.anglenum = 0;
-		this.angleIncrement = 0;
+		this.angleIncrement1 = 0;
+		this.angleIncrement2 = 0;
 		this.patternNum = 0;
 	}
 	@Override
@@ -461,25 +466,81 @@ class EnmBoss extends game.enemy.Enemy{
 			if(this.enemyTimer == 100) {
 				this.clearFlag(FLAG_PERSISTENT);
 				this.setFlag(FLAG_BOSS);
-				this.HP = 5500;
-				this.maxHP = 5500;
-				this.enemyTimer = 0;
-				attackSwirlSetup();
+				attackSpiralSetup();
 				this.patternNum++;
 			}
 			break;
 		case 1:
-			attackSwirlTick();
+			attackSpiralTick();
 			break;
 		case 2:
-			attackStarTick();
+			attackSwirlTick();
 			break;
 		case 3:
+			attackStarTick();
 			break;
 		default:
 			break;
 		}
 	}
+	protected void attackSpiralTick() {
+		if(this.enemyTimer > 30) attackTimer++;
+		if(this.enemyTimer == 180) this.clearFlag(FLAG_DAMAGE_IMMUNE);
+		if(attackTimer > 0 && attackTimer % 4 == 1) {
+			shotSpeed += 0.08;
+			this.spawners[0].setSpeeds(shotSpeed, 0);
+			this.spawners[1].setSpeeds(shotSpeed, 0);
+			anglenum1 += angleIncrement1;
+			anglenum2 += angleIncrement2;
+			this.spawners[0].setAngles(anglenum1, 0);
+			this.spawners[1].setAngles(anglenum2, 0);
+			this.spawners[0].activate();
+			this.spawners[1].activate();
+			if(attackTimer > 360) {
+				attackTimer = -40;
+				this.moveRandomWithinBounds(40, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT_IN_2);
+				shotSpeed = 0.25;
+				anglenum1 = game.randRad();
+				anglenum2 = game.randRad();
+			}
+		}
+	}
+	protected void attackSpiralSetup() {
+		this.setMovementBounds(-60, 60, 40, 80);
+		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 50);
+		this.HP = 7500;
+		this.maxHP = 7500;
+		this.enemyTimer = 0;
+		attackTimer = 0;
+		this.accelTransform = new BulletTransformation();
+		this.accelTransform.queueAccelAngleVelTransform(400, 0.02, 0);
+		anglenum1 = game.randRad();
+		anglenum2 = game.randRad();
+		shotSpeed = 0.25;
+		this.spawners[0].reInit();
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
+		this.spawners[0].setBulletCounts(7, 1);
+		this.spawners[0].setSpeeds(1, 1);
+		this.spawners[0].setAngles(anglenum1, anglenum1);
+		this.spawners[0].setSpawnDistance(20);
+		this.spawners[0].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
+		this.spawners[0].setTransformList(accelTransform);
+		this.angleIncrement1 = (2 * Math.PI / 23);
+		this.spawners[1].setRelativePos(0, 0);
+		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[1].setSound(SoundManager.EnemyShootMuted);
+		this.spawners[1].setBulletCounts(5, 1);
+		this.spawners[1].setSpeeds(1, 1);
+		this.spawners[1].setAngles(anglenum2, anglenum2);
+		this.spawners[1].setSpawnDistance(20);
+		this.spawners[1].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_CYAN);
+		this.spawners[1].setTransformList(accelTransform);
+		this.angleIncrement2 = (2 * Math.PI / (double)(17));
+	}
+	
+	
 	protected void attackSwirlTick() {	
 		if (this.enemyTimer > 30) {
 			if (this.enemyTimer % aimedRingInterval == 0) {
@@ -508,6 +569,9 @@ class EnmBoss extends game.enemy.Enemy{
 	}
 	protected void attackSwirlSetup() {
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 150);
+		this.HP = 5500;
+		this.maxHP = 5500;
+		this.enemyTimer = 0;
 		ang = 0;
 		aimedRingInterval = 27;
 		starSwirlInterval = 15;
@@ -608,7 +672,7 @@ class EnmBoss extends game.enemy.Enemy{
 			patternNum++;
 			this.maxHP = 7500;
 			this.HP = 7500;
-			attackStarSetup();
+			attackSwirlSetup();
 			this.hpCallbackThreshold = 0;
 			bulletMGR.deactivateAll();
 			break;
@@ -616,6 +680,7 @@ class EnmBoss extends game.enemy.Enemy{
 			patternNum++;
 			this.maxHP = 6000;
 			this.HP = 6000;
+			attackStarSetup();
 			this.hpCallbackThreshold = -1;
 			this.numHealthbars = 0;
 			bulletMGR.deactivateAll();
