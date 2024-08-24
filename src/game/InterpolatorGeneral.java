@@ -1,7 +1,7 @@
 package game;
 
 public class InterpolatorGeneral {
-	Object parent;
+	Interpolable parent;
 	double initialF;
 	double goalF;
 	double currentF;
@@ -13,12 +13,10 @@ public class InterpolatorGeneral {
 	int interpMode = -1;
 	public boolean disabled;
 
-	public InterpolatorGeneral(Object p) {
+	public InterpolatorGeneral(Interpolable p) {
 		parent = p;
 		disabled = true;
-		if(parent instanceof Interpolable) {
-			interpolableFloats = ((Interpolable) parent).getInterpolableFloats();
-		}
+		interpolableFloats =  parent.getInterpolableFloats();
 	}
 	
 	public void interpFloatOverTime(int index, double goal, int time, int mode) {
@@ -41,7 +39,7 @@ public class InterpolatorGeneral {
 				timeconst = timeconst / duration;
 				double mult = getValue(timeconst, interpMode);
 				currentF = (mult * diffF) + initialF;
-				((Interpolable) parent).setFloat(index, currentF);
+				parent.setFloat(index, currentF);
 				
 			} else disabled = true;
 		}
