@@ -226,6 +226,7 @@ public class Game extends Canvas implements Runnable{
 				playercoords = playerChar.getPosAndHitbox();
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 				BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
+				EnemyMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 			}
 		}
 		else if (state == STATE.MENU) {

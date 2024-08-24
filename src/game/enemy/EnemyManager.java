@@ -86,6 +86,19 @@ public class EnemyManager {
 		}
 		return false;
 	}
+	public void checkCollision(double x, double y, double rad) {
+		double radSum;
+		for(Enemy e : enemies) {
+			if(!e.isDisabled()) {
+				if(!(e.testFlag(Enemy.FLAG_GROUNDED) || e.testFlag(Enemy.FLAG_CONTROL_ENEMY))){
+					radSum = rad + e.hitboxSize;
+					if(Math.pow(e.getXpos() - x, 2) + Math.pow(e.getYpos() - y, 2) <= Math.pow(radSum, 2)) {
+						relevantPlayer.collideWithBullet();
+					}
+				}
+			}
+		}
+	}
 
 	public void addEnemy(Enemy e, double xpos, double ypos, int HP, boolean mirrored) {
 		if(enemies.size() < maxSize) {
