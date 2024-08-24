@@ -1,9 +1,5 @@
 package game.player;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-
 public class ShotData {
 	final short shot_reader_version = 1; //for comparison
 	
