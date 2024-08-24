@@ -1,5 +1,5 @@
 # ShmupCC
-ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewhat early in development, so currently a lot of mechanics are not implemented yet, like bosses or multiple shot types.
+ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewhat early in development, so currently a lot of mechanics are not implemented yet, like dialogue or multiple shot types.
 
 
 
