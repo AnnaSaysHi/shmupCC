@@ -220,6 +220,7 @@ public class Player {
 			}
 			break;
 		case 3:
+			manageOptions();
 			y -= 2;
 			if(y <= (7 * Game.PLAYFIELDHEIGHT) / 8){
 				playerState = 0;
@@ -294,6 +295,7 @@ public class Player {
 		}
 	}
 	public void drawPlayerOptions(Graphics2D g) {
+		if(playerState == 2) return;
 		double[] optionDrawInfo;
 		for(PlayerOption o : optionArray) {
 			if(!(o.disabled)){
