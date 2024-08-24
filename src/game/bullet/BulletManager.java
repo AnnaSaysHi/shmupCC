@@ -36,7 +36,6 @@ public class BulletManager {
 		try {
 			fillSpriteReference(ss);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(2);
 		}
@@ -92,10 +91,8 @@ public class BulletManager {
 				}
 			}
 		} catch (RasterFormatException e) {
-			// TODO Auto-generated catch block
 			throw e;
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw e;
 		}
 	}
