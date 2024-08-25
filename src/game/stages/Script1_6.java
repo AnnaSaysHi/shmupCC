@@ -22,7 +22,7 @@ public class Script1_6 extends StageScript {
 	@Override
 	public void initActions() {
 		stageTimer = 0;
-		chapter = 3;
+		chapter = 0;
 	}
 
 	@Override
@@ -44,10 +44,15 @@ public class Script1_6 extends StageScript {
 				chapter++;
 				stageTimer = 0;
 				mgr.deactivateAll();
+				chapter3init();
 			}
 			break;
 		case 3:
+			chapter3actions();
+			break;
+		case 4:
 			if(stageTimer == 60 * 1) {
+				enmMgr.clearEnemies();
 				enmMgr.addEnemy(new EnmBoss(), 0, -50, 7500, false);
 			}
 			break;
@@ -55,7 +60,7 @@ public class Script1_6 extends StageScript {
 			break;
 		}
 
-		
+
 	}
 	void chapter1actions() {
 		if(stageTimer % 10 == 0) {
@@ -99,8 +104,39 @@ public class Script1_6 extends StageScript {
 	void chapter2init() {
 		this.stageTimer = 0;
 	}
-	
+	void chapter3init() {
+		this.stageTimer = 0;
+	}
+	void chapter3actions() {
+		if(stageTimer >= 60 * 2) {
+			if(stageTimer % 60 == 0) {
+				boolean toMirror = (stageTimer % 120 == 0);
+				double ySpawn = (parentGame.FetchRNG()).nextDouble();
+				ySpawn = ySpawn * 60;
+				ySpawn += 40;
+				double xvariance = (parentGame.FetchRNG()).nextDouble();
+				xvariance *= 40;
+				xvariance -= 290;
+				enmMgr.addEnemy(new Enm4(), xvariance, ySpawn, 170, toMirror);
+			}
+			if (stageTimer >= 60 * 10) {
+				if (stageTimer % 15 == 7) {
+					boolean toMirror = (stageTimer % 30 == 7);
+					double xSpawn = (parentGame.FetchRNG()).nextDouble();
+					xSpawn = xSpawn * 240;
+					double yvariance = (parentGame.FetchRNG()).nextDouble();
+					yvariance *= 20;
+					yvariance += 40;
+					enmMgr.addEnemy(new Enm2(), -250, yvariance, 100, toMirror, 1);
 
+				} 
+			}
+			if(stageTimer == 60 * 20) {
+				stageTimer = 0;
+				chapter++;
+			}
+		}
+	}
 }
 class EnmMboss extends game.enemy.Enemy{
 	int pattern;
@@ -306,6 +342,45 @@ class EnmMboss extends game.enemy.Enemy{
 		this.spawners[1].setTransformList(AccelTransform);
 	}
 }
+class Enm4 extends game.enemy.Enemy{
+	BulletTransformation pauseAccel;
+	double ang1;
+	public Enm4() {
+		super();
+	}
+	@Override
+	protected void initActions() {
+		pauseAccel = new BulletTransformation();
+		this.setEnemySprite(0);
+		this.setPosRelTime(150, EnemyMovementInterpolator.INTERPOLATION_LINEAR, 600, 0);
+		this.setFlag(FLAG_PERSISTENT);
+		//this.setFlag(FLAG_DAMAGE_IMMUNE);
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
+		this.spawners[0].setBulletCounts(3, 1);
+		this.spawners[0].setSpeeds(10, 1);
+		ang1 = game.randRad();
+		this.spawners[0].setAngles(ang1, 0);
+		int bullType = (this.testFlag(FLAG_MIRROR) ? Bullet.STAR_CCW : Bullet.STAR_CW);
+		int bullColor = (this.testFlag(FLAG_MIRROR) ? Bullet.COLOR16_CYAN : Bullet.COLOR16_LIGHT_GREEN);
+		this.spawners[0].setTypeAndColor(bullType, bullColor);
+		pauseAccel.queueAccelAngleVelTransform(5, -2, 0);
+		pauseAccel.queueWaitTransform(30);
+		pauseAccel.queueAccelAngleVelTransform(100, 0.025, 0);
+		this.spawners[0].setTransformList(pauseAccel);
+		this.spawners[0].setSpawnDistance(20);
+		this.spawners[0].setActivationFrequency(4);
+	}
+	@Override
+	protected void doEnemyActions() {
+		this.ang1 += (Math.PI / 25);
+		this.spawners[0].setAngles(ang1, 0);
+		if(this.enemyTimer == 160) {
+			this.clearFlag(FLAG_PERSISTENT);
+		}
+	}
+}
 
 
 class Enm3 extends game.enemy.Enemy{
@@ -313,7 +388,7 @@ class Enm3 extends game.enemy.Enemy{
 	public Enm3() {
 		super();
 	}
-	
+
 	@Override
 	protected void initActions() {
 		this.setEnemySprite(0);
@@ -352,7 +427,16 @@ class Enm2 extends game.enemy.Enemy{
 	@Override
 	protected void initActions() {
 		this.setEnemySprite(1);
-		this.setPosAbsTime(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 350, 500);
+		switch(this.subtype) {
+		case 1:
+			double heightVar = game.FetchRNG().nextDouble();
+			heightVar *= 40;
+			heightVar -= 20;
+			this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_LINEAR, 500, heightVar);
+			break;
+		default:
+			this.setPosAbsTime(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 350, 500);
+		}
 		this.setFlag(FLAG_PERSISTENT);
 		this.spawners[0].setRelativePos(0, 0);
 		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
@@ -539,8 +623,8 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[1].setTransformList(accelTransform);
 		this.angleIncrement2 = (2 * Math.PI / (double)(17));
 	}
-	
-	
+
+
 	protected void attackSwirlTick() {	
 		if (this.enemyTimer > 30) {
 			if (this.enemyTimer % aimedRingInterval == 0) {
@@ -663,7 +747,7 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[0].setTransformList(starExplodeTransformCW);
 		this.spawners[1].setTransformList(starExplodeTransformCCW);
 	}
-	
+
 
 	@Override
 	protected void doHPCallback() {
@@ -688,10 +772,7 @@ class EnmBoss extends game.enemy.Enemy{
 		default:
 			this.numHealthbars = 0;
 			break;
-		
+
 		}
 	}
-	
-	
-	
 }
