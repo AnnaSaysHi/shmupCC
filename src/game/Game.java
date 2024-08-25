@@ -296,6 +296,12 @@ public class Game extends Canvas implements Runnable{
 		angle = angle * Math.PI * 2;
 		return angle;		
 	}
+	public int intDiff(int a, int b) {
+		return (gvars[1] == 0 ? a : b);
+	}
+	public double floatDiff(double a, double b) {
+		return (gvars[1] == 0 ? a : b);
+	}
 	public int getGvar(int index) {
 		return gvars[index];
 	}
