@@ -365,6 +365,7 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public static void main(String[] args) {
+		System.setProperty("sun.java2d.uiScale", "1");
 		Game game = new Game();
 		Dimension windowSize = new Dimension(WIDTH * SCALE / 2, HEIGHT * SCALE / 2);
 		game.setPreferredSize(windowSize);
