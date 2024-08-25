@@ -13,6 +13,7 @@ public class Player {
 	KBinputHandler kbh;
 	PlayerShotManager ShotMGR;
 	SoundManager SoundMGR;
+	public static final int STARTING_LIVES = 4;
 	Game game;
 	double x;
 	double y;
@@ -79,7 +80,7 @@ public class Player {
 		stateTimer = 0;
 		x = 0;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
-		lives = (game.getGvar(2) == 1 ? 0 : 2);
+		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
 		bombs = 3;
 		score = 0;
 		iframes = 20;
@@ -137,7 +138,7 @@ public class Player {
 		stateTimer = 0;
 		bombHeldPrevFrame = true;
 		iframes = 20;
-		lives = (game.getGvar(2) == 1 ? 0 : 2);
+		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
 		bombs = 3;
 		score = 0;
 	}
