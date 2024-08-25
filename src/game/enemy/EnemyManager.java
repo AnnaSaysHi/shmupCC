@@ -127,6 +127,12 @@ public class EnemyManager {
 	public void setFloatVar(int index, double value) {
 		floatVars[index] = value;
 	}
+	public void clearEnemies() {
+		enemies.removeIf(
+			e -> !e.testFlag(Enemy.FLAG_CONTROL_ENEMY) 
+				&& !e.testFlag(Enemy.FLAG_DIALOGUE_IMMUNE)
+				);
+	}
 	public void reset() {
 		enemies.clear();
 		Arrays.fill(intVars, 0);
