@@ -225,7 +225,7 @@ class EnmMboss extends game.enemy.Enemy{
 		chaseTransform = new BulletTransformation();
 		chaseTransform.queueOffscreenTransform(300);
 		chaseTransform.queueWaitTransform(10);
-		chaseTransform.queueAccelDirTransform(300, 0.05, Math.PI/2);
+		chaseTransform.queueAccelDirTransform(300, game.floatDiff(0.035, 0.05), Math.PI/2);
 		this.spawners[0].setTransformList(chaseTransform);
 		this.setMovementBounds(-120, 120, 50, 120);
 		this.enemyTimer = 0;
@@ -238,7 +238,7 @@ class EnmMboss extends game.enemy.Enemy{
 		}
 		this.angleRain = (Math.sin(this.enemyTimer / 60) + (Math.PI/2));
 		chaseTransform.removeTransformationAtIndex(2);
-		chaseTransform.insertAccelDirTransform(2, 300, 0.05, this.angleRain);
+		chaseTransform.insertAccelDirTransform(2, 300, game.floatDiff(0.035, 0.05), this.angleRain);
 		if(this.enemyTimer % 120 == 119) {
 			this.moveRandomWithinBounds(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT_IN_2);
 		}
