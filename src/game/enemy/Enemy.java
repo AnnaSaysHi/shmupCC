@@ -169,10 +169,10 @@ public class Enemy {
 		enemyTimer++;
 		takeDamage();
 		this.doEnemyActions();
-		this.processEnemyMovement();
 		for(int i = 0; i < numSpawners; i++) {
 			spawners[i].tickSpawner();
 		}
+		this.processEnemyMovement();
 		boolean diesOffscreen = !(testFlag(FLAG_PERSISTENT) || testFlag(FLAG_CONTROL_ENEMY));
 		
 		if(diesOffscreen && game.isOutsidePlayfield(xpos, ypos, size)) {
