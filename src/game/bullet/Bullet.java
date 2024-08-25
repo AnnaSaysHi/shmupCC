@@ -194,10 +194,10 @@ public class Bullet {
 			renderRotationAngle = angle + Math.PI/2;
 			break;
 		case 2:
-			renderRotationAngle += Math.PI/30;
+			if(parentMGR.game.state == Game.STATE.PLAY) renderRotationAngle += Math.PI/30;
 			break;
 		case 3:
-			renderRotationAngle -= Math.PI/30;
+			if(parentMGR.game.state == Game.STATE.PLAY)renderRotationAngle -= Math.PI/30;
 			break;
 		default:
 			break;
