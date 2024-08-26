@@ -16,7 +16,7 @@ import game.player.Player;
 
 public class Enemy {
 	protected BulletManager bulletMGR;
-	Player targetPlayer;
+	protected Player targetPlayer;
 	protected Game game;
 	protected SoundManager SoundMGR;
 	protected EnemyManager parentMGR;
