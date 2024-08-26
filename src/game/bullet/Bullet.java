@@ -30,6 +30,7 @@ public class Bullet {
 	int transformIndex;
 	int transformTimer;
 	int numJumps;
+	double storedAngle;
 	
 	
 	int type;
@@ -158,6 +159,7 @@ public class Bullet {
 		angle = newAngle;
 		type = newType;	
 		color = newColor;
+		storedAngle = BulletTransformation.ANGLE_NULL;
 		size = BulletDefs.BULLET_RENDER_SIZE[type];
 		hitboxRadius = BulletDefs.BULLET_HITBOX_SIZE[type];
 		renderRotationMode = BulletDefs.BULLET_ROTATION_MODE[type];
@@ -350,11 +352,17 @@ public class Bullet {
 		case BulletTransformation.TRANSFORM_ACCEL_ANGVEL:
 			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) {
 				nextTransform();
+				this.storedAngle = BulletTransformation.ANGLE_NULL;
 				break;
 			}
 			if(this.velMode != 0) changeVelMode(0);
 			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
-			this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
+			if(transformQueue.getFloatArg2AtIndex(transformIndex) == BulletTransformation.RAND_ANGLE) {
+				if(this.storedAngle == BulletTransformation.ANGLE_NULL) this.storedAngle = parentMGR.game.randRad();
+				this.angle += storedAngle;
+			}else {
+				this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
+			}
 			break;
 		case BulletTransformation.TRANSFORM_ACCEL_DIR:
 			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) {

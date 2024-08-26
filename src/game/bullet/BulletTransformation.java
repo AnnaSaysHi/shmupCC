@@ -7,8 +7,9 @@ import java.util.ArrayList;
  */
 public class BulletTransformation implements Cloneable {
 
-	public static final double ANGLE_SELF = -9999;
-	public static final double RAND_ANGLE = -9998;
+	public static final double ANGLE_NULL = -9999;
+	public static final double ANGLE_SELF = -9998;
+	public static final double RAND_ANGLE = -9997;
 	public static final int TRANSFORM_NO_TRANSFORM = 0;
 	public static final int TRANSFORM_WAIT = 1;
 	public static final int TRANSFORM_GOTO = 2;
