@@ -340,7 +340,7 @@ public class Bullet {
 			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) nextTransform();
 			break;
 		case BulletTransformation.TRANSFORM_GOTO:
-			if(transformQueue.getIntArg3AtIndex(transformIndex) == -1
+			if(transformQueue.getIntArg2AtIndex(transformIndex) == -1
 			|| this.numJumps < transformQueue.getIntArg2AtIndex(transformIndex)) {
 				numJumps++;
 				gotoTransform(transformQueue.getIntArg1AtIndex(transformIndex));
