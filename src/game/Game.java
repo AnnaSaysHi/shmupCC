@@ -18,11 +18,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public final int SCRIPT_MAX = 6;
 	public final int MAX_MENU_DEPTH = 10;
-	/*
-	 ******************************** 
-	 *    ~~GVAR INDICES BELOW~~    *
-	 ********************************
-	 */
+
 	public static final int GVAR_DIFFICULTY = 1;
 	public static final int GVAR_INFINITE_LIVES = 2;
 	
