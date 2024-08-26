@@ -49,13 +49,13 @@ public class MenuManager {
 		
 		menuList[2] = new MenuNew(this.game, kbh, smgr, this);
 		OptionSelector infLivesSubmenu = new OptionSelector(this.game, kbh, smgr, menuList[2]);
-		infLivesSubmenu.setgvarIndex(MenuEntry.GVAR_INFINITE_LIVES);
+		infLivesSubmenu.setgvarIndex(Game.GVAR_INFINITE_LIVES);
 		infLivesSubmenu.setYpos(130);
 		infLivesSubmenu.addSubEntry("Off", 100);
 		infLivesSubmenu.addSubEntry("On", 150);
 		menuList[2].addSubMenu("Infinite Lives", infLivesSubmenu, 100, 100);
 		OptionSelector difficultySubmenu = new OptionSelector(this.game, kbh, smgr, menuList[2]);
-		difficultySubmenu.setgvarIndex(MenuEntry.GVAR_DIFFICULTY);
+		difficultySubmenu.setgvarIndex(Game.GVAR_DIFFICULTY);
 		difficultySubmenu.setYpos(205);
 		difficultySubmenu.addSubEntry("Nerfed", 100);
 		difficultySubmenu.addSubEntry("Original", 175);

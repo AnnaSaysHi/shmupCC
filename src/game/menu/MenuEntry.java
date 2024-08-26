@@ -116,13 +116,5 @@ public class MenuEntry {
 	public static final int BHV_START_OVER = 5;
 	public static final int BHV_RETURN_TO_MENU = 6;
 	public static final int BHV_SUBMENU = 7;
-	
-	/*
-	 ******************************** 
-	 *    ~~GVAR INDICES BELOW~~    *
-	 ********************************
-	 */
-	public static final int GVAR_DIFFICULTY = 1;
-	public static final int GVAR_INFINITE_LIVES = 2;
 
 }

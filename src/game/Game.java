@@ -18,6 +18,13 @@ public class Game extends Canvas implements Runnable{
 	
 	public final int SCRIPT_MAX = 6;
 	public final int MAX_MENU_DEPTH = 10;
+	/*
+	 ******************************** 
+	 *    ~~GVAR INDICES BELOW~~    *
+	 ********************************
+	 */
+	public static final int GVAR_DIFFICULTY = 1;
+	public static final int GVAR_INFINITE_LIVES = 2;
 	
 	private static final long serialVersionUID = 8763681502519222609L;
 	public static final int WIDTH = 640;
@@ -79,6 +86,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage bombIcon = null;
 	private Player playerChar;
 	int bulletTimer;
+
 	
 	public void init() {
 		BufferedImageLoader loader = new BufferedImageLoader();
