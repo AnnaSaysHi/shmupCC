@@ -9,7 +9,6 @@ import game.bullet.BulletSpawner;
 import game.bullet.BulletTransformation;
 import game.enemy.EnemyManager;
 import game.enemy.EnemyMovementInterpolator;
-import game.menu.MenuEntry;
 import game.player.Player;
 
 public class Script1_6 extends StageScript {
@@ -414,7 +413,7 @@ class Enm3 extends game.enemy.Enemy{
 		}
 		if(this.enemyTimer == game.intDiff(75, 65)) this.spawners[0].activate();
 		if(this.enemyTimer == 90) {
-			if(game.getGvar(MenuEntry.GVAR_DIFFICULTY) == 1)  this.spawners[0].activate();
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1)  this.spawners[0].activate();
 			this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 0, -100);
 		}
 	}
@@ -525,6 +524,7 @@ class EnmBoss extends game.enemy.Enemy{
 	BulletTransformation swirlTransformCW;
 	BulletTransformation swirlTransformCCW;
 	BulletTransformation accelTransform;
+	BulletTransformation fireballTrail;
 	double moveBoundsX;
 	double moveUpperY;
 	double moveLowerY;
@@ -554,22 +554,87 @@ class EnmBoss extends game.enemy.Enemy{
 			if(this.enemyTimer == 100) {
 				this.clearFlag(FLAG_PERSISTENT);
 				this.setFlag(FLAG_BOSS);
-				attackSpiralSetup();
+				attackMancSetup();
 				this.patternNum++;
 			}
 			break;
 		case 1:
-			attackSpiralTick();
+			attackMancTick();
 			break;
 		case 2:
-			attackSwirlTick();
+			attackSpiralTick();
 			break;
 		case 3:
+			attackSwirlTick();
+			break;
+		case 4:
 			attackStarTick();
 			break;
 		default:
 			break;
 		}
+	}
+	protected void attackMancTick() {
+		if(this.enemyTimer > 30) attackTimer++;
+		if(this.enemyTimer == 140) this.clearFlag(FLAG_DAMAGE_IMMUNE);
+		if(attackTimer == -50) this.moveRandomWithinBounds(80, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2);
+		if(attackTimer >= 30) {
+			attackMancVolley();
+		}
+		if(attackTimer < 0 && this.targetPlayer.getPosAndHitbox()[1] < 150 && game.getGvar(Game.GVAR_DIFFICULTY) == 1) {
+			this.attackTimer = 0;
+			this.moveRandomWithinBounds(50, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2);
+		}
+	}
+	protected void attackMancVolley() {
+		if(attackTimer == 30) {
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) this.spawners[0].setAngles(-anglenum1 / 2, anglenum1);
+			fireballTrail.removeTransformationAtIndex(0);
+			fireballTrail.insertWaitTransform(0, 0);
+			this.spawners[0].activate();
+		}
+		else if (attackTimer == 53) {
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) this.spawners[0].setAngles(anglenum1 / 2, anglenum1);
+			fireballTrail.removeTransformationAtIndex(0);
+			fireballTrail.insertWaitTransform(0, 2);
+			this.spawners[0].activate();
+		}else if(this.attackTimer == 76) {
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) this.spawners[0].setAngles(0, anglenum1 * 3 / 4);
+			fireballTrail.removeTransformationAtIndex(0);
+			fireballTrail.insertWaitTransform(0, 4);
+			this.spawners[0].activate();
+			this.attackTimer = game.intDiff(-240, -210);
+		}
+		
+	}
+	protected void attackMancSetup() {
+		this.setFlag(FLAG_DAMAGE_IMMUNE);
+		this.setMovementBounds(-60, 60, 40, 80);
+		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 90);
+		this.HP = game.intDiff(8000, 6750);
+		this.maxHP = game.intDiff(8000, 6750);
+		attackTimer = 0;
+		fireballTrail = new BulletTransformation();
+		this.spawners[0].reInit();
+		this.spawners[0].setRelativePos(0, 0);
+		this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_RED);
+		shotSpeed = game.floatDiff(5, 5);
+		anglenum1 = Math.PI / 5;
+		this.spawners[0].setSpeeds(shotSpeed, 0);
+		this.spawners[0].setBulletCounts(2, 1);
+		this.spawners[0].setMode(BulletSpawner.Mode_Fan_Aimed);
+		this.spawners[0].setAngles(0, anglenum1 * 4 / 3);
+		this.spawners[0].setSound(SoundManager.EnemyShootLoud);
+		fireballTrail.queueWaitTransform(1);
+		fireballTrail.queueWaitTransform(game.intDiff(7, 5));
+		fireballTrail.queueShootPrepareTransform(5, BulletSpawner.Mode_Ring_Mode5, 2, 1, BulletTransformation.ANGLE_SELF, 0, 3, 0);
+		fireballTrail.queueShootActivateTransform(Bullet.ARROWHEAD, Bullet.COLOR16_ORANGE, 0);
+		fireballTrail.queueGotoTransform(1, -1);
+		fireballTrail.queueAccelAngleVelTransform(15, -0.2, 0);
+		fireballTrail.queueAccelAngleVelTransform(1, 0, BulletTransformation.RAND_ANGLE);
+		fireballTrail.queueWaitTransform(60);
+		fireballTrail.queueAccelAngleVelTransform(40, game.floatDiff(0.03, 0.035), 0);
+		this.spawners[0].setTransformList(fireballTrail);
 	}
 	protected void attackSpiralTick() {
 		if(this.enemyTimer > 30) attackTimer++;
@@ -594,6 +659,7 @@ class EnmBoss extends game.enemy.Enemy{
 		}
 	}
 	protected void attackSpiralSetup() {
+		this.setFlag(FLAG_DAMAGE_IMMUNE);
 		this.setMovementBounds(-60, 60, 40, 80);
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 50);
 		this.HP = 7500;
@@ -763,11 +829,19 @@ class EnmBoss extends game.enemy.Enemy{
 			patternNum++;
 			this.maxHP = 7500;
 			this.HP = 7500;
-			attackSwirlSetup();
+			attackSpiralSetup();
 			this.hpCallbackThreshold = 0;
 			bulletMGR.deactivateAll();
 			break;
 		case 2:
+			patternNum++;
+			this.maxHP = 7500;
+			this.HP = 7500;
+			attackSwirlSetup();
+			this.hpCallbackThreshold = 0;
+			bulletMGR.deactivateAll();
+			break;
+		case 3:
 			patternNum++;
 			this.maxHP = 6000;
 			this.HP = 6000;
