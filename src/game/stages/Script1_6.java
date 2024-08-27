@@ -581,10 +581,6 @@ class EnmBoss extends game.enemy.Enemy{
 		if(attackTimer >= 30) {
 			attackMancVolley();
 		}
-		if(attackTimer < 0 && this.targetPlayer.getPosAndHitbox()[1] < 150 && game.getGvar(Game.GVAR_DIFFICULTY) == 1) {
-			this.attackTimer = 0;
-			this.moveRandomWithinBounds(50, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2);
-		}
 	}
 	protected void attackMancVolley() {
 		if(attackTimer == 30) {
@@ -625,6 +621,7 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[0].setMode(BulletSpawner.Mode_Fan_Aimed);
 		this.spawners[0].setAngles(0, anglenum1 * 4 / 3);
 		this.spawners[0].setSound(SoundManager.EnemyShootLoud);
+		this.spawners[0].setSpawnDistance(24);
 		fireballTrail.queueWaitTransform(1);
 		fireballTrail.queueWaitTransform(game.intDiff(7, 5));
 		fireballTrail.queueShootPrepareTransform(5, BulletSpawner.Mode_Ring_Mode5, 2, 1, BulletTransformation.ANGLE_SELF, 0, 3, 0);
