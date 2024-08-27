@@ -194,13 +194,24 @@ public class Game extends Canvas implements Runnable{
 		lastTickPeriodMeasurement = System.nanoTime();
 		int preferredFPS = 60;
 		long skipTicks = (1000000000 / preferredFPS);
+		long nextTick = MRT + skipTicks;
 		
 		
 		while(running) {
-			if(MRT + skipTicks < System.nanoTime()) {
+			if(nextTick <= System.nanoTime()) {
 				MRT = System.nanoTime();
 				tick();
 				render();
+				nextTick = MRT + skipTicks;
+				long sleepdur = (nextTick - MRT) / 1000000;
+				try {
+					Thread.sleep(Math.max(0, sleepdur - 6));
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
 			}			
 		}
 		stop();
