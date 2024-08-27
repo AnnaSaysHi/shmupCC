@@ -31,6 +31,8 @@ public class Player {
 	int visYpos;
 	int numActiveOptions;
 	int optionMoveTime;
+	int flashbombFull = 40;
+	int flashbombCharge;
 	ShotType shotType;
 	ShotData shotData;
 	PlayerOption[] optionArray;
@@ -86,6 +88,7 @@ public class Player {
 		iframes = 20;
 		shotData = new ShotData();
 		optionRenderTransform = new AffineTransform();
+		int flashbombCharge = 0;
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height,
 			BufferedImage hitbox, int hbSize,
@@ -141,6 +144,7 @@ public class Player {
 		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
 		bombs = 3;
 		score = 0;
+		int flashbombCharge = 0;
 	}
 	public void playerSetShotMGR(PlayerShotManager psm) {
 		ShotMGR = psm;
@@ -249,6 +253,12 @@ public class Player {
 	
 	public void useBomb() {
 		
+	}
+	public void addGraze() {
+		if(flashbombCharge < flashbombFull) {
+			flashbombCharge ++;
+			if(flashbombCharge == flashbombFull) SoundMGR.playFromArray(SoundManager.GaugeFull);
+		}
 	}
 	
 	public void respawn() {

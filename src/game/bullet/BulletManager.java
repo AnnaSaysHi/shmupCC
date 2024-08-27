@@ -154,6 +154,7 @@ public class BulletManager {
 			if (b.isDisabled() == false) {
 				if((b.grazed == 0) && b.checkCollision(x, y, rad)) {
 					b.grazedByPlayer();
+					relevantPlayer.addGraze();
 				}
 			}
 		}
@@ -165,6 +166,11 @@ public class BulletManager {
 	public void deactivateAll() {
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i].disable();
+		}
+	}
+	public void cancelInRadius(double x, double y, double rad) {
+		for(Bullet b : bullets) {
+			if(!b.isDisabled() && b.checkCollision(x, y, rad)) b.disable();
 		}
 	}
 	/**
