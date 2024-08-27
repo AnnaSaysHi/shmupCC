@@ -117,6 +117,7 @@ public class Game extends Canvas implements Runnable{
 		Spritesheet explosion = new Spritesheet(explosionSheet);
 		kbh = new KBinputHandler(this);
 		this.addKeyListener(kbh);
+		bulletSprites.flush();
 
 
 		SoundMGR = new SoundManager();
