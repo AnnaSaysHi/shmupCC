@@ -204,14 +204,14 @@ public class Game extends Canvas implements Runnable{
 				render();
 				nextTick = MRT + skipTicks;
 				long sleepdur = (nextTick - MRT) / 1000000;
-				try {
-					Thread.sleep(Math.max(0, sleepdur - 6));
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if(sleepdur > 6) {
+					try {
+						Thread.sleep(Math.max(0, sleepdur - 6));
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
-
-
 			}			
 		}
 		stop();
