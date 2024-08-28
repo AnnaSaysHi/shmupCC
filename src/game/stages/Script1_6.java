@@ -603,7 +603,7 @@ class EnmBoss extends game.enemy.Enemy{
 	protected void attackNon1Tick() {
 		if(this.enemyTimer > 30) attackTimer++;
 		if(this.enemyTimer == 180) this.clearFlag(FLAG_DAMAGE_IMMUNE);
-		if(attackTimer > 0 && attackTimer % 5 == 1) {
+		if(attackTimer > 0 && attackTimer % 6 == 1) {
 			if(attackTimer > 20) {
 				anglenum1 += angleIncrement1;
 				anglenum2 += angleIncrement2;
@@ -746,26 +746,26 @@ class EnmBoss extends game.enemy.Enemy{
 		attackTimer = 0;
 		this.accelTransform = new BulletTransformation();
 		this.accelTransform.queueWaitTransform(20);
-		this.accelTransform.queueAccelAngleVelTransform(50, game.floatDiff(0.03, 0.05), 0);
+		this.accelTransform.queueAccelAngleVelTransform(50, game.floatDiff(0.035, 0.045), 0);
 		anglenum1 = game.randRad();
 		anglenum2 = anglenum1;
 		this.spawners[0].reInit();
 		this.spawners[0].setRelativePos(0, 0);
 		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(game.intDiff(10, 13), 1);
+		this.spawners[0].setBulletCounts(game.intDiff(5, 8), 1);
 		this.spawners[0].setSpeeds(1, 1);
 		this.spawners[0].setAngles(anglenum1, anglenum1);
 		this.spawners[0].setSpawnDistance(20);
 		this.spawners[0].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_GREEN);
 		this.spawners[0].setTransformList(accelTransform);
-		this.angleIncrement1 = Math.toRadians(Math.E + 2);
-		this.angleIncrement2 = Math.toRadians(-Math.PI);
+		this.angleIncrement1 = Math.toRadians(Math.E + 4);
+		this.angleIncrement2 = Math.toRadians(-Math.PI - 1);
 		this.spawners[1].reInit();
 		this.spawners[1].setRelativePos(0, 0);
 		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
 		this.spawners[1].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[1].setBulletCounts(game.intDiff(7, 11), 1);
+		this.spawners[1].setBulletCounts(game.intDiff(8, 13), 1);
 		this.spawners[1].setSpeeds(1, 1);
 		this.spawners[1].setAngles(anglenum2, anglenum2);
 		this.spawners[1].setSpawnDistance(20);
