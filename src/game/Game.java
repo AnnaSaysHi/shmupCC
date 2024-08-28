@@ -78,6 +78,7 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage skullIcon = null;
 	private BufferedImage option = null;
 	private BufferedImage loadingBG = null;
+	private BufferedImage flashbomb = null;
 	@SuppressWarnings("unused")
 	private BufferedImage bombIcon = null;
 	private Player playerChar;
@@ -99,6 +100,7 @@ public class Game extends Canvas implements Runnable{
 			lifeIcon = loader.loadImage("/images/LifeIcon.png");
 			skullIcon = loader.loadImage("/images/skull.png");
 			option = loader.loadImage("/images/optionTypeA.png");
+			flashbomb = loader.loadImage("/images/flashbomb.png");
 		}catch (IOException e){
 			e.printStackTrace();
 		}
@@ -142,7 +144,8 @@ public class Game extends Canvas implements Runnable{
 		playerChar.playerInitAnim(player0, player1, 48, 48, 
 				hitbox, 8, 
 				explosion, 70, 100, 17,
-				option, 24, 24);
+				option, 24, 24,
+				flashbomb, 24);
 		playerChar.playerInitShotAndSpeed("/player/pl00.sht");
 		
 
@@ -240,6 +243,7 @@ public class Game extends Canvas implements Runnable{
 				EnemyMGR.updateEnemies();
 				playerChar.tickPlayer();
 				playercoords = playerChar.getPosAndHitbox();
+				playerChar.tickFlashbombs(BulletMGR);
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 				BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
 				EnemyMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
@@ -267,6 +271,7 @@ public class Game extends Canvas implements Runnable{
 		Font fpsfont = g.getFont();
 
 		if(state == STATE.PLAY || state == STATE.PAUSE || state == STATE.GAME_OVER) {
+			playerChar.drawFlashbomb(g);
 			ShotMGR.drawShots(g, this);
 			playerChar.drawPlayer(g);
 			playerChar.drawPlayerOptions(g);
@@ -289,6 +294,7 @@ public class Game extends Canvas implements Runnable{
 				g.drawImage(skullIcon, 440, 48, this);
 				g.drawString(":   " + playerChar.lives, 475, 70);
 			}
+			playerChar.drawFlashbombGauge(g);
 		}
 		if(state == STATE.MENU) MenuMGR.renderCurrentMenu(g);
 		if(state == STATE.PAUSE || state == STATE.GAME_OVER) MenuMGR.renderPauseMenu(g);

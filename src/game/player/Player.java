@@ -1,13 +1,16 @@
 package game.player;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 
 import game.Game;
 import game.KBinputHandler;
 import game.Spritesheet;
 import game.audio.SoundManager;
+import game.bullet.BulletManager;
 
 public class Player {
 	KBinputHandler kbh;
@@ -37,6 +40,11 @@ public class Player {
 	ShotData shotData;
 	PlayerOption[] optionArray;
 	
+	ArrayList<Double> flashbombsX;
+	ArrayList<Double> flashbombsY;
+	ArrayList<Integer> flashbombsTimeLeft;
+	
+	
 	
 	
 	//graphics
@@ -46,12 +54,14 @@ public class Player {
 	private BufferedImage animStrafe; // left movement
 	private BufferedImage animHitbox;
 	private BufferedImage animOption;
+	private BufferedImage animFlashbomb;
 	private int optionAnimWidth;
 	private int optionAnimHeight;
 	private BufferedImage[] deathAnimFrames;
 	private int deathAnimWidth;
 	private int deathAnimHeight;
 	private int deathAnimFramerate = 2;
+	private int flashbombAnimWidth;
 	
 	//input
 	byte[]dirs;
@@ -66,7 +76,14 @@ public class Player {
 	 * 2 = hit by bullet, able to deathbomb
 	 * 3 = respawning 
 	 * 4 = bombing
+	 * 5 = flashbombing
 	 */
+	public static final int STATE_NORMAL = 0;
+	public static final int STATE_DYING = 1;
+	public static final int STATE_DEATHBOMBWINDOW = 2;
+	public static final int STATE_RESPAWN = 3;
+	public static final int STATE_BOMB = 4;
+	
 	public int lives;
 	public int bombs;
 	public int score;
@@ -88,12 +105,16 @@ public class Player {
 		iframes = 20;
 		shotData = new ShotData();
 		optionRenderTransform = new AffineTransform();
-		int flashbombCharge = 0;
+		flashbombCharge = 0;
+		flashbombsX = new ArrayList<Double>();
+		flashbombsY = new ArrayList<Double>();
+		flashbombsTimeLeft = new ArrayList<Integer>();
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height,
 			BufferedImage hitbox, int hbSize,
 			Spritesheet deathAnim, int w, int h, int frames,
-			BufferedImage option, int optionW, int optionH) {
+			BufferedImage option, int optionW, int optionH,
+			BufferedImage flashbomb, int fbW) {
 		animIdle = neutral;
 		animStrafe = strafe;
 		animHitbox = hitbox;
@@ -109,6 +130,8 @@ public class Player {
 		animOption = option;
 		optionAnimWidth = optionW;
 		optionAnimHeight = optionH;
+		animFlashbomb = flashbomb;
+		flashbombAnimWidth = fbW;
 	}
 	public void playerInitShotAndSpeed(String shot) {
 		shotData.getShotInfoFromFile(shot);
@@ -144,7 +167,10 @@ public class Player {
 		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
 		bombs = 3;
 		score = 0;
-		int flashbombCharge = 0;
+		flashbombCharge = 0;
+		flashbombsX.clear();
+		flashbombsY.clear();
+		flashbombsTimeLeft.clear();
 	}
 	public void playerSetShotMGR(PlayerShotManager psm) {
 		ShotMGR = psm;
@@ -153,7 +179,7 @@ public class Player {
 	public void tickPlayer() {
 
 		switch(playerState) {
-		case 0:
+		case STATE_NORMAL:
 			boolean focusingPrevFrame = isFocusing;
 			isFocusing = kbh.getHeldKeys()[6];
 			if(focusingPrevFrame != isFocusing) {
@@ -188,12 +214,11 @@ public class Player {
 			x = Math.min(x, moveLimits[1]);
 			y = Math.max(y, moveLimits[2]);
 			y = Math.min(y, moveLimits[3]);
-			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9]) {
-				playerState = 4;
-				stateTimer = 0;
+			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9] && flashbombCharge == flashbombFull) {
+				useFlashbomb();
 			}
 			break;
-		case 1:	
+		case STATE_DYING:	
 			if(stateTimer >= deathAnimFrames.length * deathAnimFramerate) {
 				playerState = 3;
 				x = 0;
@@ -223,7 +248,7 @@ public class Player {
 				//stateTimer = 0;
 			}
 			break;
-		case 3:
+		case STATE_RESPAWN:
 			manageOptions();
 			y -= 2;
 			if(y <= (7 * Game.PLAYFIELDHEIGHT) / 8){
@@ -232,10 +257,9 @@ public class Player {
 				iframes = 60;
 			}
 			break;
-		case 4:
+		case STATE_BOMB:
 			playerState = 0;
 			break;
-			
 		}
 
 		iframes--;
@@ -253,6 +277,28 @@ public class Player {
 	
 	public void useBomb() {
 		
+	}
+	public void tickFlashbombs(BulletManager b) {
+		for(int i = flashbombsX.size() - 1; i >= 0; i--) {
+			if(flashbombsTimeLeft.get(i) <= 0) {
+				flashbombsTimeLeft.remove(i);
+				flashbombsX.remove(i);
+				flashbombsY.remove(i);
+			}
+		}
+		for(int i = 0; i < flashbombsX.size(); i++) {
+			b.cancelInRadius(flashbombsX.get(i), flashbombsY.get(i), 24);
+		}
+		for (int i = 0; i < flashbombsTimeLeft.size(); i++) flashbombsTimeLeft.set(i, flashbombsTimeLeft.get(i) - 1);
+		
+	}
+	public void useFlashbomb() {
+		flashbombCharge = 0;
+		SoundMGR.playFromArray(SoundManager.Flashbomb);
+		iframes = Math.max(iframes, 20);
+		flashbombsX.add(this.x);
+		flashbombsY.add(this.y);
+		flashbombsTimeLeft.add(40);
 	}
 	public void addGraze() {
 		if(flashbombCharge < flashbombFull) {
@@ -337,6 +383,31 @@ public class Player {
 			visYpos += Game.PLAYFIELDYOFFSET;
 			g.drawImage(animHitbox, visXpos, visYpos, game);
 		}
+		
+	}
+	public void drawFlashbomb(Graphics2D g) {
+		AffineTransform renderTransform = new AffineTransform();
+		for(int i = 0; i < flashbombsTimeLeft.size(); i++) {
+			renderTransform.setToIdentity();
+			renderTransform.translate(Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2), Game.PLAYFIELDYOFFSET);
+			renderTransform.translate(flashbombsX.get(i) - flashbombAnimWidth/2,
+					flashbombsY.get(i) - flashbombAnimWidth/2);
+			renderTransform.rotate(flashbombsTimeLeft.get(i),
+					flashbombAnimWidth,
+					flashbombAnimWidth);
+			g.drawImage(animFlashbomb, renderTransform, game);
+		}
+	}
+	public void drawFlashbombGauge(Graphics2D g) {
+		Color oldColor = g.getColor();
+		g.drawString("Flashbomb", 440, 85);
+		g.setColor(new Color(0x7F7F7F));
+		g.fillRect(440, 90, 90, 16);
+		g.setColor(Color.BLACK);
+		g.fillRect(445, 94, 80, 8);
+		g.setColor(flashbombCharge == flashbombFull ? Color.WHITE : Color.LIGHT_GRAY);
+		g.fillRect(445, 94, flashbombCharge * 2, 8);
+		g.setColor(oldColor);
 		
 	}
 	public boolean getShotHeld() {
