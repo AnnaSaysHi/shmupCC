@@ -145,7 +145,7 @@ public class Game extends Canvas implements Runnable{
 				hitbox, 8, 
 				explosion, 70, 100, 17,
 				option, 24, 24,
-				flashbomb, 24);
+				flashbomb, 32);
 		playerChar.playerInitShotAndSpeed("/player/pl00.sht");
 		
 

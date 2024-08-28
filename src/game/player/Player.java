@@ -288,7 +288,7 @@ public class Player {
 			}
 		}
 		for(int i = 0; i < flashbombsX.size(); i++) {
-			b.cancelInRadius(flashbombsX.get(i), flashbombsY.get(i), 24);
+			b.cancelInRadius(flashbombsX.get(i), flashbombsY.get(i), 32);
 		}
 		for (int i = 0; i < flashbombsTimeLeft.size(); i++) flashbombsTimeLeft.set(i, flashbombsTimeLeft.get(i) - 1);
 		
