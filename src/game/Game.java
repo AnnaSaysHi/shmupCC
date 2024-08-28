@@ -243,9 +243,9 @@ public class Game extends Canvas implements Runnable{
 				EnemyMGR.updateEnemies();
 				playerChar.tickPlayer();
 				playercoords = playerChar.getPosAndHitbox();
+				BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
 				playerChar.tickFlashbombs(BulletMGR);
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
-				BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
 				EnemyMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 			}
 		}
