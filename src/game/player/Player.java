@@ -390,8 +390,8 @@ public class Player {
 		for(int i = 0; i < flashbombsTimeLeft.size(); i++) {
 			renderTransform.setToIdentity();
 			renderTransform.translate(Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2), Game.PLAYFIELDYOFFSET);
-			renderTransform.translate(flashbombsX.get(i) - flashbombAnimWidth/2,
-					flashbombsY.get(i) - flashbombAnimWidth/2);
+			renderTransform.translate(flashbombsX.get(i) - flashbombAnimWidth,
+					flashbombsY.get(i) - flashbombAnimWidth);
 			renderTransform.rotate(flashbombsTimeLeft.get(i),
 					flashbombAnimWidth,
 					flashbombAnimWidth);
