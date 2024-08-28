@@ -115,7 +115,7 @@ public class ShotData {
 		dmg_cap_type = 1;
 		dmg_cap_val = 80;
 		hitboxSize = 3;
-		grazeboxSize = 15;
+		grazeboxSize = 20;
 		itemboxSize = 28;
 		move_UF = 4.5;
 		move_F = 2;
