@@ -29,8 +29,18 @@ public abstract class StageScript {
 		enmMgr.reset();
 		initActions();
 	}
+	public void init(int argA) {
+		mgr.deactivateAll();
+		enmMgr.reset();
+		this.initActions(argA);
+	}
 	
 	public abstract void initActions();
+	
+	public void initActions(int argA) {
+		this.initActions();
+	};
+	
 	
 	public abstract void tick();
 }

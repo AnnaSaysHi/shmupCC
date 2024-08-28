@@ -26,15 +26,16 @@ public class MenuManager {
 	}
 	
 	public void initMenus() {
-		menuList = new MenuNew[3];
+		menuList = new MenuNew[4];
 		pauseMenu = new MenuNew(this.game, kbh, smgr, this);
 		pauseMenu.addNewEntry("Unpause", MenuEntry.BHV_UNPAUSE, 0, 100, 100);
 		pauseMenu.addNewEntry("Restart", MenuEntry.BHV_START_OVER, 0, 100, 150);
 		pauseMenu.addNewEntry("Return to Title", MenuEntry.BHV_RETURN_TO_MENU, 0, 100, 200);
 		menuList[0] = new MenuNew(this.game, kbh, smgr, this);
 		menuList[0].addNewEntry("Level Select", MenuEntry.BHV_CHANGE_MENU, 1, 100, 100);
-		menuList[0].addNewEntry("Options", MenuEntry.BHV_CHANGE_MENU, 2, 100, 150);
-		menuList[0].addNewEntry("Exit", MenuEntry.BHV_EXIT_GAME, 0, 100, 200);
+		menuList[0].addNewEntry("Practice", MenuEntry.BHV_CHANGE_MENU, 3, 100, 150);
+		menuList[0].addNewEntry("Options", MenuEntry.BHV_CHANGE_MENU, 2, 100, 200);
+		menuList[0].addNewEntry("Exit", MenuEntry.BHV_EXIT_GAME, 0, 100, 250);
 		
 		//SCENE SELECT MENU
 		menuList[1] = new MenuNew(this.game, kbh, smgr, this);
@@ -46,7 +47,6 @@ public class MenuManager {
 		menuList[1].addNewEntry("bha8 test", MenuEntry.BHV_START_SCENE, 5, 100, 350);
 		
 		//OPTIONS MENU
-		
 		menuList[2] = new MenuNew(this.game, kbh, smgr, this);
 		OptionSelector infLivesSubmenu = new OptionSelector(this.game, kbh, smgr, menuList[2]);
 		infLivesSubmenu.setgvarIndex(Game.GVAR_INFINITE_LIVES);
@@ -61,6 +61,30 @@ public class MenuManager {
 		difficultySubmenu.addSubEntry("Original", 175);
 		menuList[2].addSubMenu("Difficulty", difficultySubmenu, 100, 175);
 		menuList[2].addNewEntry("Back", MenuEntry.BHV_CHANGE_MENU, -1, 100, 250);
+		
+		//PRACTICE MENU
+		menuList[3] = new MenuNew(this.game, kbh, smgr, this);
+		menuList[3].addNewEntry("First Half #1", MenuEntry.BHV_START_SCENE, 5, 100, 100);
+		menuList[3].setArgsOfEntry(0x00000000, 0, 0);
+		menuList[3].addNewEntry("First Half #2", MenuEntry.BHV_START_SCENE, 5, 100, 130);
+		menuList[3].setArgsOfEntry(0x00000001, 0, 0);
+		menuList[3].addNewEntry("Midboss Attack #1", MenuEntry.BHV_START_SCENE, 5, 100, 160);
+		menuList[3].setArgsOfEntry(0x00000002, 0, 0);
+		menuList[3].addNewEntry("Midboss Attack #2", MenuEntry.BHV_START_SCENE, 5, 100, 190);
+		menuList[3].setArgsOfEntry(0x00000202, 0, 0);
+		menuList[3].addNewEntry("Second Half #1", MenuEntry.BHV_START_SCENE, 5, 100, 220);
+		menuList[3].setArgsOfEntry(0x00000003, 0, 0);
+		menuList[3].addNewEntry("Boss Attack #1", MenuEntry.BHV_START_SCENE, 5, 100, 250);
+		menuList[3].setArgsOfEntry(0x00000104, 0, 0);
+		menuList[3].addNewEntry("Boss Attack #2", MenuEntry.BHV_START_SCENE, 5, 100, 280);
+		menuList[3].setArgsOfEntry(0x00000204, 0, 0);
+		menuList[3].addNewEntry("Boss Attack #3", MenuEntry.BHV_START_SCENE, 5, 100, 310);
+		menuList[3].setArgsOfEntry(0x00000304, 0, 0);
+		menuList[3].addNewEntry("Boss Attack #4", MenuEntry.BHV_START_SCENE, 5, 100, 340);
+		menuList[3].setArgsOfEntry(0x00000404, 0, 0);
+		menuList[3].addNewEntry("Boss Attack #5", MenuEntry.BHV_START_SCENE, 5, 100, 370);
+		menuList[3].setArgsOfEntry(0x00000504, 0, 0);
+		menuList[3].addNewEntry("Back", MenuEntry.BHV_CHANGE_MENU, -1, 100, 400);
 	}
 	
 	public void tick() {

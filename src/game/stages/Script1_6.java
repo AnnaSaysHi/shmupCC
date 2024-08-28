@@ -13,16 +13,24 @@ import game.player.Player;
 
 public class Script1_6 extends StageScript {
 	int chapter;
+	int bossStartPattern;
 
 	public Script1_6(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
 		super(mgr, g, playerChar, enmMgr, smgr);
 	}
 
 	@Override
-	public void initActions() {
+	public void initActions(int startingChapter) {
+		
 		stageTimer = 0;
-		chapter = 0;
+		chapter = startingChapter % 256;
+		bossStartPattern = startingChapter / 256;
 	}
+	@Override
+	public void initActions() {
+		this.initActions(0);
+	}
+	
 
 	@Override
 	public void tick() {
@@ -36,8 +44,14 @@ public class Script1_6 extends StageScript {
 			break;
 		case 2:
 			if(stageTimer == 60 * 1) {
-				enmMgr.addEnemy(new EnmMboss(), -100, -50, 4500, false, 0);
-				enmMgr.addEnemy(new EnmMboss(), 100, -50, 4500, false, 1);
+				if(bossStartPattern == 2) {
+					enmMgr.addEnemy(new EnmMboss(), -100, -50, 4500, false, 2);
+					bossStartPattern = 0;
+				}else{
+					enmMgr.addEnemy(new EnmMboss(), -100, -50, 4500, false, 0);
+					enmMgr.addEnemy(new EnmMboss(), 100, -50, 4500, false, 1);
+				}
+		
 			}
 			if(enmMgr.getIntVar(0) == 2) {
 				chapter++;
@@ -52,7 +66,7 @@ public class Script1_6 extends StageScript {
 		case 4:
 			if(stageTimer == 60 * 1) {
 				enmMgr.clearEnemies();
-				enmMgr.addEnemy(new EnmBoss(), 0, -50, 7500, false);
+				enmMgr.addEnemy(new EnmBoss(), 0, -50, 7500, false, bossStartPattern);
 			}
 			break;
 		default:
@@ -153,6 +167,7 @@ class EnmMboss extends game.enemy.Enemy{
 		this.setFlag(FLAG_PERSISTENT);
 		this.setEnemySprite(2);
 		switch(this.subtype) {
+		case 2:
 		case 0:
 			this.setMovementBounds(-150, -75, 60, 180);
 			this.setPosAbsTime(90, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, -150, 120);
@@ -161,6 +176,7 @@ class EnmMboss extends game.enemy.Enemy{
 			this.setMovementBounds(75, 150, 60, 180);
 			this.setPosAbsTime(90, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 150, 120);
 			break;
+		
 		default:
 			break;
 		}
@@ -173,6 +189,10 @@ class EnmMboss extends game.enemy.Enemy{
 				this.clearFlag(FLAG_PERSISTENT);
 				this.setFlag(FLAG_BOSS);
 				pattern++;
+				if(this.subtype == 2) {
+					this.attackChaseSetup();
+					break;
+				}
 				attackBoomSetup();
 			}
 			break;
@@ -518,6 +538,7 @@ class EnmBoss extends game.enemy.Enemy{
 	int starSwirlInterval;
 	double ang;
 	int starCurrentColor;
+	int startingPattern;
 	double starAngle;
 	BulletTransformation starExplodeTransformCW;
 	BulletTransformation starExplodeTransformCCW;
@@ -545,6 +566,7 @@ class EnmBoss extends game.enemy.Enemy{
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
 		this.angleIncrement1 = 0;
 		this.angleIncrement2 = 0;
+		this.startingPattern = Math.max(this.subtype, 1);
 		this.patternNum = 0;
 	}
 	@Override
@@ -554,8 +576,8 @@ class EnmBoss extends game.enemy.Enemy{
 			if(this.enemyTimer == 100) {
 				this.clearFlag(FLAG_PERSISTENT);
 				this.setFlag(FLAG_BOSS);
-				attackNon1Setup();
-				this.patternNum++;
+				this.patternNum += startingPattern;
+				setupNextPattern();
 			}
 			break;
 		case 1:
@@ -880,31 +902,29 @@ class EnmBoss extends game.enemy.Enemy{
 		this.spawners[1].setTransformList(swirlTransformCW);
 		this.spawners[2].setTransformList(swirlTransformCCW);
 	}
-
-
-	@Override
-	protected void doHPCallback() {
+	protected void setupNextPattern() {
 		switch(patternNum) {
 		case 1:
-			patternNum++;
-			attackMancSetup();
+			attackNon1Setup();
 			this.hpCallbackThreshold = 0;
 			bulletMGR.deactivateAll();
 			break;
 		case 2:
-			patternNum++;
-			attackNon2Setup();
+			attackMancSetup();
 			this.hpCallbackThreshold = 0;
 			bulletMGR.deactivateAll();
 			break;
 		case 3:
-			patternNum++;
-			attackStarSetup();
+			attackNon2Setup();
 			this.hpCallbackThreshold = 0;
 			bulletMGR.deactivateAll();
 			break;
 		case 4:
-			patternNum++;
+			attackStarSetup();
+			this.hpCallbackThreshold = 0;
+			bulletMGR.deactivateAll();
+			break;
+		case 5:
 			attackSwirlSetup();
 			this.hpCallbackThreshold = -1;
 			this.numHealthbars = 0;
@@ -913,7 +933,14 @@ class EnmBoss extends game.enemy.Enemy{
 		default:
 			this.numHealthbars = 0;
 			break;
-
 		}
+	}
+
+
+	@Override
+	protected void doHPCallback() {
+		patternNum++;
+		setupNextPattern();
+		
 	}
 }

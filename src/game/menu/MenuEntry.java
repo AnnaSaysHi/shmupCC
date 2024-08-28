@@ -14,9 +14,9 @@ public class MenuEntry {
 	String selfText;
 	int behavior; // See list of behaviors at the bottom
 	int behaviorArg1; // depends on behavior
-	int behaviorArg2; //
-	int behaviorArg3;
-	int behaviorArg4;
+	int behaviorArg2 = 0; //
+	int behaviorArg3 = 0;
+	int behaviorArg4 = 0;
 	int xpos;
 	int ypos;
 	
@@ -72,7 +72,7 @@ public class MenuEntry {
 			System.exit(0);
 			break;
 		case BHV_START_SCENE:
-			parent.setStage(behaviorArg1);
+			parent.setStage(behaviorArg1, behaviorArg2);
 			this.parent.state = Game.STATE.PLAY;
 			break;
 		case BHV_UNPAUSE:

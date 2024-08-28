@@ -42,6 +42,7 @@ public class Game extends Canvas implements Runnable{
 		GAME_OVER		
 	}
 	int[] gvars;
+	int practiceChapterStart;
 	private BulletManager BulletMGR;
 	private PlayerShotManager ShotMGR;
 	private EnemyManager EnemyMGR;
@@ -206,7 +207,7 @@ public class Game extends Canvas implements Runnable{
 				tick();
 				render();
 				nextTick = MRT + skipTicks;
-				long sleepdur = (nextTick - MRT) / 1000000;
+				/*long sleepdur = (nextTick - MRT) / 1000000;
 				if(sleepdur > 6) {
 					try {
 						Thread.sleep(Math.max(0, sleepdur - 6));
@@ -214,7 +215,7 @@ public class Game extends Canvas implements Runnable{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}
+				}*/
 			}			
 		}
 		stop();
@@ -342,13 +343,17 @@ public class Game extends Canvas implements Runnable{
 		//TODO
 	}
 	public void setStage (int i) {
+		setStage(i, 0);
+	}
+	public void setStage(int i, int chapterNum) {
 		stage = i;
 		playerChar.playerReInitialize();
-		stageList[stage].init();
+		practiceChapterStart = chapterNum;
+		stageList[stage].init(practiceChapterStart);
 	}
 	public void restartStage() {
 		playerChar.playerReInitialize();
-		stageList[stage].init();
+		stageList[stage].init(practiceChapterStart);
 		state = STATE.PLAY;
 	}
 	public void returnToMenu() {
