@@ -75,7 +75,7 @@ public abstract class BulletDefs {
 			1.5,
 			3.5,
 			3.75,
-			2.5,
+			2.25,
 			3,
 			2,
 			3,
