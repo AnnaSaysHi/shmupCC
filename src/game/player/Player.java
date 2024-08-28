@@ -303,6 +303,7 @@ public class Player {
 	public void addGraze() {
 		if(flashbombCharge < flashbombFull) {
 			flashbombCharge ++;
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 0) flashbombCharge++;
 			if(flashbombCharge == flashbombFull) SoundMGR.playFromArray(SoundManager.GaugeFull);
 		}
 	}
