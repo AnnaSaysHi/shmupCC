@@ -298,7 +298,7 @@ public class Player {
 		iframes = Math.max(iframes, 20);
 		flashbombsX.add(this.x);
 		flashbombsY.add(this.y);
-		flashbombsTimeLeft.add(40);
+		flashbombsTimeLeft.add(60);
 	}
 	public void addGraze() {
 		if(flashbombCharge < flashbombFull) {
