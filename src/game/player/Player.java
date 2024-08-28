@@ -342,6 +342,9 @@ public class Player {
 	public double[] getOptionCoords(int optionNum) {
 		return optionArray[optionNum].getPosAndAngle();
 	}
+	public boolean isInvincible() {
+		return iframes > 0;
+	}
 	
 	public void drawPlayer(Graphics2D g) {
 		if(playerState != 1) {

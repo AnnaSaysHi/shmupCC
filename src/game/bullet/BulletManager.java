@@ -150,6 +150,7 @@ public class BulletManager {
 	 * @param rad
 	 */
 	public void checkGraze(double x, double y, double rad) {
+		if(relevantPlayer.isInvincible()) return;
 		for(Bullet b : bullets) {
 			if (b.isDisabled() == false) {
 				if((b.grazed == 0) && b.checkCollision(x, y, rad)) {
