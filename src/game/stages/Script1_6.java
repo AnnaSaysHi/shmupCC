@@ -608,7 +608,7 @@ class EnmBoss extends game.enemy.Enemy{
 		attackTimer = 0;
 		this.accelTransform = new BulletTransformation();
 		this.accelTransform.queueWaitTransform(20);
-		this.accelTransform.queueAccelAngleVelTransform(50, game.floatDiff(0.03, 0.05), 0);
+		this.accelTransform.queueAccelAngleVelTransform(50, game.floatDiff(0.03, 0.045), 0);
 		anglenum1 = game.randRad();
 		anglenum2 = anglenum1;
 		this.spawners[0].reInit();
