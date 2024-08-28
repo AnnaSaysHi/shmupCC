@@ -665,6 +665,7 @@ class EnmBoss extends game.enemy.Enemy{
 		
 	}
 	protected void attackMancSetup() {
+		this.enemyTimer = 0;
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
 		this.setMovementBounds(-60, 60, 40, 80);
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 90);
