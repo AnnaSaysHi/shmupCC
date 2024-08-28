@@ -221,6 +221,11 @@ public class Bullet {
 	public boolean isDisabled() {
 		return disabled;
 	}
+	public void deleteBullet() {
+		parentMGR.SoundMGR.playFromArray(SoundManager.BulletDelete);
+		this.disable();
+	}
+	
 	/**
 	 * A mutator method, used by BulletManager.
 	 * Sets this Bullet's disabled field to true.

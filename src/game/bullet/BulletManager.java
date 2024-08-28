@@ -170,7 +170,7 @@ public class BulletManager {
 	}
 	public void cancelInRadius(double x, double y, double rad) {
 		for(Bullet b : bullets) {
-			if(!b.isDisabled() && b.checkCollision(x, y, rad)) b.disable();
+			if(!b.isDisabled() && b.checkCollision(x, y, rad)) b.deleteBullet();
 		}
 	}
 	/**
