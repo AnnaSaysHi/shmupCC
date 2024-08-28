@@ -105,7 +105,7 @@ public class Player {
 		iframes = 20;
 		shotData = new ShotData();
 		optionRenderTransform = new AffineTransform();
-		flashbombCharge = 0;
+		flashbombCharge = flashbombFull;
 		flashbombsX = new ArrayList<Double>();
 		flashbombsY = new ArrayList<Double>();
 		flashbombsTimeLeft = new ArrayList<Integer>();
@@ -167,7 +167,7 @@ public class Player {
 		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
 		bombs = 3;
 		score = 0;
-		flashbombCharge = 0;
+		flashbombCharge = flashbombFull;
 		flashbombsX.clear();
 		flashbombsY.clear();
 		flashbombsTimeLeft.clear();
