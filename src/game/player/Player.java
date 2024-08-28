@@ -214,7 +214,7 @@ public class Player {
 			x = Math.min(x, moveLimits[1]);
 			y = Math.max(y, moveLimits[2]);
 			y = Math.min(y, moveLimits[3]);
-			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9] && flashbombCharge == flashbombFull) {
+			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9] && flashbombCharge >= flashbombFull) {
 				useFlashbomb();
 			}
 			break;
@@ -236,16 +236,17 @@ public class Player {
 			stateTimer++;
 			break;
 		case 2:
-			stateTimer = 9;
-			if(stateTimer > deathbombWindow) {
+			stateTimer++;
+			if(stateTimer > deathbombWindow || flashbombCharge < flashbombFull) {
 				playerState = 1;
 				stateTimer = 1;
 				SoundMGR.playFromArray(SoundManager.Explosion);
 				break;
 			}
-			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9]) {
-				//playerState = 4;
-				//stateTimer = 0;
+			if(!bombHeldPrevFrame && kbh.getHeldKeys()[9] && flashbombCharge >= flashbombFull) {
+				playerState = 0;
+				stateTimer = 0;
+				useFlashbomb();
 			}
 			break;
 		case STATE_RESPAWN:
