@@ -42,13 +42,22 @@ public class BulletManager {
 
 	}
 
+	/**
+	 * An internal method used to transform the raw bullet spritesheet into individual bullet sprites.
+	 * 
+	 * @param ss
+	 */
 	protected void fillSpriteReference(Spritesheet ss) {
 		bulletSpriteReference = new BufferedImage[BulletDefs.NUM_BULLET_SPRITES][];
 
+		
+		if(BulletDefs.NUM_BULLET_SPRITES * 3 != BulletDefs.BULLET_SPRITESHEET_START_POSITIONS_SIZE.length) {
+			throw new IllegalArgumentException("NUM_BULLET_SPRITES and BULLET_SPRITESHEET_START_POSITIONS_SIZE do not agree on the amount of bullet sprites");
+		}
 		for(int i = 0; i < BulletDefs.NUM_BULLET_SPRITES; i++) {
-			int bulletSize = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 2];
-			int xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
-			int yStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 1];
+			int bulletSize = BulletDefs.BULLET_SPRITESHEET_START_POSITIONS_SIZE[(3 * i) + 2];
+			int xStart = BulletDefs.BULLET_SPRITESHEET_START_POSITIONS_SIZE[3 * i];
+			int yStart = BulletDefs.BULLET_SPRITESHEET_START_POSITIONS_SIZE[(3 * i) + 1];
 			switch(bulletSize) {
 			case 8:
 				bulletSpriteReference[i] = new BufferedImage[16];
@@ -56,7 +65,7 @@ public class BulletManager {
 					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
 					xStart += bulletSize;
 				}
-				xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
+				xStart = BulletDefs.BULLET_SPRITESHEET_START_POSITIONS_SIZE[3 * i];
 				yStart += bulletSize;
 				for(int j = 8; j < 16; j++) {
 					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
@@ -85,7 +94,7 @@ public class BulletManager {
 				}
 				break;
 			default:
-				throw new IllegalArgumentException("Invalid bullet size in BulletDefs.java");
+				throw new IllegalArgumentException("Invalid bullet graphic size for entry " + i + " in BulletDefs.java");
 			}
 		}
 	}
