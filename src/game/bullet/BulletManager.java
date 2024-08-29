@@ -2,7 +2,6 @@ package game.bullet;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 
 import game.Game;
 import game.Spritesheet;
@@ -42,58 +41,52 @@ public class BulletManager {
 		this.game = game;
 
 	}
-	
-	protected void fillSpriteReference(Spritesheet ss) throws Exception{
+
+	protected void fillSpriteReference(Spritesheet ss) {
 		bulletSpriteReference = new BufferedImage[BulletDefs.NUM_BULLET_SPRITES][];
-		
-		try {
-			for(int i = 0; i < BulletDefs.NUM_BULLET_SPRITES; i++) {
-				int bulletSize = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 2];
-				int xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
-				int yStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 1];
-				switch(bulletSize) {
-				case 8:
-					bulletSpriteReference[i] = new BufferedImage[16];
-					for(int j = 0; j < 8; j++) {
-						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
-						xStart += bulletSize;
-					}
-					xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
-					yStart += bulletSize;
-					for(int j = 8; j < 16; j++) {
-						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
-						xStart += bulletSize;
-					}
-					break;
-				case 16:
-					bulletSpriteReference[i] = new BufferedImage[16];
-					for(int j = 0; j < 16; j++) {
-						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
-						xStart += bulletSize;
-					}
-					break;
-				case 32:
-					bulletSpriteReference[i] = new BufferedImage[8];
-					for(int j = 0; j < 8; j++) {
-						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
-						xStart += bulletSize;
-					}
-					break;
-				case 64:
-					bulletSpriteReference[i] = new BufferedImage[4];
-					for(int j = 0; j < 4; j++) {
-						bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
-						xStart += bulletSize;
-					}
-					break;
-				default:
-					throw new Exception("Invalid bullet size in BulletDefs.java");
+
+		for(int i = 0; i < BulletDefs.NUM_BULLET_SPRITES; i++) {
+			int bulletSize = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 2];
+			int xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
+			int yStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[(3 * i) + 1];
+			switch(bulletSize) {
+			case 8:
+				bulletSpriteReference[i] = new BufferedImage[16];
+				for(int j = 0; j < 8; j++) {
+					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+					xStart += bulletSize;
 				}
+				xStart = BulletDefs.BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE[3 * i];
+				yStart += bulletSize;
+				for(int j = 8; j < 16; j++) {
+					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+					xStart += bulletSize;
+				}
+				break;
+			case 16:
+				bulletSpriteReference[i] = new BufferedImage[16];
+				for(int j = 0; j < 16; j++) {
+					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+					xStart += bulletSize;
+				}
+				break;
+			case 32:
+				bulletSpriteReference[i] = new BufferedImage[8];
+				for(int j = 0; j < 8; j++) {
+					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+					xStart += bulletSize;
+				}
+				break;
+			case 64:
+				bulletSpriteReference[i] = new BufferedImage[4];
+				for(int j = 0; j < 4; j++) {
+					bulletSpriteReference[i][j] = ss.getSpriteFixedCoords(xStart, yStart, bulletSize);
+					xStart += bulletSize;
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("Invalid bullet size in BulletDefs.java");
 			}
-		} catch (RasterFormatException e) {
-			throw e;
-		} catch (Exception e) {
-			throw e;
 		}
 	}
 	/**
@@ -108,7 +101,7 @@ public class BulletManager {
 			}			
 		}
 	}
-	
+
 	/**
 	 * Iteratively calls each Bullet's draw method.
 	 * 
@@ -121,9 +114,9 @@ public class BulletManager {
 				bullets[i].draw(g, bulletSpriteReference[BulletDefs.BULLET_SPRITESHEET_INDEX[bullets[i].getType()]][bullets[i].getColor()], game);
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Iteratively checks if each Bullet should have collided with a Player using the given coordinates.
 	 * ...Looking at this code now, this seems like kind of a hack-y way to do this.
