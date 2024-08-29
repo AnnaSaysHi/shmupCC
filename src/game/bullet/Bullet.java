@@ -111,7 +111,7 @@ public class Bullet {
 	 * @param mgr
 	 * @param p
 	 */
-	public Bullet(BulletManager mgr, Player p) {
+	protected Bullet(BulletManager mgr, Player p) {
 		xpos = -1;
 		ypos = -1;
 		speed = -1;
