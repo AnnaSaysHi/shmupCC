@@ -7,7 +7,7 @@ package game.bullet;
 public abstract class BulletDefs {
 	
 	public static final int NUM_BULLET_SPRITES = 16;
-	public static final int[] BULLET_SPRITESHEET_16x16_START_POSITIONS_SIZE = new int[] {
+	public static final int[] BULLET_SPRITESHEET_START_POSITIONS_SIZE = new int[] {
 			0, 240, 8,		//PELLET
 			0, 16, 16,		//ARROWHEAD
 			0, 32, 16,		//OUTLINE
