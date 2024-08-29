@@ -4,7 +4,7 @@ package game.bullet;
  * If you want to use a non-default bullet spritesheet, please change the
  * definitions in this class to match with your new bullet spritesheet.
  */
-public abstract class BulletDefs {
+public final class BulletDefs {
 	
 	public static final int NUM_BULLET_SPRITES = 16;
 	public static final int[] BULLET_SPRITESHEET_START_POSITIONS_SIZE = new int[] {
