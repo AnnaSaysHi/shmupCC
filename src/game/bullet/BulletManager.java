@@ -163,14 +163,23 @@ public class BulletManager {
 		}
 	}
 	/**
-	 * Deactivates all Bullets.
-	 * Called when switching stages.
+	 * Deactivates all Bullets, without any sound or visual effects.
+	 * Called when switching stages, or in between boss patterns.
 	 */
 	public void deactivateAll() {
 		for(int i = 0; i < bullets.length; i++) {
 			bullets[i].disable();
 		}
 	}
+	
+	/**
+	 * Cancels bullets in a circular area, with a sound effect.
+	 * This method should be called once per frame for the duration of the bullet cancel.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param rad
+	 */
 	public void cancelInRadius(double x, double y, double rad) {
 		for(Bullet b : bullets) {
 			if(!b.isDisabled() && b.checkCollision(x, y, rad)) b.deleteBullet();
