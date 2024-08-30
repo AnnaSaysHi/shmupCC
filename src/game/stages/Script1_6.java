@@ -214,11 +214,14 @@ class EnmMboss extends game.enemy.Enemy{
 				attackChaseSetup();
 			}else {
 				parentMGR.setIntVar(0, 1);
+				parentMGR.newExplosionAnim(this.getXpos(), this.getYpos());
+				SoundMGR.playFromArray(SoundManager.Explosion);
 				this.disable();
 			}
 			break;
 		case 2:
 			bulletMGR.deactivateAll();
+			parentMGR.newExplosionAnim(this.getXpos(), this.getYpos());
 			SoundMGR.playFromArray(SoundManager.Explosion);
 			parentMGR.setIntVar(0, 2);
 			this.disable();
@@ -595,9 +598,33 @@ class EnmBoss extends game.enemy.Enemy{
 		case 5:
 			attackSwirlTick();
 			break;
-		default:
+		case 6:
+			deathExplosionTick();
 			break;
+		default:
+			throw new AssertionError("invalid boss tick");
+			
 		}
+	}
+	
+	protected void deathExplosionTick() {
+		if(this.enemyTimer == 60) {
+			parentMGR.newExplosionAnim(this.getXpos(), this.getYpos());
+			SoundMGR.playFromArray(SoundManager.Explosion);
+			this.numHealthbars = 0;
+			this.disable();
+			bulletMGR.deactivateAll();
+		}
+	}
+	protected void deathExplosionSetup() {
+		this.enemyTimer = 0;
+		this.setFlag(FLAG_PERSISTENT);
+		this.setFlag(FLAG_DAMAGE_IMMUNE);
+		this.clearFlag(FLAG_BOSS);
+		this.HP = 1000;
+		this.maxHP = 1000;
+		this.setMovementBounds(-60, 60, 110, 170);
+		this.moveRandomWithinBounds(60, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2);
 	}
 	
 	protected void attackNon1Tick() {
@@ -840,7 +867,7 @@ class EnmBoss extends game.enemy.Enemy{
 	
 	protected void attackSwirlTick() {	
 		if (this.enemyTimer > 30) {
-			if (this.enemyTimer % aimedRingInterval == 0) {
+			if (this.enemyTimer % aimedRingInterval == 0 && this.enemyTimer > 27 * 5) {
 				double ang_ex = 0.0 + ang;
 				double ang_player = game.getAngleToPlayer(this.getXpos(), this.getYpos());
 				this.spawners[0].setAngles(ang_player, Math.PI * 2 / 7);
@@ -926,9 +953,12 @@ class EnmBoss extends game.enemy.Enemy{
 			break;
 		case 5:
 			attackSwirlSetup();
-			this.hpCallbackThreshold = -1;
+			this.hpCallbackThreshold = 0;
 			this.numHealthbars = 0;
 			bulletMGR.deactivateAll();
+			break;
+		case 6:
+			deathExplosionSetup();
 			break;
 		default:
 			this.numHealthbars = 0;
