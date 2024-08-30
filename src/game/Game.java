@@ -207,7 +207,7 @@ public class Game extends Canvas implements Runnable{
 				tick();
 				render();
 				nextTick = MRT + skipTicks;
-				/*long sleepdur = (nextTick - MRT) / 1000000;
+				long sleepdur = (nextTick - MRT) / 1000000;
 				if(sleepdur > 6) {
 					try {
 						Thread.sleep(Math.max(0, sleepdur - 6));
@@ -215,7 +215,7 @@ public class Game extends Canvas implements Runnable{
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-				}*/
+				}
 			}			
 		}
 		stop();
