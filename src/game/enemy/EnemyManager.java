@@ -20,6 +20,13 @@ public class EnemyManager {
 	int maxSize;
 	BulletManager bmgr;
 	SoundManager smgr;
+	private BufferedImage[] explosionAnimFrames;
+	private int explosionAnimWidth;
+	private int explosionAnimHeight;
+	private int explosionAnimFramerate = 2;
+	private ArrayList<Double> explosionXcoords;
+	private ArrayList<Double> explosionYcoords;
+	private ArrayList<Integer> explosionTimers;
 	ArrayList<Enemy> enemies;
 	int[] intVars;
 	double[] floatVars;
@@ -39,6 +46,17 @@ public class EnemyManager {
 		this.smgr = smgr;
 		enemies = new ArrayList<Enemy>();
 		//TODO: initialize enemySpriteReference
+	}
+	public void initExplosionAnim(Spritesheet boomAnim, int w, int h, int frames) {
+		explosionTimers = new ArrayList<Integer>();
+		explosionXcoords = new ArrayList<Double>();
+		explosionYcoords = new ArrayList<Double>();
+		explosionAnimFrames = new BufferedImage[frames];
+		explosionAnimWidth = w;
+		explosionAnimHeight = h;
+		for(int i = 0; i < frames; i++) {
+			explosionAnimFrames[i] = boomAnim.getSprite(i, 0, w, h);
+		}
 	}
 
 
@@ -60,8 +78,31 @@ public class EnemyManager {
 				}
 			}
 		}
+		drawExplosions(g);
 		return shouldDrawHP;
 	}
+	public void newExplosionAnim(double x, double y) {
+		explosionTimers.add(0);
+		explosionXcoords.add(x);
+		explosionYcoords.add(y);
+	}
+	
+	private void drawExplosions(Graphics2D g) {
+		for(int i = explosionTimers.size() - 1; i >= 0; i--) {
+			explosionTimers.set(i, explosionTimers.get(i) + 1);
+			int visXpos = explosionXcoords.get(i).intValue() - (explosionAnimWidth / 2);
+			visXpos += Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH / 2);
+			int visYpos = explosionYcoords.get(i).intValue() - (explosionAnimHeight / 2);
+			visYpos += Game.PLAYFIELDYOFFSET;
+			g.drawImage(explosionAnimFrames[(explosionTimers.get(i) - 1) / explosionAnimFramerate], visXpos, visYpos, game);
+			if(explosionTimers.get(i) >= explosionAnimFramerate * explosionAnimFrames.length) {
+				explosionTimers.remove(i);
+				explosionXcoords.remove(i);
+				explosionYcoords.remove(i);
+			}
+		}
+	}
+	
 	public void drawHPbars(Graphics2D g) {
 		for(Enemy e : enemies) {
 			if(!e.isDisabled()) {

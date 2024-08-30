@@ -138,10 +138,12 @@ public class Game extends Canvas implements Runnable{
 		MenuMGR.initMenus();
 		BulletMGR = new BulletManager(1000, bullets, SoundMGR, playerChar, this);
 		EnemyMGR = new EnemyManager(100, enemies, BulletMGR, playerChar, this, SoundMGR);
+		
 		ShotMGR = new PlayerShotManager(100, shots, EnemyMGR, SoundMGR);
 		playerChar.playerSetShotMGR(ShotMGR);
 		
 
+		EnemyMGR.initExplosionAnim(explosion, 70, 100, 17);
 		playerChar.playerInitAnim(player0, player1, 48, 48, 
 				hitbox, 8, 
 				explosion, 70, 100, 17,
