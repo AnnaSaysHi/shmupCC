@@ -685,7 +685,7 @@ class EnmBoss extends game.enemy.Enemy{
 	}
 	
 	protected void attackMancTick() {
-		if(this.enemyTimer > 30) attackTimer++;
+		if(this.enemyTimer > 75) attackTimer++;
 		if(this.enemyTimer == 140) this.clearFlag(FLAG_DAMAGE_IMMUNE);
 		if(attackTimer == -50) this.moveRandomWithinBounds(80, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2);
 		if(attackTimer >= 30) {
