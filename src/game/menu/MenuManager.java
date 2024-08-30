@@ -48,19 +48,25 @@ public class MenuManager {
 		
 		//OPTIONS MENU
 		menuList[2] = new MenuNew(this.game, kbh, smgr, this);
+		OptionSelector sleepSubmenu = new OptionSelector(this.game, kbh, smgr, menuList[2]);
+		sleepSubmenu.setgvarIndex(Game.GVAR_REDUCE_CPU_USAGE);
+		sleepSubmenu.setYpos(130);
+		sleepSubmenu.addSubEntry("Off", 100);
+		sleepSubmenu.addSubEntry("On", 150);
+		menuList[2].addSubMenu("Reduce CPU usage (disable if framerate is inconsistent)", sleepSubmenu, 100, 100);
 		OptionSelector infLivesSubmenu = new OptionSelector(this.game, kbh, smgr, menuList[2]);
 		infLivesSubmenu.setgvarIndex(Game.GVAR_INFINITE_LIVES);
-		infLivesSubmenu.setYpos(130);
+		infLivesSubmenu.setYpos(195);
 		infLivesSubmenu.addSubEntry("Off", 100);
 		infLivesSubmenu.addSubEntry("On", 150);
-		menuList[2].addSubMenu("Infinite Lives", infLivesSubmenu, 100, 100);
+		menuList[2].addSubMenu("Infinite Lives", infLivesSubmenu, 100, 165);
 		OptionSelector difficultySubmenu = new OptionSelector(this.game, kbh, smgr, menuList[2]);
 		difficultySubmenu.setgvarIndex(Game.GVAR_DIFFICULTY);
-		difficultySubmenu.setYpos(205);
+		difficultySubmenu.setYpos(260);
 		difficultySubmenu.addSubEntry("Nerfed", 100);
 		difficultySubmenu.addSubEntry("Original", 175);
-		menuList[2].addSubMenu("Difficulty", difficultySubmenu, 100, 175);
-		menuList[2].addNewEntry("Back", MenuEntry.BHV_CHANGE_MENU, -1, 100, 250);
+		menuList[2].addSubMenu("Difficulty", difficultySubmenu, 100, 230);
+		menuList[2].addNewEntry("Back", MenuEntry.BHV_CHANGE_MENU, -1, 100, 295);
 		
 		//PRACTICE MENU
 		menuList[3] = new MenuNew(this.game, kbh, smgr, this);

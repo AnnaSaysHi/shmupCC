@@ -19,6 +19,7 @@ public class Game extends Canvas implements Runnable{
 	public final int SCRIPT_MAX = 6;
 	public final int MAX_MENU_DEPTH = 10;
 
+	public static final int GVAR_REDUCE_CPU_USAGE = 0;
 	public static final int GVAR_DIFFICULTY = 1;
 	public static final int GVAR_INFINITE_LIVES = 2;
 	
@@ -109,7 +110,7 @@ public class Game extends Canvas implements Runnable{
 		
 		RNG = new Random();
 		gvars = new int[] {
-				0,	// UNUSED
+				1,	// REDUCE CPU USAGE
 				1,	// DIFFICULTY
 				0	// INFINITE LIVES
 		};
@@ -209,14 +210,16 @@ public class Game extends Canvas implements Runnable{
 				tick();
 				render();
 				nextTick = MRT + skipTicks;
-				long sleepdur = (nextTick - MRT) / 1000000;
-				if(sleepdur > 6) {
-					try {
-						Thread.sleep(Math.max(0, sleepdur - 6));
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+				if (this.getGvar(GVAR_REDUCE_CPU_USAGE) == 1) {
+					long sleepdur = (nextTick - MRT) / 1000000;
+					if (sleepdur > 6) {
+						try {
+							Thread.sleep(Math.max(0, sleepdur - 6));
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					} 
 				}
 			}			
 		}
