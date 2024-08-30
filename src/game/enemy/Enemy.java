@@ -236,11 +236,17 @@ public class Enemy {
 	public void renderHPbar(Graphics2D g) {
 		Stroke previousStroke = g.getStroke();
 		double hpbarFrac = (double)this.HP / (double)this.maxHP;
-		Arc2D hpArc = new Arc2D.Double(this.getXpos() - (renderSize * 2) + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH/2), this.getYpos()- (renderSize * 2) + Game.PLAYFIELDYOFFSET, renderSize * 4, renderSize * 4, 90, hpbarFrac * 360.0, Arc2D.OPEN);
-		g.setColor(new Color(255,144,144));
-		g.setStroke(new BasicStroke(3));
-		g.draw(hpArc);
+		Arc2D hpArcCenter = new Arc2D.Double(this.getXpos() - (renderSize * 2) + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH/2), this.getYpos()- (renderSize * 2) + Game.PLAYFIELDYOFFSET, renderSize * 4, renderSize * 4, 90, hpbarFrac * 360.0, Arc2D.OPEN);
+		Arc2D hpArcInner = new Arc2D.Double(this.getXpos() - (renderSize * 2) + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH/2) + 2, this.getYpos()- (renderSize * 2) + Game.PLAYFIELDYOFFSET + 2, (renderSize * 4) - 4, (renderSize * 4) - 4, 90, 360.0, Arc2D.OPEN);
+		Arc2D hpArcOuter = new Arc2D.Double(this.getXpos() - (renderSize * 2) + Game.PLAYFIELDXOFFSET + (Game.PLAYFIELDWIDTH/2) - 2, this.getYpos()- (renderSize * 2) + Game.PLAYFIELDYOFFSET - 2, (renderSize * 4) + 4, (renderSize * 4) + 4, 90, 360.0, Arc2D.OPEN);
+		g.setColor(new Color(255, 196, 196));
+		g.setStroke(new BasicStroke(4));
+		g.draw(hpArcCenter);
+		g.setStroke(new BasicStroke(1));
 		g.setStroke(previousStroke);
+		g.setColor(new Color(255,72,72));	
+		g.draw(hpArcInner);
+		g.draw(hpArcOuter);
 	}
 	
 	protected void onDeath() {
