@@ -11,11 +11,11 @@ import game.enemy.EnemyManager;
 import game.enemy.EnemyMovementInterpolator;
 import game.player.Player;
 
-public class Script1_6 extends StageScript {
+public class Script_BHA8 extends StageScript {
 	int chapter;
 	int bossStartPattern;
 
-	public Script1_6(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
+	public Script_BHA8(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
 		super(mgr, g, playerChar, enmMgr, smgr);
 	}
 

@@ -32,7 +32,7 @@ public class MenuManager {
 		pauseMenu.addNewEntry("Restart", MenuEntry.BHV_START_OVER, 0, 100, 150);
 		pauseMenu.addNewEntry("Return to Title", MenuEntry.BHV_RETURN_TO_MENU, 0, 100, 200);
 		menuList[0] = new MenuNew(this.game, kbh, smgr, this);
-		menuList[0].addNewEntry("Level Select", MenuEntry.BHV_CHANGE_MENU, 1, 100, 100);
+		menuList[0].addNewEntry("Start", MenuEntry.BHV_START_SCENE, 5, 100, 100);
 		menuList[0].addNewEntry("Practice", MenuEntry.BHV_CHANGE_MENU, 3, 100, 150);
 		menuList[0].addNewEntry("Options", MenuEntry.BHV_CHANGE_MENU, 2, 100, 200);
 		menuList[0].addNewEntry("Exit", MenuEntry.BHV_EXIT_GAME, 0, 100, 250);
