@@ -22,7 +22,6 @@ public class Script_BHA8 extends StageScript {
 	@Override
 	public void initActions(int startingChapter) {
 		
-		stageTimer = 0;
 		chapter = startingChapter % 256;
 		bossStartPattern = startingChapter / 256;
 	}
@@ -34,7 +33,6 @@ public class Script_BHA8 extends StageScript {
 
 	@Override
 	public void tick() {
-		stageTimer++;
 		switch(chapter) {
 		case 0:
 			chapter1actions();

@@ -27,11 +27,13 @@ public abstract class StageScript {
 	public void init() {
 		mgr.deactivateAll();
 		enmMgr.reset();
+		stageTimer = 0;
 		initActions();
 	}
 	public void init(int argA) {
 		mgr.deactivateAll();
 		enmMgr.reset();
+		stageTimer = 0;
 		this.initActions(argA);
 	}
 	
@@ -40,7 +42,10 @@ public abstract class StageScript {
 	public void initActions(int argA) {
 		this.initActions();
 	};
-	
+	public void update() {
+		stageTimer++;
+		tick();
+	}	
 	
 	public abstract void tick();
 }

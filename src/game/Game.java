@@ -163,7 +163,6 @@ public class Game extends Canvas implements Runnable{
 		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[4] = new Script_necropotence(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[5] = new Script_BHA8(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-
 	}
 	
 	private synchronized void start() {
@@ -242,7 +241,7 @@ public class Game extends Canvas implements Runnable{
 			if(kbh.getHeldKeys()[8]) {
 				state = STATE.PAUSE;
 			} else {
-				stageList[stage].tick();
+				stageList[stage].update();
 				BulletMGR.updateBullets();
 				ShotMGR.updateShots();
 				ShotMGR.enemyHitDetect();

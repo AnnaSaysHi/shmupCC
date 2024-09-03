@@ -25,8 +25,6 @@ public class Script1_4 extends StageScript {
 	
 	@Override
 	public void tick() {
-		stageTimer++;
-		//if(stageTimer % 400 == 1) enmMgr.addEnemy(new EnmTest(), 0, -50, 1000);
 	}
 	
 	
