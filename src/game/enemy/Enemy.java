@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.awt.geom.Arc2D;
 
 import game.Game;
@@ -21,8 +22,7 @@ public class Enemy {
 	protected SoundManager SoundMGR;
 	protected EnemyManager parentMGR;
 	EnemyMovementInterpolator interpolator;
-	
-	final int numSpawners = 16; 
+	 
 	int sprite;
 	protected double xpos;
 	protected double ypos;
@@ -68,7 +68,7 @@ public class Enemy {
 	protected double hitboxSize; //radius
 	public int hurtboxSize; //radius
 	boolean disabled; // If this is true, then the enemy will not be processed.
-	protected BulletSpawner[] spawners = new BulletSpawner[numSpawners];
+	protected ArrayList<BulletSpawner> spawners;
 	
 
 	public Enemy() {
@@ -116,9 +116,7 @@ public class Enemy {
 		targetPlayer = p;
 		game = g;
 		parentMGR = emgr;
-		for(int i = 0; i < numSpawners; i++) {
-			spawners[i] = new BulletSpawner(bulletMGR, targetPlayer, game);
-		}		
+		spawners = new ArrayList<BulletSpawner>();		
 		disabled = false;
 		sprite = -1;
 		xpos = x;
@@ -127,10 +125,7 @@ public class Enemy {
 		maxHP = health;
 		numHealthbars = 0;
 		hpCallbackThreshold = -1;
-		for(int i = 0; i < numSpawners; i++) {
-			spawners[i].reInit();
-			spawners[i].setParentEnemy(this);
-		}
+		
 		
 		flags = 0x00000000;
 		if(mirrored) this.setFlag(FLAG_MIRROR);
@@ -169,8 +164,8 @@ public class Enemy {
 		enemyTimer++;
 		takeDamage();
 		this.doEnemyActions();
-		for(int i = 0; i < numSpawners; i++) {
-			spawners[i].tickSpawner();
+		for(BulletSpawner s : spawners) {
+			s.tickSpawner();
 		}
 		this.processEnemyMovement();
 		boolean diesOffscreen = !(testFlag(FLAG_PERSISTENT) || testFlag(FLAG_CONTROL_ENEMY));
@@ -179,6 +174,7 @@ public class Enemy {
 			disabled = true;
 		}
 	}
+
 	
 	protected void doEnemyActions() {
 		//To be overridden by custom enemy types.
@@ -313,5 +309,16 @@ public class Enemy {
 		double targetX = ((game.FetchRNG().nextDouble()) * (this.rightMovementBound - this.leftMovementBound)) + this.leftMovementBound;
 		double targetY = ((game.FetchRNG().nextDouble()) * (this.bottomMovementBound - this.topMovementBound)) + this.topMovementBound;
 		interpolator.moveOverTime(targetX, targetY, t, mode);
+	}
+	protected void clearSpawners() {
+		spawners.clear();
+	}
+	protected int newSpawner() {
+		int toRet = spawners.size();
+		spawners.add(new BulletSpawner(bulletMGR, targetPlayer, game));
+		spawners.get(toRet).reInit();
+		spawners.get(toRet).setParentEnemy(this);
+		spawners.get(toRet).setRelativePos(0, 0);
+		return toRet;
 	}
 }
