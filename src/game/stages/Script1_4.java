@@ -20,7 +20,7 @@ public class Script1_4 extends StageScript {
 	public void initActions() {
 		
 
-		enmMgr.addEnemy(new EnmTest(), 0, -50, 10000, false);
+		enmMgr.addEnemy(new Enm1_4(), 0, -50, 10000, false);
 	}
 	
 	@Override
@@ -31,13 +31,13 @@ public class Script1_4 extends StageScript {
 	
 	
 }
-class EnmTest extends game.enemy.Enemy{
+class Enm1_4 extends game.enemy.Enemy{
 
 	double anglenum;
 	double angleIncrement;
 	double angleRain;
 	BulletTransformation accelTransform;
-	public EnmTest() {
+	public Enm1_4() {
 		super();
 	}
 	@Override
