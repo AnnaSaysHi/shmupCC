@@ -228,27 +228,26 @@ class EnmMboss extends game.enemy.Enemy{
 		}
 	}
 	protected void attackChaseSetup() {
-		this.spawners[0].reInit();
-		this.spawners[1].reInit();
+		this.clearSpawners();
+		this.newSpawner();
 		this.pattern++;
 		bulletMGR.deactivateAll();
 		this.HP = 4000;
 		this.maxHP = 4000;
 		this.hpCallbackThreshold = 0;
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 120);
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Meek);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(5, 1);
-		this.spawners[0].setSpeeds(2.5, 1.0);
-		this.spawners[0].setAngles(Math.PI /4, -Math.PI * 5.0/4.0);
-		this.spawners[0].setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_BLUE);
+		spawners.get(0).reInit();
+		spawners.get(0).setMode(BulletSpawner.Mode_Meek);
+		spawners.get(0).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(0).setBulletCounts(5, 1);
+		spawners.get(0).setSpeeds(2.5, 1.0);
+		spawners.get(0).setAngles(Math.PI /4, -Math.PI * 5.0/4.0);
+		spawners.get(0).setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_BLUE);
 		chaseTransform = new BulletTransformation();
 		chaseTransform.queueOffscreenTransform(300);
 		chaseTransform.queueWaitTransform(10);
 		chaseTransform.queueAccelDirTransform(300, game.floatDiff(0.035, 0.05), Math.PI/2);
-		this.spawners[0].setTransformList(chaseTransform);
+		spawners.get(0).setTransformList(chaseTransform);
 		this.setMovementBounds(-120, 120, 50, 120);
 		this.enemyTimer = 0;
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
@@ -256,7 +255,7 @@ class EnmMboss extends game.enemy.Enemy{
 	protected void attackChaseTick() {
 		if(this.enemyTimer == 30) {
 			this.clearFlag(FLAG_DAMAGE_IMMUNE);
-			this.spawners[0].setActivationFrequency(game.intDiff(7, 5));
+			spawners.get(0).setActivationFrequency(game.intDiff(7, 5));
 		}
 		this.angleRain = (Math.sin(this.enemyTimer / 60) + (Math.PI/2));
 		chaseTransform.removeTransformationAtIndex(2);
@@ -279,11 +278,11 @@ class EnmMboss extends game.enemy.Enemy{
 		if(this.enemyTimer % 120 < 63 && this.enemyTimer % 20 == 4) {
 			streamingAttack();
 		}
-		if(this.enemyTimer % 120 < 63 && this.enemyTimer % 20 == 8) this.spawners[1].setActivationFrequency(-1);
+		if(this.enemyTimer % 120 < 63 && this.enemyTimer % 20 == 8) spawners.get(1).setActivationFrequency(-1);
 	}
 	void streamingAttack() {
-		this.spawners[1].setAngles(game.getAngleToPlayer(this.getXpos(), this.getYpos()), Math.PI / 60);
-		this.spawners[1].setActivationFrequency(1);
+		spawners.get(1).setAngles(game.getAngleToPlayer(this.getXpos(), this.getYpos()), Math.PI / 60);
+		spawners.get(1).setActivationFrequency(1);
 		SoundMGR.playFromArray(SoundManager.EnemyShootMed);
 	}
 	void setupShot() {
@@ -305,13 +304,13 @@ class EnmMboss extends game.enemy.Enemy{
 			double distTarget = Math.pow(Math.pow((targetY - this.ypos), 2) + Math.pow((targetX - this.xpos), 2), 0.5);
 
 			int boomBulletCount = game.intDiff(9, 13);
-			this.spawners[0].setAngles(angleTarget, 0);
-			this.spawners[0].setSpeeds(distTarget / 75, distTarget / 75);
+			spawners.get(0).setAngles(angleTarget, 0);
+			spawners.get(0).setSpeeds(distTarget / 75, distTarget / 75);
 			this.boomTransform.removeTransformationAtIndex(2);
 			this.boomTransform.insertShootPrepareTransform(2, 7, BulletSpawner.Mode_Fan, boomBulletCount, 3, Math.PI + angleTarget, Math.PI / boomBulletCount, 1, 3);
 			this.boomTransform.removeTransformationAtIndex(4);
 			this.boomTransform.insertShootPrepareTransform(4, 7, BulletSpawner.Mode_Fan, boomBulletCount, 2, (Math.PI + angleTarget) + ((Math.PI / boomBulletCount) / 2), Math.PI / boomBulletCount, 1.5, 2.5);
-			this.spawners[0].activate();
+			spawners.get(0).activate();
 		}
 	}
 	void attackBoomSetup() {
@@ -321,19 +320,18 @@ class EnmMboss extends game.enemy.Enemy{
 		this.HP = boomhealth;
 		this.enemyTimer = 0;
 		this.hpCallbackThreshold = 0;
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[0].setBulletCounts(1, 1);
-		this.spawners[0].setAngles(Math.PI/2, 0);
-		this.spawners[0].setSpeeds(2, 2);
-		this.spawners[1].reInit();
-		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[1].setBulletCounts(game.intDiff(1, 4), 1);
-		this.spawners[1].setAngles(0, 0);
-		this.spawners[1].setSpeeds(0.5, 0.5);
-		this.spawners[1].setTypeAndColor(Bullet.BALL, Bullet.COLOR16_LIGHT_GREY);
+		this.clearSpawners();
+		this.newSpawner();
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Fan);
+		spawners.get(0).setBulletCounts(1, 1);
+		spawners.get(0).setAngles(Math.PI/2, 0);
+		spawners.get(0).setSpeeds(2, 2);
+		spawners.get(1).setMode(BulletSpawner.Mode_Fan);
+		spawners.get(1).setBulletCounts(game.intDiff(1, 4), 1);
+		spawners.get(1).setAngles(0, 0);
+		spawners.get(1).setSpeeds(0.5, 0.5);
+		spawners.get(1).setTypeAndColor(Bullet.BALL, Bullet.COLOR16_LIGHT_GREY);
 		this.boomTransform = new BulletTransformation();
 		this.boomTransform.queueWaitTransform(75);
 		this.boomTransform.queueSoundTransform(SoundManager.Explosion);
@@ -341,27 +339,27 @@ class EnmMboss extends game.enemy.Enemy{
 		switch(this.subtype) {
 		case 0:
 			bulletMGR.deactivateAll();
-			this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_YELLOW);
-			this.spawners[0].setAngles(0, 0);
+			spawners.get(0).setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_YELLOW);
+			spawners.get(0).setAngles(0, 0);
 			this.boomTransform.queueShootPrepareTransform(5, BulletSpawner.Mode_Fan, boomBulletCount, 3, Math.PI, Math.PI / boomBulletCount, 1, 3);
 			this.boomTransform.queueShootActivateTransform(Bullet.STAR_CCW, Bullet.COLOR16_PINK, 0);
 			this.boomTransform.queueShootPrepareTransform(5, BulletSpawner.Mode_Fan, boomBulletCount, 2, Math.PI + (Math.PI / boomBulletCount)/2, Math.PI / boomBulletCount, 1.5, 2.5);
 			this.boomTransform.queueShootActivateTransform(Bullet.STAR_CCW, Bullet.COLOR16_PINK, 1);
 			break;
 		case 1:
-			this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_PINK);
-			this.spawners[0].setAngles(Math.PI, 0);
+			spawners.get(0).setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_PINK);
+			spawners.get(0).setAngles(Math.PI, 0);
 			this.boomTransform.queueShootPrepareTransform(7, BulletSpawner.Mode_Fan, boomBulletCount, 3, 0, Math.PI / boomBulletCount, 1, 3);
 			this.boomTransform.queueShootActivateTransform(Bullet.STAR_CCW, Bullet.COLOR16_YELLOW, 0);
 			this.boomTransform.queueShootPrepareTransform(7, BulletSpawner.Mode_Fan, boomBulletCount, 2, (Math.PI / boomBulletCount) / 2, Math.PI / boomBulletCount, 1.5, 2.5);
 			this.boomTransform.queueShootActivateTransform(Bullet.STAR_CCW, Bullet.COLOR16_YELLOW, 1);
 			break;
 		}
-		this.spawners[0].setTransformList(this.boomTransform);
+		spawners.get(0).setTransformList(this.boomTransform);
 		this.AccelTransform = new BulletTransformation();
 		this.AccelTransform.queueWaitTransform(24);
 		this.AccelTransform.queueAccelAngleVelTransform(35, 0.2, 0);
-		this.spawners[1].setTransformList(AccelTransform);
+		spawners.get(1).setTransformList(AccelTransform);
 	}
 }
 class Enm4 extends game.enemy.Enemy{
@@ -377,27 +375,28 @@ class Enm4 extends game.enemy.Enemy{
 		this.setPosRelTime(150, EnemyMovementInterpolator.INTERPOLATION_LINEAR, 600, 0);
 		this.setFlag(FLAG_PERSISTENT);
 		//this.setFlag(FLAG_DAMAGE_IMMUNE);
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(game.intDiff(2, 3), 1);
-		this.spawners[0].setSpeeds(10, 1);
+		this.clearSpawners();
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(0).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(0).setBulletCounts(game.intDiff(2, 3), 1);
+		spawners.get(0).setSpeeds(10, 1);
 		ang1 = game.randRad();
-		this.spawners[0].setAngles(ang1, 0);
+		spawners.get(0).setAngles(ang1, 0);
 		int bullType = (this.testFlag(FLAG_MIRROR) ? Bullet.STAR_CCW : Bullet.STAR_CW);
 		int bullColor = (this.testFlag(FLAG_MIRROR) ? Bullet.COLOR16_CYAN : Bullet.COLOR16_LIGHT_GREEN);
-		this.spawners[0].setTypeAndColor(bullType, bullColor);
+		spawners.get(0).setTypeAndColor(bullType, bullColor);
 		pauseAccel.queueAccelAngleVelTransform(10, -1, 0);
 		pauseAccel.queueWaitTransform(30);
 		pauseAccel.queueAccelAngleVelTransform(100, 0.025, 0);
-		this.spawners[0].setTransformList(pauseAccel);
-		this.spawners[0].setSpawnDistance(10);
-		this.spawners[0].setActivationFrequency(4);
+		spawners.get(0).setTransformList(pauseAccel);
+		spawners.get(0).setSpawnDistance(10);
+		spawners.get(0).setActivationFrequency(4);
 	}
 	@Override
 	protected void doEnemyActions() {
 		this.ang1 += (Math.PI / 25);
-		this.spawners[0].setAngles(ang1, 0);
+		spawners.get(0).setAngles(ang1, 0);
 		if(this.enemyTimer == 160) {
 			this.clearFlag(FLAG_PERSISTENT);
 		}
@@ -416,27 +415,27 @@ class Enm3 extends game.enemy.Enemy{
 		this.setEnemySprite(0);
 		this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 100);
 		this.setFlag(FLAG_PERSISTENT);
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[0].setSound(SoundManager.Sparkle);
-		this.spawners[0].setAngles(Math.PI / 2, 0);
-		this.spawners[0].setTypeAndColor(Bullet.STAR_BIG_CW, Bullet.COLOR8_LIGHT_BLUE);
-		this.spawners[0].setSpeeds(1.5, 1);
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Fan);
+		spawners.get(0).setSound(SoundManager.Sparkle);
+		spawners.get(0).setAngles(Math.PI / 2, 0);
+		spawners.get(0).setTypeAndColor(Bullet.STAR_BIG_CW, Bullet.COLOR8_LIGHT_BLUE);
+		spawners.get(0).setSpeeds(1.5, 1);
 		explodeTransform = new BulletTransformation();
 		explodeTransform.queueWaitTransform(40);
 		explodeTransform.queueSoundTransform(SoundManager.EnemyShootLoud);
 		explodeTransform.queueShootPrepareTransform(4, BulletSpawner.Mode_Ring_Nonaimed, 5, 2, BulletTransformation.RAND_ANGLE, (Math.PI / 5.0), 1.5, 0.75);
 		explodeTransform.queueShootActivateTransform(Bullet.STAR_CW, Bullet.COLOR16_CYAN, 1);
-		this.spawners[0].setTransformList(explodeTransform);
+		spawners.get(0).setTransformList(explodeTransform);
 	}
 	@Override
 	protected void doEnemyActions() {
 		if(this.enemyTimer == 60) {
 			this.clearFlag(FLAG_PERSISTENT);
 		}
-		if(this.enemyTimer == game.intDiff(75, 65)) this.spawners[0].activate();
+		if(this.enemyTimer == game.intDiff(75, 65)) spawners.get(0).activate();
 		if(this.enemyTimer == 90) {
-			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1)  this.spawners[0].activate();
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1)  spawners.get(0).activate();
 			this.setPosRelTime(60, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 0, -100);
 		}
 	}
@@ -463,16 +462,16 @@ class Enm2 extends game.enemy.Enemy{
 			this.setPosAbsTime(120, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT2, 350, 500);
 		}
 		this.setFlag(FLAG_PERSISTENT);
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[0].setSpeeds(0, 0);
-		this.spawners[0].setTypeAndColor(Bullet.BALL, Bullet.COLOR16_ORANGE);
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Fan);
+		spawners.get(0).setSpeeds(0, 0);
+		spawners.get(0).setTypeAndColor(Bullet.BALL, Bullet.COLOR16_ORANGE);
 		this.fireStart = game.FetchRNG().nextInt(20) + 25;
 		double accelStrength = game.floatDiff(0.03, 0.07);
 		AccelTransform = new BulletTransformation();
 		AccelTransform.queueWaitTransform(24);
 		AccelTransform.queueAccelAngleVelTransform(100, accelStrength, 0);
-		this.spawners[0].setTransformList(AccelTransform);
+		spawners.get(0).setTransformList(AccelTransform);
 	}
 	@Override
 	protected void doEnemyActions() {
@@ -481,14 +480,14 @@ class Enm2 extends game.enemy.Enemy{
 		}
 		if(this.enemyTimer > this.fireStart) {
 			if((this.enemyTimer - this.fireStart) % 20 == 0) Enm2attack();
-			if((this.enemyTimer - this.fireStart) % 20 == 4) this.spawners[0].setActivationFrequency(-1);
+			if((this.enemyTimer - this.fireStart) % 20 == 4) spawners.get(0).setActivationFrequency(-1);
 		}
 	}
 	protected void Enm2attack() {
 		double angAim = game.getAngleToPlayer(this.getXpos(), this.getYpos());
 		if(this.testFlag(FLAG_MIRROR)) angAim = Math.PI - angAim;
-		this.spawners[0].setAngles(angAim, 0);
-		this.spawners[0].setActivationFrequency(1);
+		spawners.get(0).setAngles(angAim, 0);
+		spawners.get(0).setActivationFrequency(1);
 		SoundMGR.playFromArray(SoundManager.EnemyShootMuted);
 	}
 }
@@ -503,16 +502,16 @@ class Enm1 extends game.enemy.Enemy{
 		this.setPosRelTime(120, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 50, 150);
 		this.setFlag(FLAG_PERSISTENT);
 		//this.setFlag(FLAG_DAMAGE_IMMUNE);
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(5, 2);
-		this.spawners[0].setSpeeds(2.5, 1);
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Fan);
+		spawners.get(0).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(0).setBulletCounts(5, 2);
+		spawners.get(0).setSpeeds(2.5, 1);
 		double ang1 = Math.toRadians(100);
 		double ang2 = Math.toRadians(10);
-		this.spawners[0].setAngles(ang1, ang2);
-		this.spawners[0].setTypeAndColor(Bullet.BALL, Bullet.COLOR16_BRIGHT_RED);
-		this.spawners[0].setActivationFrequency(50);
+		spawners.get(0).setAngles(ang1, ang2);
+		spawners.get(0).setTypeAndColor(Bullet.BALL, Bullet.COLOR16_BRIGHT_RED);
+		spawners.get(0).setActivationFrequency(50);
 	}
 	@Override
 	protected void doEnemyActions() {
@@ -635,10 +634,10 @@ class EnmBoss extends game.enemy.Enemy{
 				anglenum1 += angleIncrement1;
 				anglenum2 += angleIncrement2;
 			}
-			this.spawners[0].setAngles(anglenum1, 0);
-			this.spawners[1].setAngles(anglenum2, 0);
-			this.spawners[0].activate();
-			this.spawners[1].activate();
+			spawners.get(0).setAngles(anglenum1, 0);
+			spawners.get(1).setAngles(anglenum2, 0);
+			spawners.get(0).activate();
+			spawners.get(1).activate();
 			if(attackTimer > 360) {
 				attackTimer = -40;
 				this.moveRandomWithinBounds(40, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT_IN_2);
@@ -651,6 +650,7 @@ class EnmBoss extends game.enemy.Enemy{
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
 		this.setMovementBounds(-60, 60, 40, 80);
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 80);
+		this.clearSpawners();
 		this.HP = 7500;
 		this.maxHP = 7500;
 		this.enemyTimer = 0;
@@ -660,28 +660,26 @@ class EnmBoss extends game.enemy.Enemy{
 		this.accelTransform.queueAccelAngleVelTransform(50, game.floatDiff(0.03, 0.045), 0);
 		anglenum1 = game.randRad();
 		anglenum2 = anglenum1;
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(game.intDiff(10, 13), 1);
-		this.spawners[0].setSpeeds(1, 1);
-		this.spawners[0].setAngles(anglenum1, anglenum1);
-		this.spawners[0].setSpawnDistance(20);
-		this.spawners[0].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
-		this.spawners[0].setTransformList(accelTransform);
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(0).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(0).setBulletCounts(game.intDiff(10, 13), 1);
+		spawners.get(0).setSpeeds(1, 1);
+		spawners.get(0).setAngles(anglenum1, anglenum1);
+		spawners.get(0).setSpawnDistance(20);
+		spawners.get(0).setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
+		spawners.get(0).setTransformList(accelTransform);
 		this.angleIncrement1 = Math.toRadians(Math.E + 1.5);
 		this.angleIncrement2 = Math.toRadians(-Math.E - 1.5);
-		this.spawners[1].reInit();
-		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[1].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[1].setBulletCounts(game.intDiff(10, 13), 1);
-		this.spawners[1].setSpeeds(1, 1);
-		this.spawners[1].setAngles(anglenum2, anglenum2);
-		this.spawners[1].setSpawnDistance(20);
-		this.spawners[1].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_CYAN);
-		this.spawners[1].setTransformList(accelTransform);
+		this.newSpawner();
+		spawners.get(1).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(1).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(1).setBulletCounts(game.intDiff(10, 13), 1);
+		spawners.get(1).setSpeeds(1, 1);
+		spawners.get(1).setAngles(anglenum2, anglenum2);
+		spawners.get(1).setSpawnDistance(20);
+		spawners.get(1).setTypeAndColor(Bullet.RICE, Bullet.COLOR16_CYAN);
+		spawners.get(1).setTransformList(accelTransform);
 	}
 	
 	protected void attackMancTick() {
@@ -694,21 +692,21 @@ class EnmBoss extends game.enemy.Enemy{
 	}
 	protected void attackMancVolley() {
 		if(attackTimer == 30) {
-			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) this.spawners[0].setAngles(-anglenum1 / 2, anglenum1);
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) spawners.get(0).setAngles(-anglenum1 / 2, anglenum1);
 			fireballTrail.removeTransformationAtIndex(0);
 			fireballTrail.insertWaitTransform(0, 0);
-			this.spawners[0].activate();
+			spawners.get(0).activate();
 		}
 		else if (attackTimer == 53) {
-			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) this.spawners[0].setAngles(anglenum1 / 2, anglenum1);
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) spawners.get(0).setAngles(anglenum1 / 2, anglenum1);
 			fireballTrail.removeTransformationAtIndex(0);
 			fireballTrail.insertWaitTransform(0, 2);
-			this.spawners[0].activate();
+			spawners.get(0).activate();
 		}else if(this.attackTimer == 76) {
-			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) this.spawners[0].setAngles(0, anglenum1 * 3 / 4);
+			if(game.getGvar(Game.GVAR_DIFFICULTY) == 1) spawners.get(0).setAngles(0, anglenum1 * 3 / 4);
 			fireballTrail.removeTransformationAtIndex(0);
 			fireballTrail.insertWaitTransform(0, 4);
-			this.spawners[0].activate();
+			spawners.get(0).activate();
 			this.attackTimer = game.intDiff(-240, -210);
 		}
 		
@@ -720,19 +718,19 @@ class EnmBoss extends game.enemy.Enemy{
 		this.setPosAbsTime(30, EnemyMovementInterpolator.INTERPOLATION_EASE_IN2, 0, 90);
 		this.HP = game.intDiff(8000, 6750);
 		this.maxHP = game.intDiff(8000, 6750);
+		this.clearSpawners();
 		attackTimer = 0;
 		fireballTrail = new BulletTransformation();
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_RED);
+		this.newSpawner();
+		spawners.get(0).setTypeAndColor(Bullet.MENTOS, Bullet.COLOR8_RED);
 		shotSpeed = game.floatDiff(5, 5);
 		anglenum1 = Math.PI / 5;
-		this.spawners[0].setSpeeds(shotSpeed, 0);
-		this.spawners[0].setBulletCounts(2, 1);
-		this.spawners[0].setMode(BulletSpawner.Mode_Fan_Aimed);
-		this.spawners[0].setAngles(0, anglenum1 * 4 / 3);
-		this.spawners[0].setSound(SoundManager.EnemyShootLoud);
-		this.spawners[0].setSpawnDistance(24);
+		spawners.get(0).setSpeeds(shotSpeed, 0);
+		spawners.get(0).setBulletCounts(2, 1);
+		spawners.get(0).setMode(BulletSpawner.Mode_Fan_Aimed);
+		spawners.get(0).setAngles(0, anglenum1 * 4 / 3);
+		spawners.get(0).setSound(SoundManager.EnemyShootLoud);
+		spawners.get(0).setSpawnDistance(24);
 		fireballTrail.queueWaitTransform(1);
 		fireballTrail.queueWaitTransform(game.intDiff(7, 5));
 		fireballTrail.queueShootPrepareTransform(5, BulletSpawner.Mode_Ring_Mode5, 2, 1, BulletTransformation.ANGLE_SELF, 0, 3, 0);
@@ -742,7 +740,7 @@ class EnmBoss extends game.enemy.Enemy{
 		fireballTrail.queueAccelAngleVelTransform(1, 0, BulletTransformation.RAND_ANGLE);
 		fireballTrail.queueWaitTransform(60);
 		fireballTrail.queueAccelAngleVelTransform(40, game.floatDiff(0.03, 0.035), 0);
-		this.spawners[0].setTransformList(fireballTrail);
+		spawners.get(0).setTransformList(fireballTrail);
 	}
 
 	protected void attackNon2Tick() {
@@ -751,10 +749,10 @@ class EnmBoss extends game.enemy.Enemy{
 		if(attackTimer > 0 && attackTimer % 5 == 1) {
 			anglenum1 += angleIncrement1;
 			anglenum2 += angleIncrement2;
-			this.spawners[0].setAngles(anglenum1, 0);
-			this.spawners[1].setAngles(anglenum2, 0);
-			this.spawners[0].activate();
-			this.spawners[1].activate();
+			spawners.get(0).setAngles(anglenum1, 0);
+			spawners.get(1).setAngles(anglenum2, 0);
+			spawners.get(0).activate();
+			spawners.get(1).activate();
 			if(attackTimer > 360) {
 				attackTimer = -40;
 				this.moveRandomWithinBounds(40, EnemyMovementInterpolator.INTERPOLATION_EASE_OUT_IN_2);
@@ -771,33 +769,32 @@ class EnmBoss extends game.enemy.Enemy{
 		this.maxHP = 7500;
 		this.enemyTimer = 0;
 		attackTimer = 0;
+		this.clearSpawners();
 		this.accelTransform = new BulletTransformation();
 		this.accelTransform.queueWaitTransform(20);
 		this.accelTransform.queueAccelAngleVelTransform(50, game.floatDiff(0.035, 0.045), 0);
 		anglenum1 = game.randRad();
 		anglenum2 = anglenum1;
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(game.intDiff(5, 8), 1);
-		this.spawners[0].setSpeeds(1, 1);
-		this.spawners[0].setAngles(anglenum1, anglenum1);
-		this.spawners[0].setSpawnDistance(20);
-		this.spawners[0].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_GREEN);
-		this.spawners[0].setTransformList(accelTransform);
+		this.newSpawner();
+		spawners.get(0).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(0).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(0).setBulletCounts(game.intDiff(5, 8), 1);
+		spawners.get(0).setSpeeds(1, 1);
+		spawners.get(0).setAngles(anglenum1, anglenum1);
+		spawners.get(0).setSpawnDistance(20);
+		spawners.get(0).setTypeAndColor(Bullet.RICE, Bullet.COLOR16_GREEN);
+		spawners.get(0).setTransformList(accelTransform);
 		this.angleIncrement1 = Math.toRadians(Math.E + 4);
 		this.angleIncrement2 = Math.toRadians(-Math.PI - 1);
-		this.spawners[1].reInit();
-		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[1].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[1].setBulletCounts(game.intDiff(8, 13), 1);
-		this.spawners[1].setSpeeds(1, 1);
-		this.spawners[1].setAngles(anglenum2, anglenum2);
-		this.spawners[1].setSpawnDistance(20);
-		this.spawners[1].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_YELLOW);
-		this.spawners[1].setTransformList(accelTransform);
+		this.newSpawner();
+		spawners.get(1).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(1).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(1).setBulletCounts(game.intDiff(8, 13), 1);
+		spawners.get(1).setSpeeds(1, 1);
+		spawners.get(1).setAngles(anglenum2, anglenum2);
+		spawners.get(1).setSpawnDistance(20);
+		spawners.get(1).setTypeAndColor(Bullet.RICE, Bullet.COLOR16_YELLOW);
+		spawners.get(1).setTransformList(accelTransform);
 	}
 	
 	
@@ -812,13 +809,13 @@ class EnmBoss extends game.enemy.Enemy{
 			if(this.enemyTimer % game.intDiff(360, 240) == 40) {
 				starExplodeTransformCW.removeTransformationAtIndex(3);
 				starExplodeTransformCW.insertShootPrepareTransform(3, 5, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, -randang2, s1, -s1 * (c1 - 1));
-				this.spawners[0].setAngles(randang3, starAngle);
-				this.spawners[0].activate();
+				spawners.get(0).setAngles(randang3, starAngle);
+				spawners.get(0).activate();
 			}else {
 				starExplodeTransformCCW.removeTransformationAtIndex(3);
 				starExplodeTransformCCW.insertShootPrepareTransform(3, 5, BulletSpawner.Mode_Ring_Nonaimed, c1, 5, randang1, randang2, s1, -s1 * (c1 - 1));
-				this.spawners[1].setAngles(randang3, starAngle);
-				this.spawners[1].activate();
+				spawners.get(1).setAngles(randang3, starAngle);
+				spawners.get(1).activate();
 			}
 		}
 		else if (this.enemyTimer == 230) this.clearFlag(FLAG_DAMAGE_IMMUNE);
@@ -830,22 +827,21 @@ class EnmBoss extends game.enemy.Enemy{
 		this.maxHP = 6000;
 		this.HP = 6000;
 		starAngle = Math.PI / 5;
-		this.spawners[0].reInit();
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setTypeAndColor(Bullet.STAR_BIG_CW, Bullet.COLOR8_RED);
-		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[0].setBulletCounts(5, 2);
-		this.spawners[0].setAngles(Math.PI/2, 0);
-		this.spawners[0].setSpeeds(2, 1);
-		this.spawners[0].setSound(SoundManager.Sparkle);
-		this.spawners[1].reInit();
-		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setTypeAndColor(Bullet.STAR_BIG_CCW, Bullet.COLOR8_YELLOW);
-		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[1].setBulletCounts(5, 2);
-		this.spawners[1].setAngles(Math.PI/2, 0);
-		this.spawners[1].setSpeeds(2, 1);
-		this.spawners[1].setSound(SoundManager.Sparkle);
+		this.clearSpawners();
+		this.newSpawner();
+		spawners.get(0).setTypeAndColor(Bullet.STAR_BIG_CW, Bullet.COLOR8_RED);
+		spawners.get(0).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(0).setBulletCounts(5, 2);
+		spawners.get(0).setAngles(Math.PI/2, 0);
+		spawners.get(0).setSpeeds(2, 1);
+		spawners.get(0).setSound(SoundManager.Sparkle);
+		this.newSpawner();
+		spawners.get(1).setTypeAndColor(Bullet.STAR_BIG_CCW, Bullet.COLOR8_YELLOW);
+		spawners.get(1).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(1).setBulletCounts(5, 2);
+		spawners.get(1).setAngles(Math.PI/2, 0);
+		spawners.get(1).setSpeeds(2, 1);
+		spawners.get(1).setSound(SoundManager.Sparkle);
 		starExplodeTransformCW = new BulletTransformation();
 		starExplodeTransformCW.queueOffscreenTransform(35);
 		starExplodeTransformCW.queueWaitTransform(35);
@@ -861,8 +857,8 @@ class EnmBoss extends game.enemy.Enemy{
 		double angvel = game.floatDiff(0.05, 0.05);
 		starExplodeTransformCW.queueAccelAngleVelTransform(180, accel, angvel);
 		starExplodeTransformCCW.queueAccelAngleVelTransform(180, accel, -angvel);
-		this.spawners[0].setTransformList(starExplodeTransformCW);
-		this.spawners[1].setTransformList(starExplodeTransformCCW);
+		spawners.get(0).setTransformList(starExplodeTransformCW);
+		spawners.get(1).setTransformList(starExplodeTransformCCW);
 	}
 	
 	protected void attackSwirlTick() {	
@@ -870,23 +866,23 @@ class EnmBoss extends game.enemy.Enemy{
 			if (this.enemyTimer % aimedRingInterval == 0 && this.enemyTimer > 27 * 5) {
 				double ang_ex = 0.0 + ang;
 				double ang_player = game.getAngleToPlayer(this.getXpos(), this.getYpos());
-				this.spawners[0].setAngles(ang_player, Math.PI * 2 / 7);
+				spawners.get(0).setAngles(ang_player, Math.PI * 2 / 7);
 				for (int i = 0; i < RING_BULLET_CNT; i++) {
-					this.spawners[0].setRelativePos(Math.cos(ang_ex) * 24.0, Math.sin(ang_ex) * 24.0);
-					this.spawners[0].activate();
+					spawners.get(0).setRelativePos(Math.cos(ang_ex) * 24.0, Math.sin(ang_ex) * 24.0);
+					spawners.get(0).activate();
 					ang_ex += (2.0 * Math.PI) / RING_BULLET_CNT;
 				}
 			}
 			if (this.enemyTimer % (2 * starSwirlInterval) == 0) {
-				this.spawners[1].setAngles(game.randRad(), 0);
+				spawners.get(1).setAngles(game.randRad(), 0);
 				starCurrentColor = (starCurrentColor > 13 ? 1 : starCurrentColor + 1);
-				this.spawners[1].setTypeAndColor(Bullet.STAR_CW, starCurrentColor);
-				this.spawners[1].activate();
+				spawners.get(1).setTypeAndColor(Bullet.STAR_CW, starCurrentColor);
+				spawners.get(1).activate();
 			} else if (this.enemyTimer % starSwirlInterval == 0) {
-				this.spawners[2].setAngles(game.randRad(), 0);
+				spawners.get(2).setAngles(game.randRad(), 0);
 				starCurrentColor = (starCurrentColor > 13 ? 1 : starCurrentColor + 1);
-				this.spawners[2].setTypeAndColor(Bullet.STAR_CCW, starCurrentColor);
-				this.spawners[2].activate();
+				spawners.get(2).setTypeAndColor(Bullet.STAR_CCW, starCurrentColor);
+				spawners.get(2).activate();
 			} 
 		}
 		if(this.enemyTimer == 180) this.clearFlag(FLAG_DAMAGE_IMMUNE);
@@ -901,33 +897,32 @@ class EnmBoss extends game.enemy.Enemy{
 		starSwirlInterval = 15;
 		int starRingCount = game.intDiff(13, 17);
 		starCurrentColor = 1;
-		this.spawners[0].reInit();
-		this.spawners[0].setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_DARK_GREY);
-		this.spawners[0].setBulletCounts(3, 1);
-		this.spawners[0].setMode(BulletSpawner.Mode_Fan);
-		this.spawners[0].setSpeeds(2, 2);
-		this.spawners[0].setSound(SoundManager.EnemyShootLoud);
-		this.spawners[1].reInit();
-		this.spawners[1].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[1].setTypeAndColor(Bullet.STAR_CW, Bullet.COLOR16_PINK);
-		this.spawners[1].setBulletCounts(starRingCount, 1);
-		this.spawners[1].setSpeeds(0.2, 0.2);
-		this.spawners[1].setRelativePos(0, 0);
-		this.spawners[1].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[2].reInit();
-		this.spawners[2].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[2].setTypeAndColor(Bullet.STAR_CW, Bullet.COLOR16_PINK);
-		this.spawners[2].setBulletCounts(starRingCount, 1);
-		this.spawners[2].setSpeeds(0.2, 0.2);
-		this.spawners[2].setRelativePos(0, 0);
-		this.spawners[2].setSound(SoundManager.EnemyShootMuted);
+		this.clearSpawners();
+		this.newSpawner();
+		spawners.get(0).setTypeAndColor(Bullet.OUTLINE, Bullet.COLOR16_DARK_GREY);
+		spawners.get(0).setBulletCounts(3, 1);
+		spawners.get(0).setMode(BulletSpawner.Mode_Fan);
+		spawners.get(0).setSpeeds(2, 2);
+		spawners.get(0).setSound(SoundManager.EnemyShootLoud);
+		this.newSpawner();
+		spawners.get(1).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(1).setTypeAndColor(Bullet.STAR_CW, Bullet.COLOR16_PINK);
+		spawners.get(1).setBulletCounts(starRingCount, 1);
+		spawners.get(1).setSpeeds(0.2, 0.2);
+		spawners.get(1).setSound(SoundManager.EnemyShootMuted);
+		this.newSpawner();
+		spawners.get(2).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(2).setTypeAndColor(Bullet.STAR_CW, Bullet.COLOR16_PINK);
+		spawners.get(2).setBulletCounts(starRingCount, 1);
+		spawners.get(2).setSpeeds(0.2, 0.2);
+		spawners.get(2).setSound(SoundManager.EnemyShootMuted);
 		swirlTransformCW = new BulletTransformation();
 		swirlTransformCCW = new BulletTransformation();
 		double b = 0.0075;
 		swirlTransformCW.queueAccelAngleVelTransform(400, 0.01, b);
 		swirlTransformCCW.queueAccelAngleVelTransform(400, 0.01, -b);
-		this.spawners[1].setTransformList(swirlTransformCW);
-		this.spawners[2].setTransformList(swirlTransformCCW);
+		spawners.get(1).setTransformList(swirlTransformCW);
+		spawners.get(2).setTransformList(swirlTransformCCW);
 	}
 	protected void setupNextPattern() {
 		switch(patternNum) {

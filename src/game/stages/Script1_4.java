@@ -54,29 +54,29 @@ class EnmTest extends game.enemy.Enemy{
 		this.setFlag(FLAG_DAMAGE_IMMUNE);
 		this.anglenum = 0;
 		this.angleIncrement = 0;
-		this.spawners[0].setRelativePos(0, 0);
-		this.spawners[0].setMode(BulletSpawner.Mode_Ring_Nonaimed);
-		this.spawners[0].setSound(SoundManager.EnemyShootMuted);
-		this.spawners[0].setBulletCounts(5, 1);
-		this.spawners[0].setSpeeds(2.5, 2.5);
-		this.spawners[0].setAngles(anglenum, anglenum);
-		this.spawners[0].setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
-		this.spawners[0].setTransformList(accelTransform);
-		//this.spawners[0].setActivationFrequency(4);
+		this.newSpawner();
+		spawners.get(0).setRelativePos(0, 0);
+		spawners.get(0).setMode(BulletSpawner.Mode_Ring_Nonaimed);
+		spawners.get(0).setSound(SoundManager.EnemyShootMuted);
+		spawners.get(0).setBulletCounts(5, 1);
+		spawners.get(0).setSpeeds(2.5, 2.5);
+		spawners.get(0).setAngles(anglenum, anglenum);
+		spawners.get(0).setTypeAndColor(Bullet.RICE, Bullet.COLOR16_PURPLE);
+		spawners.get(0).setTransformList(accelTransform);
 	}
 	@Override
 	protected void doEnemyActions() {
 		if(this.enemyTimer == 100) {
 			this.resetFlags();
 			this.setFlag(FLAG_BOSS);
-			this.spawners[0].setActivationFrequency(4);
+			spawners.get(0).setActivationFrequency(4);
 		}
 		this.angleIncrement += (Math.PI)/2048;
 		this.anglenum += angleIncrement;
 		this.angleRain = (Math.sin(this.enemyTimer / 90) + (Math.PI/2));
 		accelTransform.removeTransformationAtIndex(2);
 		accelTransform.insertAccelDirTransform(2, 300, 0.05, this.angleRain);
-		this.spawners[0].setAngles(anglenum, anglenum);
+		spawners.get(0).setAngles(anglenum, anglenum);
 	}
 	
 	
