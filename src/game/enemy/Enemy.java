@@ -15,7 +15,7 @@ import game.bullet.BulletManager;
 import game.bullet.BulletSpawner;
 import game.player.Player;
 
-public class Enemy {
+public abstract class Enemy {
 	protected BulletManager bulletMGR;
 	protected Player targetPlayer;
 	protected Game game;
@@ -106,9 +106,7 @@ public class Enemy {
 		subtype = -1;
 	}
 	
-	protected void initActions() {
-		//To be overridden by custom enemy types.
-	}
+	protected abstract void initActions();
 	
 	public void initEnemy(double x, double y, int health, boolean mirrored, BulletManager bmgr, Player p, Game g, EnemyManager emgr, SoundManager smgr) {
 		bulletMGR = bmgr;
@@ -176,9 +174,8 @@ public class Enemy {
 	}
 
 	
-	protected void doEnemyActions() {
-		//To be overridden by custom enemy types.
-	}
+	protected abstract void doEnemyActions();
+	
 	private void processEnemyMovement() {
 		speed += accel;
 		xvel += xaccel;
