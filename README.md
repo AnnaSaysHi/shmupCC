@@ -18,7 +18,7 @@ ShmupCC is (planned to be) an open-source STG engine. Unfortunately, it's somewh
 If this happens and you're running on Macbook, it may be because your keyboard is attempting to open the accent menu. Try opening up terminal and running ``defaults write -g ApplePressAndHoldEnabled -bool false``. If the problem persists, then it's beyond me.
 
 # Can I use this engine to make my own STGs?
-Feel free to use this however you wish - but I'd prefer that it not be used to make paid games. Also, some basic features haven't been properly implemented yet. That said, if you want to make scripts or otherwise contribute to this engine's development, join the discord server below and @ me - I'll try to explain how to work with this engine.
+Feel free to use this however you wish - but I'd prefer that it not be used to make paid games. Also, some basic features haven't been properly implemented yet. I'm currently writing a [primer](https://annasayshi.github.io/#b=shmupCC-tutorial/&p=1) that tries to explain how to script in this engine. Also, if you want to help contribute to the development of ShmupCC, join the discord server below and @ me - I'll try to explain how to work with this engine.
 
 # Can I help work on this?
 Go ahead! If you want to work on this project, join the discord server at https://discord.gg/Z6PKKCab2b or message me.
