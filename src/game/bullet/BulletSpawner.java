@@ -59,6 +59,7 @@ public class BulletSpawner {
 		parentManager = parent;
 		targetPlayer = player;
 		this.game = game;
+		playercoords = targetPlayer.getPosAndHitbox();
 		modeNum = Mode_Fan_Aimed;
 		spawnerX = 0;
 		spawnerY = 0;
@@ -74,6 +75,8 @@ public class BulletSpawner {
 		angle2 = 0;
 		countdown = -1;
 		activationFreq = -1;
+		type = 0;
+		color = 0;
 		followEnemy = false;
 		transformsList = null;
 		transformsStartingIndex = 0;
@@ -329,10 +332,13 @@ public class BulletSpawner {
 		speed2 = 1;
 		angle1 = 0;
 		angle2 = 0;
+		type = 0;
+		color = 0;
 		countdown = -1;
 		activationFreq = -1;
 		transformsList = null;
 		transformsStartingIndex = 0;
+		playercoords = targetPlayer.getPosAndHitbox();
 	}
 
 }
