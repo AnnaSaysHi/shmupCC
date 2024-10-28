@@ -30,6 +30,7 @@ public class BulletSpawner {
 	int type;
 	int color;
 	int countdown;
+	double fracCountdown;
 	int soundOnActivate;
 	int activationFreq;
 	int protectFrames = 10;
@@ -74,6 +75,7 @@ public class BulletSpawner {
 		angle1 = 0;
 		angle2 = 0;
 		countdown = -1;
+		fracCountdown = 0;
 		activationFreq = -1;
 		type = 0;
 		color = 0;
@@ -172,6 +174,7 @@ public class BulletSpawner {
 	public void setActivationFrequency(int frequency) {
 		activationFreq = frequency;
 		countdown = frequency;
+		fracCountdown = 0;
 	}
 	
 	public void setTransformList(BulletTransformation transformsList) {
@@ -186,13 +189,17 @@ public class BulletSpawner {
 	}
 	
 	
-	public void tickSpawner() {
+	public void tickSpawner(double dt) {
 		if(followEnemy) {
 			spawnerX = parentEnemy.getXpos() + relativeX;
 			spawnerY = parentEnemy.getYpos() + relativeY;
 		}
 		playercoords = targetPlayer.getPosAndHitbox();
-		countdown--;
+		fracCountdown += dt;
+		if(fracCountdown >= 1) {
+			countdown--;
+			fracCountdown -= 1;
+		}
 		if(countdown == 0) {
 			this.activate();
 			countdown = activationFreq;

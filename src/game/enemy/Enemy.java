@@ -36,6 +36,7 @@ public abstract class Enemy {
 	public double xaccel;
 	public double yaccel;
 	protected int movementType; //0 = angle and speed, 1 = xSpeed and ySpeed
+	protected double fracTimer;
 	protected int enemyTimer;
 	protected int HP;
 	protected int maxHP;
@@ -130,6 +131,7 @@ public abstract class Enemy {
 		else this.clearFlag(FLAG_MIRROR);
 		
 		enemyTimer = 0;
+		fracTimer = 0;
 		movementTimer1 = -1;
 		movementTimer2 = -1;
 		
@@ -158,14 +160,18 @@ public abstract class Enemy {
 		sprite = spr;
 	}
 	
-	public void tickEnemy() {
-		enemyTimer++;
-		takeDamage();
-		this.doEnemyActions();
-		for(BulletSpawner s : spawners) {
-			s.tickSpawner();
+	public void tickEnemy(double dt) {
+		fracTimer += dt;
+		if(fracTimer >= 1) {
+			enemyTimer++;
+			fracTimer -= 1;
 		}
-		this.processEnemyMovement();
+		takeDamage();
+		this.doEnemyActions(dt);
+		for(BulletSpawner s : spawners) {
+			s.tickSpawner(dt);
+		}
+		this.processEnemyMovement(dt);
 		boolean diesOffscreen = !(testFlag(FLAG_PERSISTENT) || testFlag(FLAG_CONTROL_ENEMY));
 		
 		if(diesOffscreen && game.isOutsidePlayfield(xpos, ypos, size)) {
@@ -174,22 +180,22 @@ public abstract class Enemy {
 	}
 
 	
-	protected abstract void doEnemyActions();
+	protected abstract void doEnemyActions(double dt);
 	
-	private void processEnemyMovement() {
+	private void processEnemyMovement(double dt) {
 		speed += accel;
 		xvel += xaccel;
 		yvel += yaccel;
-		interpolator.handleMovement();
+		interpolator.handleMovement(dt);
 		
 		switch(movementType) {
 		case 0:
-			xpos += Math.cos(angle) * speed;
-			ypos += Math.sin(angle) * speed;
+			xpos += Math.cos(angle) * speed * dt;
+			ypos += Math.sin(angle) * speed * dt;
 			break;
 		case 1:
-			xpos += xvel;
-			ypos += yvel;
+			xpos += xvel * dt;
+			ypos += yvel * dt;
 			break;
 		default:
 			break;

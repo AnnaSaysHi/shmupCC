@@ -18,7 +18,7 @@ public class Script1_3 extends StageScript{
 	final double SCR_OY = 224.0;
 	double ang = 0.0f;
 	
-	private int m_Time = 0;
+	private double m_Time = 0;
 	public Script1_3(BulletManager mgr, Game g, Player playerChar, EnemyManager enmMgr, SoundManager smgr) {
 		super(mgr, g, playerChar, enmMgr, smgr);
 	}
@@ -35,9 +35,10 @@ public class Script1_3 extends StageScript{
 	}
 	
 	@Override
-	public void tick() {
+	public void tick(double dt) {
 		
-		if((m_Time % 20 == 0)) {
+		if((m_Time > 20)) {
+			m_Time -= 20;
 			double ang_ex = 0.0 + ang;
 			testSpawner.setAngles(parentGame.getAngleToPlayer(SCR_OX, SCR_OY), 0); 
 			for(int i = 0; i < RING_BULLET_CNT;i++) {
@@ -57,7 +58,7 @@ public class Script1_3 extends StageScript{
 			}*/
 			ang +=7.0 * (Math.PI / 180.0f);
 		}
-		testSpawner.tickSpawner();
-		this.m_Time++;
+		testSpawner.tickSpawner(dt);
+		this.m_Time += dt;
 	}
 }

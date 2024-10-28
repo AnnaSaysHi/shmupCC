@@ -101,10 +101,10 @@ public class BulletManager {
 	/**
 	 * Iteratively calls each Bullet's update method, while also disabling them if they are outside of the screen.
 	 */
-	public void updateBullets() {
+	public void updateBullets(double dt) {
 		for (int i = 0; i < bullets.length; i++){
 			if (bullets[i].isDisabled() == false) {
-				if(bullets[i].update()) {
+				if(bullets[i].update(dt)) {
 					bullets[i].disable();
 				}
 			}			
@@ -151,16 +151,21 @@ public class BulletManager {
 	 * @param y
 	 * @param rad
 	 */
-	public void checkGraze(double x, double y, double rad) {
-		if(relevantPlayer.isInvincible()) return;
+	public int checkGraze(double x, double y, double rad) {
+		int toRet = 0;
+		if(relevantPlayer.isInvincible()) return 0;
 		for(Bullet b : bullets) {
 			if (b.isDisabled() == false) {
-				if((b.grazed == 0) && b.checkCollision(x, y, rad)) {
-					b.grazedByPlayer();
-					relevantPlayer.addGraze();
+				if(b.checkCollision(x, y, rad)) {
+					if(b.grazed == 0) {
+						b.grazedByPlayer();
+						relevantPlayer.addGraze();
+					}
+					toRet++;
 				}
 			}
 		}
+		return toRet;
 	}
 	/**
 	 * Deactivates all Bullets, without any sound or visual effects.

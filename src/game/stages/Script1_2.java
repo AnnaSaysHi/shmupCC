@@ -32,12 +32,12 @@ public class Script1_2 extends StageScript {
 		testSpawner.setActivationFrequency(2);
 	}
 	@Override
-	public void tick() {
+	public void tick(double dt) {
 
 		angleIncrement += (Math.PI)/2048;
 		anglenum += angleIncrement;
 		testSpawner.setAngles(anglenum, anglenum);
-		testSpawner.tickSpawner();
+		testSpawner.tickSpawner(dt);
 	}
 	
 	

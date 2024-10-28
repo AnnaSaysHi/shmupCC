@@ -60,9 +60,9 @@ public class EnemyManager {
 	}
 
 
-	public void updateEnemies() {
+	public void updateEnemies(double dt) {
 		for(Enemy e : enemies) {
-			if(!e.isDisabled()) e.tickEnemy();
+			if(!e.isDisabled()) e.tickEnemy(dt);
 		}
 		enemies.removeIf(e -> e.isDisabled());
 	}

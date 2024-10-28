@@ -45,14 +45,14 @@ public class Script_necropotence extends StageScript {
 		testSpawner2.setSpawnProtectionFrames(400);
 	}
 	@Override
-	public void tick() {
+	public void tick(double dt) {
 
-		angleIncrement += (Math.PI)/4096;
-		anglenum += angleIncrement;
+		angleIncrement += (Math.PI)/4096 * dt;
+		anglenum += angleIncrement * dt;
 		testSpawner.setAngles(anglenum, anglenum);
 		testSpawner2.setAngles(-anglenum, -anglenum);
-		testSpawner.tickSpawner();
-		testSpawner2.tickSpawner();
+		testSpawner.tickSpawner(dt);
+		testSpawner2.tickSpawner(dt);
 	}
 	
 	

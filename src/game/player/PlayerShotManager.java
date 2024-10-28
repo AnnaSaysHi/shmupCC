@@ -25,10 +25,10 @@ public class PlayerShotManager {
 		this.soundMGR = soundMGR;
 	}
 	
-	public void updateShots() {
+	public void updateShots(double dt) {
 		for (int i = 0; i < shots.length; i++) {
 			if(shots[i].isDisabled() == false) {
-				shots[i].update();
+				shots[i].update(dt);
 			}
 		}
 	}

@@ -10,8 +10,8 @@ public class EnemyMovementInterpolator {
 	double currentY;
 	double diffX;
 	double diffY;
-	int duration;
-	int framesSinceStart;
+	double duration;
+	double framesSinceStart;
 	int interpMode = -1;
 	
 	public static final int INTERPOLATION_LINEAR = 0;
@@ -38,9 +38,10 @@ public class EnemyMovementInterpolator {
 		this.interpMode = mode;
 	}
 	
-	public void handleMovement() {
+	public void handleMovement(double dt) {
 		if(interpMode != -1) {
-			framesSinceStart++;
+			framesSinceStart += dt;
+			if(framesSinceStart > duration) framesSinceStart = duration;
 			if(framesSinceStart <= duration) {
 				double timeconst = framesSinceStart;
 				timeconst = timeconst / duration;
@@ -51,6 +52,7 @@ public class EnemyMovementInterpolator {
 				parent.ypos = currentY;
 				
 			}
+			if(framesSinceStart >= duration) interpMode = -1;
 		}
 		
 	}

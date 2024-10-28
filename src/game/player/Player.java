@@ -42,7 +42,7 @@ public class Player {
 	
 	ArrayList<Double> flashbombsX;
 	ArrayList<Double> flashbombsY;
-	ArrayList<Integer> flashbombsTimeLeft;
+	ArrayList<Double> flashbombsTimeLeft;
 	
 	
 	
@@ -67,6 +67,7 @@ public class Player {
 	byte[]dirs;
 	int playerState;
 	int stateTimer;
+	double fracTimer;
 	int iframes;
 	int deathbombWindow;
 	boolean bombHeldPrevFrame;
@@ -97,6 +98,7 @@ public class Player {
 		moveLimits = new int[] {lowXbound, highXbound, lowYbound, highYbound};
 		playerState = 0;
 		stateTimer = 0;
+		fracTimer = 0;
 		x = 0;
 		y = (Game.PLAYFIELDHEIGHT * 7 / 8);
 		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
@@ -108,7 +110,7 @@ public class Player {
 		flashbombCharge = flashbombFull;
 		flashbombsX = new ArrayList<Double>();
 		flashbombsY = new ArrayList<Double>();
-		flashbombsTimeLeft = new ArrayList<Integer>();
+		flashbombsTimeLeft = new ArrayList<Double>();
 	}
 	public void playerInitAnim(BufferedImage neutral, BufferedImage strafe, int width, int height,
 			BufferedImage hitbox, int hbSize,
@@ -162,6 +164,7 @@ public class Player {
 		ShotMGR.deactivateAll();
 		playerState = 0;
 		stateTimer = 0;
+		fracTimer = 0;
 		bombHeldPrevFrame = true;
 		iframes = 20;
 		lives = (game.getGvar(2) == 1 ? 0 : STARTING_LIVES);
@@ -176,7 +179,7 @@ public class Player {
 		ShotMGR = psm;
 	}
 
-	public void tickPlayer() {
+	public void tickPlayer(double dt) {
 
 		switch(playerState) {
 		case STATE_NORMAL:
@@ -186,7 +189,7 @@ public class Player {
 				switchOptionConfig();
 			}
 			manageOptions();
-			shotType.tickShooters();
+			shotType.tickShooters(dt);
 			speed = isFocusing ? moveSpeedF : moveSpeedUF;
 			dirs = kbh.getDirections();
 			if(dirs[0] != 0 && dirs[1] != 0) speed = speed / Math.sqrt(2);
@@ -279,7 +282,7 @@ public class Player {
 	public void useBomb() {
 		
 	}
-	public void tickFlashbombs(BulletManager b) {
+	public void tickFlashbombs(BulletManager b, double dt) {
 		for(int i = flashbombsX.size() - 1; i >= 0; i--) {
 			if(flashbombsTimeLeft.get(i) <= 0) {
 				flashbombsTimeLeft.remove(i);
@@ -290,7 +293,7 @@ public class Player {
 		for(int i = 0; i < flashbombsX.size(); i++) {
 			b.cancelInRadius(flashbombsX.get(i), flashbombsY.get(i), 32);
 		}
-		for (int i = 0; i < flashbombsTimeLeft.size(); i++) flashbombsTimeLeft.set(i, flashbombsTimeLeft.get(i) - 1);
+		for (int i = 0; i < flashbombsTimeLeft.size(); i++) flashbombsTimeLeft.set(i, flashbombsTimeLeft.get(i) - dt);
 		
 	}
 	public void useFlashbomb() {
@@ -299,7 +302,7 @@ public class Player {
 		iframes = Math.max(iframes, 20);
 		flashbombsX.add(this.x);
 		flashbombsY.add(this.y);
-		flashbombsTimeLeft.add(60);
+		flashbombsTimeLeft.add(60.0);
 	}
 	public void addGraze() {
 		if(flashbombCharge < flashbombFull) {

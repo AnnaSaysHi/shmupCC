@@ -11,7 +11,7 @@ public abstract class StageScript {
 	protected Game parentGame;
 	protected Player playerChar;
 	protected EnemyManager enmMgr;
-	protected int stageTimer;
+	protected double stageTimer;
 	protected SoundManager smgr;
 	protected String script;
 	
@@ -42,10 +42,10 @@ public abstract class StageScript {
 	public void initActions(int argA) {
 		this.initActions();
 	};
-	public void update() {
-		stageTimer++;
-		tick();
+	public void update(double dt) {
+		stageTimer += dt;
+		tick(dt);
 	}	
 	
-	public abstract void tick();
+	public abstract void tick(double dt);
 }

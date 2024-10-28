@@ -29,6 +29,7 @@ public class Bullet {
 	BulletTransformation transformQueue;
 	int transformIndex;
 	int transformTimer;
+	double fracTimer2;
 	int numJumps;
 	double storedAngle;
 	
@@ -40,6 +41,7 @@ public class Bullet {
 	 */
 	public int grazed;
 	int timer;
+	double fracTimer1;
 	/**
 	 * Refers to the Bullet's rendering size. Represents diameter, not radius.
 	 */
@@ -122,6 +124,7 @@ public class Bullet {
 		size = 1;
 		hitboxRadius = 1;
 		timer = 0;
+		fracTimer1 = 0;
 		grazed = 0;
 		disabled = true;
 		parentMGR = mgr;
@@ -131,6 +134,7 @@ public class Bullet {
 		transformQueue = null;
 		transformIndex = 0;
 		transformTimer = 0;
+		fracTimer2 = 0;
 		numJumps = 0;
 		transformSpawner = null;
 	}
@@ -166,10 +170,12 @@ public class Bullet {
 		renderRotationAngle = Math.PI/2;
 		grazed = 0;
 		timer = 0;
+		fracTimer1 = 0;
 		transformQueue = null;
 		if(newTransformQueue != null)transformQueue = newTransformQueue;
 		transformIndex = startingTransformIndex;
 		transformTimer = 0;
+		fracTimer2 = 0;
 		numJumps = 0;
 		framesTillDespawnOffscreen = offscreenProtectionFramesNum;
 		disabled = false;
@@ -255,15 +261,15 @@ public class Bullet {
 	 * 
 	 * @return whether this Bullet is both offscreen and is vulnerable to despawning offscreen
 	 */
-	public boolean update() {
-		if(this.transformQueue != null) doBulletTransformations();
+	public boolean update(double dt) {
+		if(this.transformQueue != null) doBulletTransformations(dt);
 		switch(velMode) {
 		case 0:
-			step(speed);
+			step(speed * dt);
 			break;
 		case 1:
-			xpos += xvel;
-			ypos += yvel;
+			xpos += xvel * dt;
+			ypos += yvel * dt;
 			if(renderRotationMode == 0) angle = getAngleFromVelocity();
 			break;
 		default:
@@ -336,10 +342,13 @@ public class Bullet {
 	 * If one wishes to add a new type of transformation, then this method should be edited.
 	 * Refer to BulletTransformation's documentation for an explanation of what each transformation type does.
 	 */
-	private void doBulletTransformations() {
+	private void doBulletTransformations(double dt) {
 		if(this.transformQueue.getTransformAtIndex(transformIndex) == BulletTransformation.TRANSFORM_NO_TRANSFORM) return;
-
-		transformTimer++;
+		fracTimer2 += dt;
+		if(fracTimer2 >= 1) {
+			fracTimer2 -= 1;
+			transformTimer++;
+		}
 		switch(this.transformQueue.getTransformAtIndex(transformIndex)) {
 		case BulletTransformation.TRANSFORM_WAIT:
 			if(transformTimer > transformQueue.getIntArg1AtIndex(transformIndex)) nextTransform();
@@ -361,12 +370,12 @@ public class Bullet {
 				break;
 			}
 			if(this.velMode != 0) changeVelMode(0);
-			this.speed += transformQueue.getFloatArg1AtIndex(transformIndex);
+			this.speed += (transformQueue.getFloatArg1AtIndex(transformIndex) * dt);
 			if(transformQueue.getFloatArg2AtIndex(transformIndex) == BulletTransformation.RAND_ANGLE) {
 				if(this.storedAngle == BulletTransformation.ANGLE_NULL) this.storedAngle = parentMGR.game.randRad();
-				this.angle += storedAngle;
+				this.angle += storedAngle * dt;
 			}else {
-				this.angle += transformQueue.getFloatArg2AtIndex(transformIndex);
+				this.angle += dt * transformQueue.getFloatArg2AtIndex(transformIndex);
 			}
 			break;
 		case BulletTransformation.TRANSFORM_ACCEL_DIR:
@@ -375,8 +384,8 @@ public class Bullet {
 				break;
 			}
 			if(this.velMode != 1) changeVelMode(1);
-			this.xvel += transformQueue.getFloatArg1AtIndex(transformIndex);
-			this.yvel += transformQueue.getFloatArg2AtIndex(transformIndex);
+			this.xvel += dt * transformQueue.getFloatArg1AtIndex(transformIndex);
+			this.yvel += dt * transformQueue.getFloatArg2AtIndex(transformIndex);
 			break;
 		case BulletTransformation.TRANSFORM_OFFSCREEN:
 			this.framesTillDespawnOffscreen = transformQueue.getIntArg1AtIndex(transformIndex);
@@ -443,7 +452,7 @@ public class Bullet {
 	private void nextTransform() {
 		this.transformIndex++;
 		this.transformTimer = 0;
-		doBulletTransformations();
+		doBulletTransformations(1);
 	}
 	private void gotoTransform(int index) {
 		this.transformIndex = index;

@@ -16,7 +16,7 @@ import javax.swing.*;
 
 public class Game extends Canvas implements Runnable{
 	
-	public final int SCRIPT_MAX = 6;
+	public final int SCRIPT_MAX = 5;
 	public final int MAX_MENU_DEPTH = 10;
 
 	public static final int GVAR_REDUCE_CPU_USAGE = 0;
@@ -162,7 +162,6 @@ public class Game extends Canvas implements Runnable{
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[4] = new Script_necropotence(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-		stageList[5] = new Script_BHA8(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 	}
 	
 	private synchronized void start() {
@@ -196,6 +195,8 @@ public class Game extends Canvas implements Runnable{
 	@Override
 	public void run() {
 		init();
+		double timeScale = 1;
+		int grazed = 0;
 		long MRT = System.nanoTime();
 		lastTickPeriodMeasurement = System.nanoTime();
 		int preferredFPS = 60;
@@ -206,8 +207,9 @@ public class Game extends Canvas implements Runnable{
 		while(running) {
 			if(nextTick <= System.nanoTime()) {
 				MRT = System.nanoTime();
-				tick();
+				grazed = tick(timeScale);
 				render();
+				timeScale = 10 / (10 + grazed);
 				nextTick = MRT + skipTicks;
 				if (this.getGvar(GVAR_REDUCE_CPU_USAGE) == 1) {
 					long sleepdur = (nextTick - MRT) / 1000000;
@@ -226,8 +228,9 @@ public class Game extends Canvas implements Runnable{
 		
 	}
 	
-	private void tick() {
+	private int tick(double dt) {
 
+		int toRet = 0;
 		ticksInLastPeriod++;
 		if(System.nanoTime() > (lastTickPeriodMeasurement + 1000000000)) {
 			measuredFpS = ((double)(ticksInLastPeriod)) / (((double)(System.nanoTime() - lastTickPeriodMeasurement)) / 1000000000);
@@ -241,15 +244,15 @@ public class Game extends Canvas implements Runnable{
 			if(kbh.getHeldKeys()[8]) {
 				state = STATE.PAUSE;
 			} else {
-				stageList[stage].update();
-				BulletMGR.updateBullets();
-				ShotMGR.updateShots();
+				stageList[stage].update(dt);
+				BulletMGR.updateBullets(dt);
+				ShotMGR.updateShots(dt);
 				ShotMGR.enemyHitDetect();
-				EnemyMGR.updateEnemies();
-				playerChar.tickPlayer();
+				EnemyMGR.updateEnemies(dt);
+				playerChar.tickPlayer(dt);
 				playercoords = playerChar.getPosAndHitbox();
-				playerChar.tickFlashbombs(BulletMGR);
-				BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
+				playerChar.tickFlashbombs(BulletMGR, dt);
+				toRet = BulletMGR.checkGraze(playercoords[0], playercoords[1], playercoords[3]);
 				BulletMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 				EnemyMGR.checkCollision(playercoords[0], playercoords[1], playercoords[2]);
 			}
@@ -259,6 +262,7 @@ public class Game extends Canvas implements Runnable{
 		}
 		else if (state == STATE.PAUSE || state == STATE.GAME_OVER) MenuMGR.tickPauseMenu();
 		
+		return toRet;
 		//System.gc();
 	}
 	

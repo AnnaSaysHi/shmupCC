@@ -3,7 +3,7 @@ package game.player;
 public class ShotType {
 	short numShooters;
 	Player parentPlayer;
-	int shotTimer;
+	double shotTimer;
 	int UFoffset;
 	int Foffset;
 	ShotData shotData;
@@ -20,12 +20,12 @@ public class ShotType {
 		Foffset = F;
 	}
 	
-	public void tickShooters() {
+	public void tickShooters(double dt) {
 		if(shotTimer != 0 || parentPlayer.getShotHeld()) {
 			int set = parentPlayer.isFocusing ? Foffset : UFoffset;
-			shotData.tickShooterSet(set, shotTimer);
-			shotTimer++;
-			if(shotTimer == 15) shotTimer = 0;
+			shotData.tickShooterSet(set, (int)(shotTimer));
+			shotTimer += dt;
+			if(shotTimer >= 15) shotTimer -= 15;
 		}
 	}
 }

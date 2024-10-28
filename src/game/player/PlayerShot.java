@@ -53,9 +53,9 @@ public class PlayerShot {
 		disabled = false;
 	}
 	
-	public void update() {
-		xpos += Math.cos(angle) * speed;
-		ypos += Math.sin(angle) * speed;
+	public void update(double dt) {
+		xpos += Math.cos(angle) * speed * dt;
+		ypos += Math.sin(angle) * speed * dt;
 		if(isOffscreen()) disabled = true;
 	}
 	

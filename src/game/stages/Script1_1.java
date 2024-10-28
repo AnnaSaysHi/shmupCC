@@ -28,8 +28,8 @@ public class Script1_1 extends StageScript {
 		testSpawner.setActivationFrequency(1);
 	}
 	@Override
-	public void tick() {
-		testSpawner.tickSpawner();
+	public void tick(double dt) {
+		testSpawner.tickSpawner(dt);
 	}
 	
 	

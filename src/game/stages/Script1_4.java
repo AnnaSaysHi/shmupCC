@@ -24,7 +24,7 @@ public class Script1_4 extends StageScript {
 	}
 	
 	@Override
-	public void tick() {
+	public void tick(double dt) {
 	}
 	
 	
@@ -63,7 +63,7 @@ class Enm1_4 extends game.enemy.Enemy{
 		spawners.get(0).setTransformList(accelTransform);
 	}
 	@Override
-	protected void doEnemyActions() {
+	protected void doEnemyActions(double dt) {
 		if(this.enemyTimer == 100) {
 			this.resetFlags();
 			this.setFlag(FLAG_BOSS);
