@@ -110,7 +110,7 @@ public class Game extends Canvas implements Runnable{
 		
 		RNG = new Random();
 		gvars = new int[] {
-				1,	// REDUCE CPU USAGE
+				0,	// REDUCE CPU USAGE
 				1,	// DIFFICULTY
 				0	// INFINITE LIVES
 		};
@@ -209,7 +209,7 @@ public class Game extends Canvas implements Runnable{
 				MRT = System.nanoTime();
 				grazed = tick(timeScale);
 				render();
-				timeScale = 10 / (10 + grazed);
+				timeScale = (double)10 / (10 + (double)grazed);
 				nextTick = MRT + skipTicks;
 				if (this.getGvar(GVAR_REDUCE_CPU_USAGE) == 1) {
 					long sleepdur = (nextTick - MRT) / 1000000;
