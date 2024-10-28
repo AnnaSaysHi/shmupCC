@@ -21,7 +21,7 @@ public class ShotType {
 	}
 	
 	public void tickShooters(double dt) {
-		if(shotTimer != 0 || parentPlayer.getShotHeld()) {
+		if(shotTimer >= 1 || parentPlayer.getShotHeld()) {
 			int set = parentPlayer.isFocusing ? Foffset : UFoffset;
 			shotData.tickShooterSet(set, (int)(shotTimer));
 			shotTimer += dt;
