@@ -16,7 +16,7 @@ import javax.swing.*;
 
 public class Game extends Canvas implements Runnable{
 	
-	public final int SCRIPT_MAX = 5;
+	public final int SCRIPT_MAX = 4;
 	public final int MAX_MENU_DEPTH = 10;
 
 	public static final int GVAR_REDUCE_CPU_USAGE = 0;
@@ -32,7 +32,7 @@ public class Game extends Canvas implements Runnable{
 	public static final int PLAYFIELDYOFFSET = 16;
 	public static int SCALE = 3;
 	public static int numImageBuffers = 2;
-	public String TITLE = "test";
+	public String TITLE = "bullet time test build";
 	private int ticksInLastPeriod = 0;
 	private double measuredFpS;
 	private long lastTickPeriodMeasurement;
@@ -160,8 +160,7 @@ public class Game extends Canvas implements Runnable{
 		stageList[0] = new Script1_1(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[1] = new Script1_2(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 		stageList[2] = new Script1_3(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-		stageList[3] = new Script1_4(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
-		stageList[4] = new Script_necropotence(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
+		stageList[3] = new Script_necropotence(BulletMGR, this, playerChar, EnemyMGR, SoundMGR);
 	}
 	
 	private synchronized void start() {
@@ -209,7 +208,7 @@ public class Game extends Canvas implements Runnable{
 				MRT = System.nanoTime();
 				grazed = tick(timeScale);
 				render();
-				timeScale = (double)10 / (10 + (double)grazed);
+				timeScale = (double)5 / (5 + (double)grazed);
 				nextTick = MRT + skipTicks;
 				if (this.getGvar(GVAR_REDUCE_CPU_USAGE) == 1) {
 					long sleepdur = (nextTick - MRT) / 1000000;

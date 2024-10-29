@@ -39,11 +39,10 @@ public class MenuManager {
 		
 		//SCENE SELECT MENU
 		menuList[1] = new MenuNew(this.game, kbh, smgr, this);
-		menuList[1].addNewEntry("Meek", MenuEntry.BHV_START_SCENE, 0, 100, 100);
-		menuList[1].addNewEntry("BoWaP", MenuEntry.BHV_START_SCENE, 1, 100, 150);
-		menuList[1].addNewEntry("VIV_test", MenuEntry.BHV_START_SCENE, 2, 100, 200);
+		menuList[1].addNewEntry("test1-1", MenuEntry.BHV_START_SCENE, 0, 100, 100);
+		menuList[1].addNewEntry("test1-2", MenuEntry.BHV_START_SCENE, 1, 100, 150);
+		menuList[1].addNewEntry("test1-3", MenuEntry.BHV_START_SCENE, 2, 100, 200);
 		menuList[1].addNewEntry("test1-4", MenuEntry.BHV_START_SCENE, 3, 100, 250);
-		menuList[1].addNewEntry("Necropotence", MenuEntry.BHV_START_SCENE, 4, 100, 300);
 		
 		//OPTIONS MENU
 		menuList[2] = new MenuNew(this.game, kbh, smgr, this);

@@ -21,11 +21,11 @@ public class Script1_1 extends StageScript {
 		testSpawner = new BulletSpawner(mgr, playerChar, parentGame);
 		testSpawner.setSpawnerPos(0, 40);
 		testSpawner.setMode(BulletSpawner.Mode_Meek);
-		testSpawner.setBulletCounts(3, 1);
-		testSpawner.setSpeeds(5, 1);
+		testSpawner.setBulletCounts(30, 1);
+		testSpawner.setSpeeds(7.5, 1);
 		testSpawner.setAngles(0, 2 * Math.PI);
 		testSpawner.setTypeAndColor(Bullet.BALL, Bullet.COLOR16_BLUE);
-		testSpawner.setActivationFrequency(1);
+		testSpawner.setActivationFrequency(6);
 	}
 	@Override
 	public void tick(double dt) {
